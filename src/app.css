@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --z-bg: #1c1c22;
+    --z-surface: #25252d;
+    --z-surface-hover: #2d2d37;
+    --z-surface-active: #32323e;
+    --z-border: #3d3d4b;
+    --z-border-subtle: #2f2f3b;
+    --z-text: #f4f4f6;
+    --z-text-muted: #a3a3b0;
+    --z-text-dim: #7a7a88;
+    --z-silver: #e4e4e7;
+    --z-accent: #f97316;
+    --z-accent-glow: rgba(249, 115, 22, 0.15);
+  }
+
+  body {
+    background-color: var(--z-bg);
+    color: var(--z-text);
+    min-height: 100vh;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+/* ZEA Metallic Silver Headline Text */
+.z-gradient-text {
+  background-image: linear-gradient(180deg, #ffffff 0%, #e4e4e7 45%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.z-gradient-text-accent {
+  background-image: linear-gradient(180deg, #fdba74 0%, #fb923c 50%, #ea580c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.z-muted {
+  color: var(--z-text-muted);
+}
+
+.z-dim {
+  color: var(--z-text-dim);
+}
+
+/* Metallic Surface Cards */
+.z-card {
+  background: var(--z-surface);
+  border: 1px solid var(--z-border-subtle);
+  border-radius: 16px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.z-card:hover {
+  background: var(--z-surface-hover);
+  border-color: var(--z-border);
+}
+
+.z-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Buttons */
+.z-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.z-btn:hover {
+  opacity: 0.95;
+}
+
+.z-btn--sm {
+  padding: 6px 16px;
+  font-size: 12px;
+}
+
+.z-btn--md {
+  padding: 10px 24px;
+  font-size: 14px;
+}
+
+.z-btn--lg {
+  padding: 14px 32px;
+  font-size: 15px;
+}
+
+.z-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--z-border);
+  color: var(--z-text);
+}
+
+.z-btn--ghost:hover {
+  background: var(--z-surface);
+  border-color: #525262;
+}
+
+.z-btn--primary {
+  background: #f4f4f6;
+  color: #141418;
+  border: 1px solid #ffffff;
+}
+
+.z-btn--primary:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Animated Silver Gradient Border Button */
+.z-btn--gradient-border {
+  position: relative;
+  background: #1c1c22;
+  border: 1px solid transparent;
+  color: #ffffff;
+  z-index: 0;
+}
+
+.z-btn--gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, #ffffff, #e4e4e7, #71717a, #3f3f46, #e4e4e7, #ffffff);
+  background-size: 300% 100%;
+  animation: z-gradient-flow 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+.z-btn--gradient-border:hover::before {
+  animation-duration: 2s;
+  filter: brightness(1.3);
+}
+
+.z-btn--gradient-border:hover {
+  background: #25252d;
+  transform: scale(1.02);
+}
+
+@keyframes z-gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
