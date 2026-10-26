@@ -1089,75 +1089,31 @@
             </div>
           </div>
         {:else}
-          <!-- App Navigation Header (iOS NavigationBar vs Android Material TopAppBar) -->
-          {#if platform === 'ios'}
-            <!-- Apple iOS Native Navigation Bar -->
-            <div class="px-4 py-2 flex items-center justify-between z-20 border-b border-[#2C2C2E]/60 bg-[#161618]/90 backdrop-blur-md">
-              <div class="flex items-center gap-1.5">
-                <button type="button" aria-label="Volver" class="text-[#007AFF] font-semibold flex items-center pr-1 cursor-pointer">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
-                <div class="h-6 w-6 rounded-full bg-[#2C2C2E] flex items-center justify-center">
-                  <AppleLogo class="h-3.5 w-auto text-white" />
-                </div>
-                <div class="flex flex-col text-left">
-                  <span class="text-xs font-semibold text-white tracking-tight font-sans">iOS Client</span>
-                  <span class="text-[9px] text-[#22C55E] flex items-center gap-1 font-mono">
-                    <span class="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse"></span>
-                    Glia Runtime
-                  </span>
-                </div>
+          <!-- App Header: Status Indicator + Platform Logo + Title + SDK Version Badge -->
+          <div class="px-4 py-2.5 flex items-center justify-between z-20 border-b {platform === 'ios' ? 'border-[#242426] bg-[#161618]' : 'border-[#2A2A30] bg-[#1E1E24]'}">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></span>
+              {#if platform === 'ios'}
+                <AppleLogo class="h-3.5 w-auto text-white" />
+              {:else}
+                <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
+              {/if}
+              <div class="flex flex-col text-left">
+                <span class="text-xs font-semibold text-white tracking-tight font-sans">
+                  {platform === 'ios' ? 'iOS Client' : 'Android Client'}
+                </span>
+                <span class="text-[9px] text-zinc-400 font-mono">
+                  {platform === 'ios' ? 'Glia SDK Runtime • SwiftUI' : 'Glia SDK Runtime • Compose'}
+                </span>
               </div>
-
-              <button
-                type="button"
-                aria-label="Opciones"
-                class="h-7 w-7 rounded-full bg-[#2C2C2E] flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer"
-              >
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="12" r="2"></circle>
-                  <circle cx="19" cy="12" r="2"></circle>
-                  <circle cx="5" cy="12" r="2"></circle>
-                </svg>
-              </button>
             </div>
-          {:else}
-            <!-- Android Material 3 TopAppBar -->
-            <div class="px-4 py-2 flex items-center justify-between z-20 border-b border-[#2A2A30] bg-[#1E1E24]">
-              <div class="flex items-center gap-2.5">
-                <button type="button" aria-label="Volver" class="text-zinc-300 hover:text-white flex items-center cursor-pointer">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                  </svg>
-                </button>
-                <div class="h-6 w-6 rounded-full bg-[#162E20] border border-[#22C55E]/40 flex items-center justify-center">
-                  <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
-                </div>
-                <div class="flex flex-col text-left">
-                  <span class="text-xs font-semibold text-zinc-100 font-sans tracking-wide">Android Client</span>
-                  <span class="text-[9px] text-emerald-400 flex items-center gap-1 font-mono">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Glia Runtime
-                  </span>
-                </div>
-              </div>
 
-              <button
-                type="button"
-                aria-label="Opciones"
-                class="h-7 w-7 rounded-full hover:bg-white/10 flex items-center justify-center text-zinc-300 transition cursor-pointer"
-              >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                  <circle cx="12" cy="5" r="1.8"></circle>
-                  <circle cx="12" cy="12" r="1.8"></circle>
-                  <circle cx="12" cy="19" r="1.8"></circle>
-                </svg>
-              </button>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-full {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]' : 'bg-[#2A2A2A] border border-[#3F3F46]'} text-[10px] text-zinc-300 font-mono">
+                v0.1.0
+              </span>
             </div>
-          {/if}
+          </div>
 
           <!-- Relative Container for Chat and Superpower Overlays -->
           <div class="relative flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -1183,10 +1139,10 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Audio Note Bubble: iOS HIG vs Android Material 3 -->
+                  <!-- User Audio Note Bubble: Glia SDK Theme -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 {platform === 'ios' ? 'bg-[#007AFF] rounded-[20px] rounded-br-[4px]' : 'bg-[#1B6EF3] rounded-[24px] rounded-br-[6px]'} text-white shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-3.5 py-2.5 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
@@ -1226,10 +1182,10 @@
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Photo Message Bubble: iOS HIG vs Android Material 3 -->
+                  <!-- User Photo Message Bubble: Glia SDK Theme -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 {platform === 'ios' ? 'bg-[#007AFF] rounded-[20px] rounded-br-[4px]' : 'bg-[#1B6EF3] rounded-[24px] rounded-br-[6px]'} shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} rounded-[18px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1238,7 +1194,7 @@
                           alt="Foto capturada"
                           class="w-full h-auto max-h-[220px] object-cover block"
                         />
-                        <!-- Photo Timestamp & Checkmarks Overlay -->
+                        <!-- Photo Timestamp Overlay -->
                         <div class="absolute bottom-1.5 right-1.5 bg-black/60 backdrop-blur-xs px-1.5 py-0.5 rounded-full flex items-center gap-1 text-[9px] font-mono text-white/95">
                           <span>6:04</span>
                           <span class="text-white font-bold">✓✓</span>
@@ -1252,29 +1208,17 @@
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: iOS iMessage Blue vs Android Material 3 Blue -->
-                  <div class="flex flex-col items-end">
-                    {#if platform === 'ios'}
-                      <!-- iOS iMessage Bubble (Apple Blue with tail) -->
-                      <div
-                        class="max-w-[80%] px-4 py-2 bg-gradient-to-b from-[#007AFF] to-[#0066DF] text-white font-sans text-xs leading-relaxed rounded-[20px] rounded-br-[4px] shadow-sm"
-                      >
-                        {msg.text}
-                      </div>
-                      <span class="text-[9px] text-zinc-500 pr-1 mt-0.5 block text-right">6:04 • Entregado</span>
-                    {:else}
-                      <!-- Android Material 3 Bubble (Material You Primary with asymmetric corner) -->
-                      <div
-                        class="max-w-[80%] px-4 py-2 bg-[#1B6EF3] text-white font-sans text-xs leading-relaxed rounded-[24px] rounded-br-[6px] shadow-sm flex items-end justify-between gap-2"
-                      >
-                        <span>{msg.text}</span>
-                        <span class="text-[9px] text-white/75 shrink-0 font-mono leading-none mb-0.5">✓✓</span>
-                      </div>
-                    {/if}
+                  <!-- User Question Bubble: Authentic Glia SDK Rounded Bubble -->
+                  <div class="flex justify-end">
+                    <div
+                      class="max-w-[80%] px-4 py-2.5 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                    >
+                      {msg.text}
+                    </div>
                   </div>
                 {/if}
               {:else}
-                <!-- Assistant Message: iOS Secondary Fill vs Android M3 Surface Container -->
+                <!-- Assistant Message: Glia SDK Dark Surface Container -->
                 <div class="flex items-start gap-2 max-w-[90%]">
                   <div class="h-6 w-6 rounded-full {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]' : 'bg-[#162E20] border border-emerald-500/30'} flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
@@ -1285,10 +1229,10 @@
                   </div>
 
                   <div
-                    class="px-4 py-3 {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]/70 rounded-[20px] rounded-tl-[4px]' : 'bg-[#2B2B30] border border-[#3E4046]/50 rounded-[24px] rounded-tl-[6px]'} text-zinc-100 text-xs leading-relaxed font-sans shadow-sm flex-1"
+                    class="px-4 py-3 {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]/60' : 'bg-[#27272A] border border-[#3F3F46]/50'} rounded-[18px] text-zinc-100 text-xs leading-relaxed font-sans shadow-sm flex-1"
                   >
                     {#if msg.action}
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#3A3A3C] rounded-lg' : 'bg-[#1E1E24] border border-[#44474F] rounded-[8px]'} text-zinc-300 text-[11px] font-medium">
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#3A3A3C] rounded-lg' : 'bg-[#2A2A2A] border border-[#44474F] rounded-[8px]'} text-zinc-300 text-[11px] font-medium">
                         {#if platform === 'ios'}
                           <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
                             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -1576,102 +1520,14 @@
           </form>
         {/if}
 
-        <!-- Native Mobile Bottom Tab Bar: Apple HIG vs Material 3 Navigation Bar -->
-        {#if platform === 'ios'}
-          <!-- iOS Apple Tab Bar (Frosted Blur, SF Blue active tab) -->
-          <nav class="border-t border-[#242426] bg-[#000000]/90 backdrop-blur-xl px-4 pt-2 pb-1 flex items-center justify-between z-20 select-none text-[10px] font-sans">
-            <!-- Tab: Home -->
-            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-              </svg>
-              <span class="font-medium">Home</span>
-            </div>
-
-            <!-- Tab: Progreso / Progress -->
-            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span class="font-medium">{lang === 'en' ? 'Progress' : 'Progreso'}</span>
-            </div>
-
-            <!-- Tab: Central Floating Plus Action Button (+) -->
-            <div class="relative -top-2 flex flex-col items-center cursor-pointer group">
-              <div class="h-10 w-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white font-bold text-xl shadow-[0_2px_12px_rgba(0,122,255,0.5)] group-hover:scale-105 transition-transform">
-                <span class="leading-none mb-0.5">+</span>
-              </div>
-            </div>
-
-            <!-- Tab: Chat IA / AI Chat (Active) -->
-            <div class="flex flex-col items-center gap-1 text-[#007AFF] cursor-pointer">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
-              </svg>
-              <span class="font-semibold">{lang === 'en' ? 'AI Chat' : 'Chat IA'}</span>
-            </div>
-
-            <!-- Tab: Perfil / Profile -->
-            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-              </svg>
-              <span class="font-medium">{lang === 'en' ? 'Profile' : 'Perfil'}</span>
-            </div>
-          </nav>
-        {:else}
-          <!-- Android Material 3 Navigation Bar (M3 Pill Badge, M3 FAB) -->
-          <nav class="border-t border-[#2B2B30] bg-[#141218] px-3 pt-2 pb-1 flex items-center justify-between z-20 select-none text-[10px] font-sans">
-            <!-- Tab: Home -->
-            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-              </svg>
-              <span class="font-medium text-[#8E918F]">Home</span>
-            </div>
-
-            <!-- Tab: Progreso / Progress -->
-            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span class="font-medium text-[#8E918F]">{lang === 'en' ? 'Progress' : 'Progreso'}</span>
-            </div>
-
-            <!-- Tab: Central Floating Plus Action Button (M3 Rounded FAB) -->
-            <div class="relative -top-2 flex flex-col items-center cursor-pointer group">
-              <div class="h-11 w-11 rounded-[16px] bg-[#1B6EF3] flex items-center justify-center text-white font-medium text-2xl shadow-lg group-hover:scale-105 transition-transform">
-                <span class="leading-none mb-0.5">+</span>
-              </div>
-            </div>
-
-            <!-- Tab: Chat IA / AI Chat (Active with M3 Pill Badge) -->
-            <div class="flex flex-col items-center gap-1 cursor-pointer">
-              <div class="w-12 h-6 rounded-full bg-[#1B6EF3]/25 flex items-center justify-center text-[#A8C7FA]">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
-                </svg>
-              </div>
-              <span class="font-medium text-[#E3E2E6]">{lang === 'en' ? 'AI Chat' : 'Chat IA'}</span>
-            </div>
-
-            <!-- Tab: Perfil / Profile -->
-            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-              </svg>
-              <span class="font-medium text-[#8E918F]">{lang === 'en' ? 'Profile' : 'Perfil'}</span>
-            </div>
-          </nav>
-        {/if}
         {/if}
 
-        <!-- Bottom Home Indicator: Apple 128px Home Indicator vs Android Compact Gesture Bar -->
-        <div class="pb-2 pt-1 {platform === 'ios' ? 'bg-[#000000]' : 'bg-[#141218]'} flex justify-center z-20">
+        <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar -->
+        <div class="pb-2.5 pt-1.5 {platform === 'ios' ? 'bg-[#000000]' : 'bg-[#121214]'} flex justify-center z-20">
           {#if platform === 'ios'}
             <div class="w-32 h-1 bg-white/40 rounded-full"></div>
           {:else}
-            <div class="w-18 h-[3.5px] bg-[#C4C7C5]/60 rounded-full"></div>
+            <div class="w-20 h-1 bg-white/40 rounded-full"></div>
           {/if}
         </div>
       </div>
