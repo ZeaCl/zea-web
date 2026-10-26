@@ -1139,16 +1139,16 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Audio Note Bubble: Carbón Pizarra Luminoso (#3E414B) -->
+                  <!-- User Audio Note Bubble: Elevated Charcoal (#1C1C20, border #2D2D34) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 bg-[#3E414B] border border-[#565965]/70 text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-3.5 py-2.5 bg-[#1C1C20] border border-[#2D2D34] text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
                           type="button"
                           onclick={() => togglePlayAudioMsg(msg.id, msg.audioUrl)}
-                          class="h-7 w-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white shrink-0 transition cursor-pointer"
+                          class="h-7 w-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white shrink-0 transition cursor-pointer"
                           aria-label="Reproducir nota de voz"
                         >
                           {#if playingAudioMsgId === msg.id}
@@ -1164,28 +1164,28 @@
                         <div class="flex items-center gap-[2.5px] flex-1 h-5">
                           {#each [6, 12, 18, 14, 8, 16, 20, 14, 10, 15, 18, 12, 8, 14, 10, 6] as h, i}
                             <span
-                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-white/80'}"
+                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-zinc-400'}"
                               style="height: {h}px; animation-delay: {i * 40}ms;"
                             ></span>
                           {/each}
                         </div>
-                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-white/90 font-medium leading-tight">
+                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-zinc-400 font-medium leading-tight">
                           <span>{msg.audioDuration || '0:04'}</span>
-                          <span class="text-[9px] text-white/80">✓✓</span>
+                          <span class="text-[9px] text-zinc-400">✓✓</span>
                         </div>
                       </div>
                       {#if msg.text && !msg.text.startsWith('🎙️')}
-                        <p class="text-[10.5px] text-white/95 font-medium italic border-t border-white/15 pt-1">
+                        <p class="text-[10.5px] text-zinc-300 font-medium italic border-t border-zinc-700/50 pt-1">
                           "{msg.text}"
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Photo Message Bubble: Carbón Pizarra Luminoso (#3E414B) -->
+                  <!-- User Photo Message Bubble: Elevated Charcoal (#1C1C20, border #2D2D34) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 bg-[#3E414B] border border-[#565965]/70 rounded-[18px] shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 bg-[#1C1C20] border border-[#2D2D34] rounded-[18px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1201,26 +1201,26 @@
                         </div>
                       </div>
                       {#if msg.text}
-                        <p class="px-2 pt-1 pb-0.5 text-xs text-white/95 font-medium leading-snug">
+                        <p class="px-2 pt-1 pb-0.5 text-xs text-zinc-200 font-medium leading-snug">
                           {msg.text}
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: Carbón Pizarra Luminoso (#3E414B, high contrast white text) -->
+                  <!-- User Question Bubble: Elevated Charcoal (#1C1C20, border #2D2D34, text-zinc-100) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[80%] px-4 py-2.5 bg-[#3E414B] border border-[#565965]/70 text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                      class="max-w-[80%] px-4 py-2.5 bg-[#1C1C20] border border-[#2D2D34] text-zinc-100 font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
                     >
                       {msg.text}
                     </div>
                   </div>
                 {/if}
               {:else}
-                <!-- Assistant Message: Dark Gray Glia SDK Container (#1C1C20, high legibility) -->
-                <div class="flex items-start gap-2 max-w-[90%]">
-                  <div class="h-6 w-6 rounded-full bg-[#242428] border border-[#383840] flex items-center justify-center shrink-0 mt-0.5">
+                <!-- Assistant Message: Direct Stream (No Bubble Container, Modern Native AI Agent Pattern) -->
+                <div class="flex items-start gap-2.5 max-w-[94%]">
+                  <div class="h-6 w-6 rounded-full bg-[#1C1C20] border border-[#2D2D34] flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
                       <AppleLogo class="h-3 w-auto text-zinc-100" />
                     {:else}
@@ -1228,11 +1228,9 @@
                     {/if}
                   </div>
 
-                  <div
-                    class="px-4 py-3 bg-[#1C1C20] border border-[#2B2B32] rounded-[18px] text-zinc-200 text-xs leading-relaxed font-sans shadow-sm flex-1"
-                  >
+                  <div class="flex-1 text-zinc-200 text-xs leading-relaxed font-sans pt-0.5">
                     {#if msg.action}
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-[#25252A] border border-[#36363E] rounded-lg text-zinc-300 text-[11px] font-medium">
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-[#1C1C20] border border-[#2D2D34] rounded-lg text-zinc-300 text-[11px] font-medium">
                         <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
                           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                         </svg>
@@ -1240,18 +1238,27 @@
                       </div>
                     {/if}
 
-                    <p>{msg.text}</p>
+                    <p class="text-zinc-200">{msg.text}</p>
                   </div>
                 </div>
               {/if}
             {/each}
 
-            <!-- Subtle Typing Dots when thinking -->
+            <!-- Subtle Typing Indicator when thinking (No Bubble) -->
             {#if isThinking}
-              <div class="flex items-center gap-1.5 px-4 py-2.5 bg-[#1C1C20] border border-[#2B2B32] rounded-[20px] rounded-bl-xs w-16">
-                <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
-                <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
-                <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
+              <div class="flex items-center gap-2.5 max-w-[90%]">
+                <div class="h-6 w-6 rounded-full bg-[#1C1C20] border border-[#2D2D34] flex items-center justify-center shrink-0">
+                  {#if platform === 'ios'}
+                    <AppleLogo class="h-3 w-auto text-zinc-100" />
+                  {:else}
+                    <AndroidLogo class="h-3 w-auto text-emerald-400" />
+                  {/if}
+                </div>
+                <div class="flex items-center gap-1.5 py-1">
+                  <span class="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse"></span>
+                  <span class="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse [animation-delay:150ms]"></span>
+                  <span class="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse [animation-delay:300ms]"></span>
+                </div>
               </div>
             {/if}
           </div>
