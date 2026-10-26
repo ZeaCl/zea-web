@@ -112,4 +112,28 @@ describe('MobileSimulator component', () => {
       expect(screen.getByAltText('Foto capturada')).toBeInTheDocument();
     });
   });
+
+  it('debe abrir la pantalla completa (100% screen con fondo bg-black) al hacer click en el menú superior izquierdo y permitir volver al chat', async () => {
+    render(MobileSimulator, {
+      props: {
+        lang: 'es',
+        platform: 'ios',
+        skills: { audio: false, vision: false, security: false }
+      }
+    });
+
+    const menuBtn = screen.getByTestId('header-menu-btn');
+    expect(menuBtn).toBeInTheDocument();
+
+    // 1. Click en menú -> Despliega la pantalla completa al 100%
+    await fireEvent.click(menuBtn);
+    expect(screen.getByTestId('menu-full-screen')).toBeInTheDocument();
+    expect(screen.getByText('Sesiones Activas')).toBeInTheDocument();
+    expect(screen.getByText('Arquitectura del Runtime')).toBeInTheDocument();
+
+    // 2. Click en botón Volver al Chat -> Regresa al chat
+    const backBtn = screen.getByTestId('menu-back-btn');
+    await fireEvent.click(backBtn);
+    expect(screen.queryByTestId('menu-full-screen')).not.toBeInTheDocument();
+  });
 });
