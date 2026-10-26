@@ -50,6 +50,7 @@
   let liveTranscript = $state('');
 
   // WhatsApp-style Audio Recording Timer & State
+  let isRecordingVoiceNote = $state(false);
   let audioRecordingSeconds = $state(0);
   let recordingInterval: any = null;
   let fallbackAudioInterval: any = null;
@@ -58,7 +59,8 @@
   let playingAudioMsgId = $state<string | null>(null);
 
   $effect(() => {
-    if (skills.audio) {
+    const isRecording = isRecordingVoiceNote || skills.audio;
+    if (isRecording) {
       audioRecordingSeconds = 0;
       isAudioPaused = false;
       recordingInterval = setInterval(() => {
@@ -412,7 +414,7 @@
       };
 
       recognition.onend = () => {
-        if (skills.audio && recognition) {
+        if ((skills.audio || isRecordingVoiceNote) && recognition) {
           try {
             recognition.start();
           } catch (_) {}
@@ -452,7 +454,7 @@
     // Start fallback wave oscillation in case microphone is unavailable
     if (fallbackAudioInterval) clearInterval(fallbackAudioInterval);
     fallbackAudioInterval = setInterval(() => {
-      if (!analyser && skills.audio && !isAudioPaused) {
+      if (!analyser && (skills.audio || isRecordingVoiceNote) && !isAudioPaused) {
         audioLevels = audioLevels.map(() => Math.floor(4 + Math.random() * 20));
       }
     }, 80);
@@ -522,7 +524,13 @@
     }
   }
 
+  function startVoiceRecording() {
+    isRecordingVoiceNote = true;
+    startAudio();
+  }
+
   function stopAudio() {
+    isRecordingVoiceNote = false;
     stopSpeechRecognition();
     if (fallbackAudioInterval) {
       clearInterval(fallbackAudioInterval);
@@ -563,7 +571,7 @@
       if (mediaRecorder && mediaRecorder.state === 'paused') {
         try { mediaRecorder.resume(); } catch (_) {}
       }
-      if (recognition && skills.audio) {
+      if (recognition && (skills.audio || isRecordingVoiceNote)) {
         try { recognition.start(); } catch (_) {}
       }
     }
@@ -585,7 +593,10 @@
     }
 
     stopAudio();
-    skills.audio = false;
+    isRecordingVoiceNote = false;
+    if (skills.audio) {
+      skills = { ...skills, audio: false };
+    }
 
     const audioMsgId = Date.now().toString();
     messages = [
@@ -1295,7 +1306,7 @@
         </div>
 
         <!-- Input Bar: Audio Recording Active: + | señal | STOP | flecha hacia arriba -->
-        {#if skills.audio}
+        {#if isRecordingVoiceNote || skills.audio}
           <div
             class="px-3 py-2 border-t border-[#222226] bg-[#0E0E11] flex items-center gap-2 z-20 relative"
             data-testid="audio-recording-bar"
@@ -1455,12 +1466,10 @@
                 </svg>
               </button>
             {:else}
-              <!-- WhatsApp Mic Button -->
+              <!-- WhatsApp Mic Button: Starts Local Voice Note Recording without activating external headers -->
               <button
                 type="button"
-                onclick={() => {
-                  skills.audio = true;
-                }}
+                onclick={startVoiceRecording}
                 aria-label={lang === 'en' ? 'Record voice message' : 'Grabar mensaje de voz'}
                 class="h-8 w-8 rounded-full bg-[#1C1C20] border border-[#2D2D34] text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
                 data-testid="whatsapp-mic-btn"

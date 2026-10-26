@@ -130,13 +130,14 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await closeCamBtn.click();
     await expect(page.getByTestId('real-camera-viewfinder')).not.toBeVisible();
 
-    // 5. Click en micrófono -> transforma input a barra (+ | señal | STOP | flecha)
+    // 5. Click en micrófono -> transforma input a barra (+ | señal | STOP | flecha) de forma aislada sin activar el header
     await micBtn.click();
     await expect(page.getByTestId('audio-recording-input')).toBeVisible();
     await expect(page.getByTestId('audio-signal-wave')).toBeVisible();
     await expect(page.getByTestId('audio-stop-btn')).toBeVisible();
     await expect(page.getByTestId('audio-send-btn')).toBeVisible();
-    await expect(page.locator('text=agent.use(LiveAudioStream())')).toBeVisible();
+    // El header del editor NO debe activarse al grabar nota de voz local
+    await expect(page.getByTestId('skill-toggle-audio')).not.toHaveClass(/text-emerald-400/);
   });
 
   test('debe capturar foto desde la cámara y desplegar la tarjeta de foto estilo WhatsApp en el chat', async ({ page }) => {
