@@ -1139,10 +1139,10 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Audio Note Bubble: Dark Gray Tone 1 (Elevated Charcoal #2E3036) -->
+                  <!-- User Audio Note Bubble: WhatsApp Green Glia SDK (#005c4b) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 bg-[#2E3036] border border-[#42444E] text-zinc-100 rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-3.5 py-2.5 bg-[#005c4b] border border-[#02735e]/50 text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
@@ -1164,28 +1164,28 @@
                         <div class="flex items-center gap-[2.5px] flex-1 h-5">
                           {#each [6, 12, 18, 14, 8, 16, 20, 14, 10, 15, 18, 12, 8, 14, 10, 6] as h, i}
                             <span
-                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-zinc-300'}"
+                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-white/80'}"
                               style="height: {h}px; animation-delay: {i * 40}ms;"
                             ></span>
                           {/each}
                         </div>
-                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-zinc-300 font-medium leading-tight">
+                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-white/90 font-medium leading-tight">
                           <span>{msg.audioDuration || '0:04'}</span>
-                          <span class="text-[9px] text-zinc-400">✓✓</span>
+                          <span class="text-[9px] text-white/80">✓✓</span>
                         </div>
                       </div>
                       {#if msg.text && !msg.text.startsWith('🎙️')}
-                        <p class="text-[10.5px] text-zinc-200 font-medium italic border-t border-white/10 pt-1">
+                        <p class="text-[10.5px] text-white/95 font-medium italic border-t border-white/15 pt-1">
                           "{msg.text}"
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Photo Message Bubble: Dark Gray Tone 1 -->
+                  <!-- User Photo Message Bubble: WhatsApp Green Glia SDK (#005c4b) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 bg-[#2E3036] border border-[#42444E] rounded-[18px] shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 bg-[#005c4b] border border-[#02735e]/50 rounded-[18px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1201,24 +1201,24 @@
                         </div>
                       </div>
                       {#if msg.text}
-                        <p class="px-2 pt-1 pb-0.5 text-xs text-zinc-200 font-medium leading-snug">
+                        <p class="px-2 pt-1 pb-0.5 text-xs text-white/95 font-medium leading-snug">
                           {msg.text}
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: Dark Gray Tone 1 (Elevated Charcoal #2E3036, high legibility) -->
+                  <!-- User Question Bubble: WhatsApp Green Glia SDK (#005c4b, high contrast white text) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[80%] px-4 py-2.5 bg-[#2E3036] border border-[#42444E] text-zinc-100 font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                      class="max-w-[80%] px-4 py-2.5 bg-[#005c4b] border border-[#02735e]/50 text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
                     >
                       {msg.text}
                     </div>
                   </div>
                 {/if}
               {:else}
-                <!-- Assistant Message: Dark Gray Tone 2 (Deep Charcoal #1C1C20, high legibility) -->
+                <!-- Assistant Message: Dark Gray Glia SDK Container (#1C1C20, high legibility) -->
                 <div class="flex items-start gap-2 max-w-[90%]">
                   <div class="h-6 w-6 rounded-full bg-[#242428] border border-[#383840] flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
@@ -1307,7 +1307,7 @@
               </svg>
             </button>
 
-            <!-- Señal: Dynamic Real-time Soundwave (Clean Zinc) -->
+            <!-- Señal: Dynamic Real-time Soundwave (WhatsApp Green) -->
             <div
               class="flex-1 h-8 bg-[#1C1C20] border border-[#2D2D34] rounded-full px-3 flex items-center justify-center min-w-0"
               data-testid="audio-recording-input"
@@ -1315,7 +1315,7 @@
               <div class="flex items-center gap-[3px] w-full justify-center" data-testid="audio-signal-wave">
                 {#each audioLevels as level, i}
                   <span
-                    class="w-[2.5px] bg-zinc-200 rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
+                    class="w-[2.5px] bg-[#00a884] rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
                     style="height: {isAudioPaused ? '4px' : `${level}px`};"
                   ></span>
                 {/each}
@@ -1333,15 +1333,15 @@
               <div class="h-3 w-3 bg-[#FF453A] rounded-[2px] {isAudioPaused ? 'opacity-50' : ''}"></div>
             </button>
 
-            <!-- Flecha hacia arriba: Send voice note to chat (High-contrast monochrome white) -->
+            <!-- Flecha hacia arriba: Send voice note to chat (WhatsApp Green) -->
             <button
               type="button"
               onclick={handleSendVoiceNote}
               aria-label={lang === 'en' ? 'Send voice note' : 'Enviar nota de voz'}
-              class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
+              class="h-8 w-8 rounded-full bg-[#00a884] text-white flex items-center justify-center font-extrabold hover:bg-[#029070] transition cursor-pointer shrink-0 shadow-sm"
               data-testid="audio-send-btn"
             >
-              <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
             </button>
@@ -1435,15 +1435,15 @@
             />
 
             {#if userInput.trim()}
-              <!-- Send arrow button when user types text (Monochrome White on Dark) -->
+              <!-- Send arrow button when user types text (WhatsApp Green #00a884) -->
               <button
                 type="submit"
                 aria-label="Enviar mensaje"
                 disabled={isThinking}
-                class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
+                class="h-8 w-8 rounded-full bg-[#00a884] text-white flex items-center justify-center font-extrabold hover:bg-[#029070] transition cursor-pointer shrink-0 shadow-sm"
                 data-testid="send-msg-btn"
               >
-                <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
               </button>
