@@ -905,7 +905,7 @@
         class="relative bg-black overflow-hidden flex flex-col h-[740px] {platform === 'ios' ? 'rounded-[52px]' : 'rounded-[42px]'}"
       >
         <!-- Native Mobile Status Bar & Dynamic Island -->
-        <div class="pt-3.5 px-7 flex items-center justify-between z-20 text-white select-none">
+        <div class="flex items-center justify-between z-20 text-white select-none {platform === 'ios' ? 'pt-3.5 pb-1 px-7' : 'pt-4 pb-2.5 px-6'}">
           {#if platform === 'ios'}
             <span class="font-semibold text-[13.5px] tracking-tight w-12 text-left font-sans">6:04</span>
 
@@ -1101,15 +1101,15 @@
             </div>
           </div>
         {:else}
-          <!-- Seamless Top Bar: Part of the dark background canvas (no border, no separate container box) -->
-          <div class="px-4 py-2 flex items-center justify-between z-20 bg-transparent">
+          <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
+          <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
             <div class="flex items-center gap-2.5">
               <!-- Menu / Expand Icon on Left -->
               <button
                 type="button"
                 onclick={() => (showDrawerMenu = !showDrawerMenu)}
                 aria-label={lang === 'en' ? 'Open menu' : 'Abrir menú'}
-                class="p-1 -ml-1 text-zinc-400 hover:text-white transition cursor-pointer flex items-center justify-center rounded-lg hover:bg-white/10"
+                class="p-1.5 -ml-1.5 text-zinc-400 hover:text-white transition cursor-pointer flex items-center justify-center rounded-full hover:bg-white/10"
                 data-testid="header-menu-btn"
               >
                 <!-- Clean 3-line Menu / Sidebar Icon -->
@@ -1121,13 +1121,13 @@
               </button>
 
               <!-- Platform Logo + Client Title (Part of the background, clean) -->
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-2">
                 {#if platform === 'ios'}
                   <AppleLogo class="h-3.5 w-auto text-white" />
                 {:else}
-                  <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
+                  <AndroidLogo class="h-4 w-auto text-emerald-400" />
                 {/if}
-                <span class="text-xs font-semibold text-white tracking-tight font-sans">
+                <span class="text-[13px] font-semibold text-white tracking-tight font-sans">
                   {platform === 'ios' ? 'iOS Client' : 'Android Client'}
                 </span>
               </div>
@@ -1148,7 +1148,7 @@
                 ];
               }}
               aria-label={lang === 'en' ? 'New chat' : 'Nuevo chat'}
-              class="p-1 -mr-1 text-zinc-400 hover:text-white transition cursor-pointer rounded-lg hover:bg-white/10"
+              class="p-1.5 -mr-1.5 text-zinc-400 hover:text-white transition cursor-pointer rounded-full hover:bg-white/10"
               data-testid="header-new-chat-btn"
             >
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1259,14 +1259,14 @@
           {/if}
 
           <!-- Chat Scrollable Body -->
-          <div bind:this={messagesContainer} class="flex-1 overflow-y-auto px-4 py-2 space-y-3.5 text-left text-xs">
+          <div bind:this={messagesContainer} class="flex-1 overflow-y-auto text-left text-xs {platform === 'android' ? 'px-6 py-4 space-y-5.5' : 'px-5 py-3 space-y-4'}">
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
                   <!-- User Audio Note Bubble: Elevated Charcoal (#1C1C20, border #2D2D34) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 bg-[#1C1C20] border border-[#2D2D34] text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-4 py-3 bg-[#1C1C20] border border-[#2D2D34] text-white rounded-[20px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
@@ -1309,10 +1309,10 @@
                   <!-- User Photo Message Bubble: Elevated Charcoal (#1C1C20, border #2D2D34) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 bg-[#1C1C20] border border-[#2D2D34] rounded-[18px] shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 bg-[#1C1C20] border border-[#2D2D34] rounded-[20px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
-                      <div class="relative rounded-[15px] overflow-hidden bg-black/40">
+                      <div class="relative rounded-[16px] overflow-hidden bg-black/40">
                         <img
                           src={msg.imageUrl}
                           alt="Foto capturada"
@@ -1335,7 +1335,7 @@
                   <!-- User Question Bubble: Elevated Charcoal (#1C1C20, border #2D2D34, text-zinc-100) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[80%] px-4 py-2.5 bg-[#1C1C20] border border-[#2D2D34] text-zinc-100 font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                      class="max-w-[84%] px-4.5 py-3 bg-[#1C1C20] border border-[#2D2D34] text-zinc-100 font-sans text-xs leading-relaxed rounded-[20px] shadow-sm"
                     >
                       {msg.text}
                     </div>
@@ -1343,18 +1343,18 @@
                 {/if}
               {:else}
                 <!-- Assistant Message: Direct Stream (No Bubble Container, Modern Native AI Agent Pattern) -->
-                <div class="flex items-start gap-2.5 max-w-[94%]">
-                  <div class="h-6 w-6 rounded-full bg-[#1C1C20] border border-[#2D2D34] flex items-center justify-center shrink-0 mt-0.5">
+                <div class="flex items-start gap-3.5 max-w-[95%]">
+                  <div class="h-6.5 w-6.5 rounded-full bg-[#1C1C20] border border-[#2D2D34] flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
                       <AppleLogo class="h-3 w-auto text-zinc-100" />
                     {:else}
-                      <AndroidLogo class="h-3 w-auto text-emerald-400" />
+                      <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
                     {/if}
                   </div>
 
-                  <div class="flex-1 text-zinc-200 text-xs leading-relaxed font-sans pt-0.5">
+                  <div class="flex-1 text-zinc-200 text-xs leading-[1.65] font-sans pt-0.5">
                     {#if msg.action}
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-[#1C1C20] border border-[#2D2D34] rounded-lg text-zinc-300 text-[11px] font-medium">
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2.5 bg-[#1C1C20] border border-[#2D2D34] rounded-lg text-zinc-300 text-[11px] font-medium">
                         <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
                           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                         </svg>
@@ -1388,12 +1388,12 @@
           </div>
         </div>
 
-        <!-- Quick Action Prompt Chips (Neutral Dark Gray, No Blue Typography) -->
-        <div class="px-3.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-t border-[#222226] bg-[#0E0E11]">
+        <!-- Quick Action Prompt Chips (Neutral Dark Gray, No Blue Typography, Generous Padding) -->
+        <div class="px-5 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar border-t border-[#222226]/80 bg-[#0E0E11]">
           <button
             type="button"
             onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
-            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+            class="shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
           >
             <AppleLogo class="h-3 w-auto text-white" />
             <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
@@ -1401,7 +1401,7 @@
           <button
             type="button"
             onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
-            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+            class="shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
           >
             <AndroidLogo class="h-3 w-auto text-emerald-400" />
             <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
@@ -1409,7 +1409,7 @@
           <button
             type="button"
             onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
-            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+            class="shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
           >
             <svg class="h-3 w-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -1421,7 +1421,7 @@
         <!-- Input Bar: Audio Recording Active: + | señal | STOP | flecha hacia arriba -->
         {#if isRecordingVoiceNote || skills.audio}
           <div
-            class="px-3 py-2 border-t border-[#222226] bg-[#0E0E11] flex items-center gap-2 z-20 relative"
+            class="px-4.5 py-2.5 {platform === 'android' ? 'pb-2' : ''} border-t border-[#222226]/80 bg-[#0E0E11] flex items-center gap-2 z-20 relative"
             data-testid="audio-recording-bar"
           >
             <!-- WhatsApp "+" Button on Left -->
@@ -1484,7 +1484,7 @@
               e.preventDefault();
               if (userInput.trim()) handleSend();
             }}
-            class="px-3 py-2 border-t border-[#222226] bg-[#0E0E11] flex items-center gap-2 z-20 relative"
+            class="px-4.5 py-2.5 {platform === 'android' ? 'pb-2' : ''} border-t border-[#222226]/80 bg-[#0E0E11] flex items-center gap-2 z-20 relative"
           >
             <!-- WhatsApp "+" Action Button on Left -->
             <button
@@ -1615,7 +1615,7 @@
         {/if}
 
         <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar -->
-        <div class="pb-2.5 pt-1.5 {platform === 'ios' ? 'bg-[#000000]' : 'bg-[#121214]'} flex justify-center z-20">
+        <div class="flex justify-center z-20 {platform === 'android' ? 'pb-3.5 pt-2 bg-[#121214]' : 'pb-2.5 pt-1.5 bg-[#000000]'}">
           {#if platform === 'ios'}
             <div class="w-32 h-1 bg-white/40 rounded-full"></div>
           {:else}
