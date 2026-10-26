@@ -1137,7 +1137,7 @@
 
             <!-- Scrollable Content of the 100% Screen -->
             <div class="flex-1 overflow-y-auto {platform === 'android' ? 'px-6 py-3 space-y-4.5' : 'px-5 py-3 space-y-4'} text-left font-sans text-xs">
-              <!-- 1. Nueva Sesión -->
+              <!-- 1. Nueva Sesión: Botón de texto minimalista con icono simple SVG (sin emojis) -->
               <button
                 type="button"
                 onclick={() => {
@@ -1152,22 +1152,15 @@
                   ];
                   showDrawerMenu = false;
                 }}
-                class="w-full text-left p-3.5 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 text-white transition cursor-pointer flex items-center justify-between group shadow-sm"
+                class="w-full text-left py-2 px-2.5 rounded-xl text-zinc-200 hover:text-white hover:bg-white/5 transition cursor-pointer flex items-center gap-2.5 font-medium text-xs group"
                 data-testid="menu-new-session-btn"
               >
-                <div class="flex items-center gap-3">
-                  <div class="h-7 w-7 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center text-white transition shrink-0">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                      <line x1="12" y1="5" x2="12" y2="19" />
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p class="text-xs font-semibold text-white">{lang === 'en' ? 'New session' : 'Nueva sesión'}</p>
-                    <p class="text-[10px] text-zinc-400 font-mono">{lang === 'en' ? 'Start fresh on-device chat' : 'Iniciar chat limpio en memoria'}</p>
-                  </div>
-                </div>
-                <span class="text-zinc-500 group-hover:text-zinc-300 font-mono text-xs">↵</span>
+                <!-- Simple SVG Plus Icon -->
+                <svg class="h-4 w-4 text-zinc-400 group-hover:text-white transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>{lang === 'en' ? 'New session' : 'Nueva sesión'}</span>
               </button>
 
               <!-- 2. Opciones de Configuración -->
@@ -1238,8 +1231,10 @@
                     }}
                     class="w-full text-left p-2.5 px-3 rounded-xl bg-transparent hover:bg-[#1C1C20]/50 text-zinc-300 hover:text-white transition cursor-pointer flex items-center justify-between group"
                   >
-                    <div class="flex items-center gap-2 min-w-0">
-                      <span class="text-zinc-500 group-hover:text-zinc-300">💬</span>
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <svg class="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      </svg>
                       <span class="text-xs truncate">{platform === 'ios' ? 'Integración en SwiftUI' : 'Integración en Kotlin Compose'}</span>
                     </div>
                     <span class="text-[10px] text-zinc-500 font-mono shrink-0">1d</span>
@@ -1262,8 +1257,10 @@
                     }}
                     class="w-full text-left p-2.5 px-3 rounded-xl bg-transparent hover:bg-[#1C1C20]/50 text-zinc-300 hover:text-white transition cursor-pointer flex items-center justify-between group"
                   >
-                    <div class="flex items-center gap-2 min-w-0">
-                      <span class="text-zinc-500 group-hover:text-zinc-300">💬</span>
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <svg class="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      </svg>
                       <span class="text-xs truncate">{lang === 'en' ? 'Low-latency WebSockets' : 'WebSockets de baja latencia'}</span>
                     </div>
                     <span class="text-[10px] text-zinc-500 font-mono shrink-0">2d</span>
