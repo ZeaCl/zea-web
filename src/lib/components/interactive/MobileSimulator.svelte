@@ -56,6 +56,7 @@
   let fallbackAudioInterval: any = null;
   let isAudioPaused = $state(false);
   let showAttachMenu = $state(false);
+  let showDrawerMenu = $state(false);
   let playingAudioMsgId = $state<string | null>(null);
 
   $effect(() => {
@@ -1100,34 +1101,146 @@
             </div>
           </div>
         {:else}
-          <!-- App Header: Status Indicator + Platform Logo + Title + SDK Version Badge -->
-          <div class="px-4 py-2.5 flex items-center justify-between z-20 border-b {platform === 'ios' ? 'border-[#242426] bg-[#161618]' : 'border-[#2A2A30] bg-[#1E1E24]'}">
-            <div class="flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></span>
-              {#if platform === 'ios'}
-                <AppleLogo class="h-3.5 w-auto text-white" />
-              {:else}
-                <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
-              {/if}
-              <div class="flex flex-col text-left">
+          <!-- Seamless Top Bar: Part of the dark background canvas (no border, no separate container box) -->
+          <div class="px-4 py-2 flex items-center justify-between z-20 bg-transparent">
+            <div class="flex items-center gap-2.5">
+              <!-- Menu / Expand Icon on Left -->
+              <button
+                type="button"
+                onclick={() => (showDrawerMenu = !showDrawerMenu)}
+                aria-label={lang === 'en' ? 'Open menu' : 'Abrir menú'}
+                class="p-1 -ml-1 text-zinc-400 hover:text-white transition cursor-pointer flex items-center justify-center rounded-lg hover:bg-white/10"
+                data-testid="header-menu-btn"
+              >
+                <!-- Clean 3-line Menu / Sidebar Icon -->
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="4" y1="7" x2="20" y2="7" />
+                  <line x1="4" y1="12" x2="16" y2="12" />
+                  <line x1="4" y1="17" x2="20" y2="17" />
+                </svg>
+              </button>
+
+              <!-- Platform Logo + Client Title (Part of the background, clean) -->
+              <div class="flex items-center gap-1.5">
+                {#if platform === 'ios'}
+                  <AppleLogo class="h-3.5 w-auto text-white" />
+                {:else}
+                  <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
+                {/if}
                 <span class="text-xs font-semibold text-white tracking-tight font-sans">
                   {platform === 'ios' ? 'iOS Client' : 'Android Client'}
-                </span>
-                <span class="text-[9px] text-zinc-400 font-mono">
-                  {platform === 'ios' ? 'Glia SDK Runtime • SwiftUI' : 'Glia SDK Runtime • Compose'}
                 </span>
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded-full {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]' : 'bg-[#2A2A2A] border border-[#3F3F46]'} text-[10px] text-zinc-300 font-mono">
-                v0.1.0
-              </span>
-            </div>
+            <!-- Clean Right Action: New Chat Action Icon -->
+            <button
+              type="button"
+              onclick={() => {
+                messages = [
+                  {
+                    id: Date.now().toString(),
+                    role: 'assistant',
+                    text: lang === 'en'
+                      ? 'Hello! How can I assist you with your mobile architecture today?'
+                      : '¡Hola! ¿En qué puedo ayudarte hoy con tu arquitectura móvil?'
+                  }
+                ];
+              }}
+              aria-label={lang === 'en' ? 'New chat' : 'Nuevo chat'}
+              class="p-1 -mr-1 text-zinc-400 hover:text-white transition cursor-pointer rounded-lg hover:bg-white/10"
+              data-testid="header-new-chat-btn"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </button>
           </div>
 
           <!-- Relative Container for Chat and Superpower Overlays -->
           <div class="relative flex-1 flex flex-col min-h-0 overflow-hidden">
+
+          <!-- Slide-out Drawer Menu (Activated via Menu Icon) -->
+          {#if showDrawerMenu}
+            <!-- Backdrop -->
+            <button
+              type="button"
+              onclick={() => (showDrawerMenu = false)}
+              class="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 cursor-pointer transition-opacity"
+              aria-label="Cerrar menú"
+            ></button>
+
+            <!-- Drawer Container -->
+            <div
+              class="absolute inset-y-0 left-0 w-60 bg-[#141418] border-r border-[#26262e] z-50 p-4 flex flex-col justify-between shadow-2xl animate-in slide-in-from-left duration-200"
+            >
+              <div class="space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-[#26262e]">
+                  <div class="flex items-center gap-2">
+                    {#if platform === 'ios'}
+                      <AppleLogo class="h-4 w-auto text-white" />
+                    {:else}
+                      <AndroidLogo class="h-4 w-auto text-emerald-400" />
+                    {/if}
+                    <span class="text-xs font-semibold text-white">
+                      {platform === 'ios' ? 'iOS Runtime' : 'Android Runtime'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onclick={() => (showDrawerMenu = false)}
+                    class="h-6 w-6 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer"
+                    aria-label="Cerrar"
+                  >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Drawer Navigation Links -->
+                <div class="space-y-1 text-xs">
+                  <div class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 px-2 py-1">
+                    {lang === 'en' ? 'Sessions' : 'Sesiones'}
+                  </div>
+                  <button
+                    type="button"
+                    onclick={() => (showDrawerMenu = false)}
+                    class="w-full text-left px-2.5 py-1.5 rounded-lg bg-white/10 text-white font-medium flex items-center gap-2 cursor-pointer"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                    <span>{lang === 'en' ? 'Current Chat' : 'Chat Actual'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick={() => {
+                      showDrawerMenu = false;
+                      messages = [
+                        {
+                          id: Date.now().toString(),
+                          role: 'assistant',
+                          text: lang === 'en'
+                            ? 'New stateless session initialized. All computation runs on-device in memory.'
+                            : 'Nueva sesión stateless inicializada. Todo el procesamiento corre en el dispositivo.'
+                        }
+                      ];
+                    }}
+                    class="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-zinc-200 transition flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>+</span>
+                    <span>{lang === 'en' ? 'New Session' : 'Nueva Sesión'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Drawer Footer -->
+              <div class="pt-3 border-t border-[#26262e] text-[10px] font-mono text-zinc-500">
+                <span>ZEA Mobile SDK • 2026</span>
+              </div>
+            </div>
+          {/if}
 
           <!-- SUPERPOWER OVERLAY: Secure Enclave Biometrics -->
           {#if skills.security}
