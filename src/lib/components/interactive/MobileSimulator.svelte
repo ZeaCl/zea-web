@@ -903,7 +903,7 @@
             >
               <!-- Front Camera Lens -->
               <div class="h-3 w-3 rounded-full bg-[#111116] border border-zinc-800 flex items-center justify-center shrink-0">
-                <div class="h-1 w-1 rounded-full bg-blue-950/80"></div>
+                <div class="h-1 w-1 rounded-full bg-zinc-900"></div>
               </div>
 
               {#if skills.audio}
@@ -1139,10 +1139,10 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Audio Note Bubble: Glia SDK Theme -->
+                  <!-- User Audio Note Bubble: Dark Gray Tone 1 (Elevated Charcoal #2E3036) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-3.5 py-2.5 bg-[#2E3036] border border-[#42444E] text-zinc-100 rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
@@ -1164,28 +1164,28 @@
                         <div class="flex items-center gap-[2.5px] flex-1 h-5">
                           {#each [6, 12, 18, 14, 8, 16, 20, 14, 10, 15, 18, 12, 8, 14, 10, 6] as h, i}
                             <span
-                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-white/75'}"
+                              class="w-[2px] rounded-full transition-all duration-75 {playingAudioMsgId === msg.id ? 'bg-white animate-pulse' : 'bg-zinc-300'}"
                               style="height: {h}px; animation-delay: {i * 40}ms;"
                             ></span>
                           {/each}
                         </div>
-                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-white/90 font-medium leading-tight">
+                        <div class="flex flex-col items-end shrink-0 text-[10px] font-mono text-zinc-300 font-medium leading-tight">
                           <span>{msg.audioDuration || '0:04'}</span>
-                          <span class="text-[9px] text-white/80">✓✓</span>
+                          <span class="text-[9px] text-zinc-400">✓✓</span>
                         </div>
                       </div>
                       {#if msg.text && !msg.text.startsWith('🎙️')}
-                        <p class="text-[10.5px] text-white/90 font-medium italic border-t border-white/20 pt-1">
+                        <p class="text-[10.5px] text-zinc-200 font-medium italic border-t border-white/10 pt-1">
                           "{msg.text}"
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Photo Message Bubble: Glia SDK Theme -->
+                  <!-- User Photo Message Bubble: Dark Gray Tone 1 -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} rounded-[18px] shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 bg-[#2E3036] border border-[#42444E] rounded-[18px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1201,47 +1201,41 @@
                         </div>
                       </div>
                       {#if msg.text}
-                        <p class="px-2 pt-1 pb-0.5 text-xs text-white font-medium leading-snug">
+                        <p class="px-2 pt-1 pb-0.5 text-xs text-zinc-200 font-medium leading-snug">
                           {msg.text}
                         </p>
                       {/if}
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: Authentic Glia SDK Rounded Bubble -->
+                  <!-- User Question Bubble: Dark Gray Tone 1 (Elevated Charcoal #2E3036, high legibility) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[80%] px-4 py-2.5 {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#2563EB]'} text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                      class="max-w-[80%] px-4 py-2.5 bg-[#2E3036] border border-[#42444E] text-zinc-100 font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
                     >
                       {msg.text}
                     </div>
                   </div>
                 {/if}
               {:else}
-                <!-- Assistant Message: Glia SDK Dark Surface Container -->
+                <!-- Assistant Message: Dark Gray Tone 2 (Deep Charcoal #1C1C20, high legibility) -->
                 <div class="flex items-start gap-2 max-w-[90%]">
-                  <div class="h-6 w-6 rounded-full {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]' : 'bg-[#162E20] border border-emerald-500/30'} flex items-center justify-center shrink-0 mt-0.5">
+                  <div class="h-6 w-6 rounded-full bg-[#242428] border border-[#383840] flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
-                      <AppleLogo class="h-3 w-auto text-white" />
+                      <AppleLogo class="h-3 w-auto text-zinc-100" />
                     {:else}
                       <AndroidLogo class="h-3 w-auto text-emerald-400" />
                     {/if}
                   </div>
 
                   <div
-                    class="px-4 py-3 {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]/60' : 'bg-[#27272A] border border-[#3F3F46]/50'} rounded-[18px] text-zinc-100 text-xs leading-relaxed font-sans shadow-sm flex-1"
+                    class="px-4 py-3 bg-[#1C1C20] border border-[#2B2B32] rounded-[18px] text-zinc-200 text-xs leading-relaxed font-sans shadow-sm flex-1"
                   >
                     {#if msg.action}
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#3A3A3C] rounded-lg' : 'bg-[#2A2A2A] border border-[#44474F] rounded-[8px]'} text-zinc-300 text-[11px] font-medium">
-                        {#if platform === 'ios'}
-                          <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                          </svg>
-                        {:else}
-                          <svg class="h-3 w-3 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                          </svg>
-                        {/if}
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-[#25252A] border border-[#36363E] rounded-lg text-zinc-300 text-[11px] font-medium">
+                        <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
+                          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                        </svg>
                         <span>{platform === 'ios' ? `Action: ${msg.action.name}` : `Tool: ${msg.action.name}`}</span>
                       </div>
                     {/if}
@@ -1254,7 +1248,7 @@
 
             <!-- Subtle Typing Dots when thinking -->
             {#if isThinking}
-              <div class="flex items-center gap-1.5 px-4 py-2.5 bg-[#1c1c20] border border-[#2a2a30] rounded-[20px] rounded-bl-xs w-16">
+              <div class="flex items-center gap-1.5 px-4 py-2.5 bg-[#1C1C20] border border-[#2B2B32] rounded-[20px] rounded-bl-xs w-16">
                 <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
                 <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
                 <span class="h-1.5 w-1.5 rounded-full bg-[#23e062] animate-pulse"></span>
@@ -1263,71 +1257,40 @@
           </div>
         </div>
 
-        <!-- Quick Action Prompt Chips (iOS HIG vs Android Material 3) -->
-        <div class="px-3.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'}">
-          {#if platform === 'ios'}
-            <!-- Apple HIG Capsule Chips -->
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
-              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <AppleLogo class="h-3 w-auto text-white" />
-              <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
-              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <AndroidLogo class="h-3 w-auto text-emerald-400" />
-              <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
-              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <svg class="h-3 w-3 text-[#007AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
-            </button>
-          {:else}
-            <!-- Android Material 3 Assist Chips (rounded-[8px], M3 surface and outline) -->
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
-              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <AppleLogo class="h-3 w-auto text-white" />
-              <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
-              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <AndroidLogo class="h-3 w-auto text-emerald-400" />
-              <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
-              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
-            >
-              <svg class="h-3 w-3 text-[#A8C7FA]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
-            </button>
-          {/if}
+        <!-- Quick Action Prompt Chips (Neutral Dark Gray, No Blue Typography) -->
+        <div class="px-3.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-t border-[#222226] bg-[#0E0E11]">
+          <button
+            type="button"
+            onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
+            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <AppleLogo class="h-3 w-auto text-white" />
+            <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
+          </button>
+          <button
+            type="button"
+            onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
+            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <AndroidLogo class="h-3 w-auto text-emerald-400" />
+            <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
+          </button>
+          <button
+            type="button"
+            onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
+            class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-zinc-200 bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 hover:text-white transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <svg class="h-3 w-3 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
+          </button>
         </div>
 
         <!-- Input Bar: Audio Recording Active: + | señal | STOP | flecha hacia arriba -->
         {#if skills.audio}
           <div
-            class="px-3 py-2 {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'} flex items-center gap-2 z-20 relative"
+            class="px-3 py-2 border-t border-[#222226] bg-[#0E0E11] flex items-center gap-2 z-20 relative"
             data-testid="audio-recording-bar"
           >
             <!-- WhatsApp "+" Button on Left -->
@@ -1335,7 +1298,7 @@
               type="button"
               onclick={() => (showAttachMenu = !showAttachMenu)}
               aria-label={lang === 'en' ? 'Add attachment' : 'Adjuntar acción'}
-              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA]'} flex items-center justify-center hover:text-white transition cursor-pointer shrink-0"
+              class="h-8 w-8 rounded-full bg-[#1C1C20] border border-[#2D2D34] text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
               data-testid="whatsapp-plus-btn"
             >
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -1344,15 +1307,15 @@
               </svg>
             </button>
 
-            <!-- Señal: Dynamic Real-time Soundwave -->
+            <!-- Señal: Dynamic Real-time Soundwave (Clean Zinc) -->
             <div
-              class="flex-1 h-8 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#2C2C2E] rounded-full' : 'bg-[#211F26] border border-[#44474F] rounded-[14px]'} px-3 flex items-center justify-center min-w-0"
+              class="flex-1 h-8 bg-[#1C1C20] border border-[#2D2D34] rounded-full px-3 flex items-center justify-center min-w-0"
               data-testid="audio-recording-input"
             >
               <div class="flex items-center gap-[3px] w-full justify-center" data-testid="audio-signal-wave">
                 {#each audioLevels as level, i}
                   <span
-                    class="w-[2.5px] {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#1B6EF3]'} rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
+                    class="w-[2.5px] bg-zinc-200 rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
                     style="height: {isAudioPaused ? '4px' : `${level}px`};"
                   ></span>
                 {/each}
@@ -1364,21 +1327,21 @@
               type="button"
               onclick={handleStopRecording}
               aria-label={isAudioPaused ? (lang === 'en' ? 'Resume recording' : 'Reanudar grabación') : (lang === 'en' ? 'Stop recording' : 'Detener grabación')}
-              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#2C1517] border border-[#FF453A]/40 text-[#FF453A]' : 'rounded-[12px] bg-[#3B1214] border border-[#F2B8B5]/40 text-[#F2B8B5]'} flex items-center justify-center hover:opacity-80 transition cursor-pointer shrink-0"
+              class="h-8 w-8 rounded-full bg-[#281414] border border-red-500/40 text-red-400 flex items-center justify-center hover:opacity-80 transition cursor-pointer shrink-0"
               data-testid="audio-stop-btn"
             >
-              <div class="h-3 w-3 {platform === 'ios' ? 'bg-[#FF453A] rounded-[2px]' : 'bg-[#F2B8B5] rounded-[3px]'} {isAudioPaused ? 'opacity-50' : ''}"></div>
+              <div class="h-3 w-3 bg-[#FF453A] rounded-[2px] {isAudioPaused ? 'opacity-50' : ''}"></div>
             </button>
 
-            <!-- Flecha hacia arriba: Send voice note to chat -->
+            <!-- Flecha hacia arriba: Send voice note to chat (High-contrast monochrome white) -->
             <button
               type="button"
               onclick={handleSendVoiceNote}
               aria-label={lang === 'en' ? 'Send voice note' : 'Enviar nota de voz'}
-              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#007AFF] shadow-[0_2px_8px_rgba(0,122,255,0.4)]' : 'rounded-[12px] bg-[#1B6EF3] shadow-md'} text-white flex items-center justify-center font-extrabold hover:opacity-90 transition cursor-pointer shrink-0"
+              class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
               data-testid="audio-send-btn"
             >
-              <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
             </button>
@@ -1390,14 +1353,14 @@
               e.preventDefault();
               if (userInput.trim()) handleSend();
             }}
-            class="px-3 py-2 {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'} flex items-center gap-2 z-20 relative"
+            class="px-3 py-2 border-t border-[#222226] bg-[#0E0E11] flex items-center gap-2 z-20 relative"
           >
             <!-- WhatsApp "+" Action Button on Left -->
             <button
               type="button"
               onclick={() => (showAttachMenu = !showAttachMenu)}
               aria-label={lang === 'en' ? 'Add attachment' : 'Adjuntar acción'}
-              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA]'} flex items-center justify-center hover:text-white transition cursor-pointer shrink-0"
+              class="h-8 w-8 rounded-full bg-[#1C1C20] border border-[#2D2D34] text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
               data-testid="whatsapp-plus-btn"
             >
               <svg class="h-4 w-4 {showAttachMenu ? 'rotate-45 text-white' : ''} transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -1408,14 +1371,14 @@
 
             <!-- Attachment Popup Menu (Camera from +) -->
             {#if showAttachMenu}
-              <div class="absolute bottom-12 left-3 {platform === 'ios' ? 'bg-[#1C1C1E]/95 border border-[#2C2C2E] rounded-2xl backdrop-blur-xl' : 'bg-[#211F26] border border-[#44474F] rounded-[16px]'} shadow-2xl p-1.5 z-50 flex flex-col gap-1 w-48">
+              <div class="absolute bottom-12 left-3 bg-[#1E1E22] border border-[#2D2D34] rounded-2xl shadow-2xl p-1.5 z-50 flex flex-col gap-1 w-48 backdrop-blur-md">
                 <button
                   type="button"
                   onclick={() => {
                     showAttachMenu = false;
                     skills.vision = true;
                   }}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
                   data-testid="whatsapp-camera-btn"
                 >
                   <div class="h-7 w-7 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
@@ -1430,7 +1393,7 @@
                 <button
                   type="button"
                   onclick={sendGalleryPhoto}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
                   data-testid="whatsapp-gallery-btn"
                 >
                   <div class="h-7 w-7 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
@@ -1449,9 +1412,9 @@
                     showAttachMenu = false;
                     handleSend(lang === 'en' ? '📄 [Architecture Document attached]' : '📄 [Documento de arquitectura adjunto]');
                   }}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
                 >
-                  <div class="h-7 w-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <div class="h-7 w-7 rounded-full bg-zinc-700/40 text-zinc-300 flex items-center justify-center shrink-0">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
@@ -1462,25 +1425,25 @@
               </div>
             {/if}
 
-            <!-- Normal Text Input Bar -->
+            <!-- Normal Text Input Bar (Neutral Dark Gray, No Blue) -->
             <input
               type="text"
               bind:value={userInput}
               placeholder={lang === 'en' ? 'Ask about the mobile SDK, Swift, Kotlin...' : 'Pregunta sobre el SDK móvil, Swift, Kotlin...'}
               disabled={isThinking}
-              class="flex-1 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#2C2C2E] rounded-full focus:border-[#007AFF]' : 'bg-[#211F26] border border-[#44474F] rounded-[24px] focus:border-[#1B6EF3]'} px-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition min-w-0"
+              class="flex-1 bg-[#1C1C20] border border-[#2D2D34] rounded-full px-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-400 transition min-w-0"
             />
 
             {#if userInput.trim()}
-              <!-- Send arrow button when user types text -->
+              <!-- Send arrow button when user types text (Monochrome White on Dark) -->
               <button
                 type="submit"
                 aria-label="Enviar mensaje"
                 disabled={isThinking}
-                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#007AFF] shadow-[0_2px_10px_rgba(0,122,255,0.4)]' : 'rounded-[12px] bg-[#1B6EF3] shadow-md'} flex items-center justify-center text-white font-extrabold hover:opacity-90 transition cursor-pointer shrink-0"
+                class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
                 data-testid="send-msg-btn"
               >
-                <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
               </button>
@@ -1492,7 +1455,7 @@
                   skills.audio = true;
                 }}
                 aria-label={lang === 'en' ? 'Record voice message' : 'Grabar mensaje de voz'}
-                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-zinc-300 hover:text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA] hover:text-white'} flex items-center justify-center transition cursor-pointer shrink-0"
+                class="h-8 w-8 rounded-full bg-[#1C1C20] border border-[#2D2D34] text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0"
                 data-testid="whatsapp-mic-btn"
               >
                 <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1507,7 +1470,7 @@
                 onclick={startLiveVoiceSession}
                 aria-label={lang === 'en' ? 'Gemini Live interactive conversation' : 'Conversación interactiva Gemini Live'}
                 title={lang === 'en' ? 'Gemini Live' : 'Modo Interactivo Live'}
-                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-zinc-300 hover:text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA] hover:text-white'} flex items-center justify-center transition cursor-pointer shrink-0 group"
+                class="h-8 w-8 rounded-full bg-[#1C1C20] border border-[#2D2D34] text-zinc-300 hover:text-white flex items-center justify-center transition cursor-pointer shrink-0 group"
                 data-testid="gemini-live-btn"
               >
                 <div class="flex items-center gap-[2.5px] h-4">
