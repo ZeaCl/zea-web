@@ -1089,30 +1089,75 @@
             </div>
           </div>
         {:else}
-          <!-- App Header: Conectado + Platform Logo + Option Menu Button -->
-          <div class="px-5 py-2 flex items-center justify-between z-20">
-            <div class="flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-[#23e062] shadow-[0_0_8px_rgba(35,224,98,0.9)] animate-pulse"></span>
-              {#if platform === 'ios'}
-                <AppleLogo class="h-3.5 w-auto text-white" />
-              {:else}
-                <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
-              {/if}
-              <span class="text-xs font-semibold text-white font-sans tracking-tight">
-                {platform === 'ios' ? 'iOS Client' : 'Android Client'}
-              </span>
-            </div>
+          <!-- App Navigation Header (iOS NavigationBar vs Android Material TopAppBar) -->
+          {#if platform === 'ios'}
+            <!-- Apple iOS Native Navigation Bar -->
+            <div class="px-4 py-2 flex items-center justify-between z-20 border-b border-[#2C2C2E]/60 bg-[#161618]/90 backdrop-blur-md">
+              <div class="flex items-center gap-1.5">
+                <button type="button" aria-label="Volver" class="text-[#007AFF] font-semibold flex items-center pr-1 cursor-pointer">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <div class="h-6 w-6 rounded-full bg-[#2C2C2E] flex items-center justify-center">
+                  <AppleLogo class="h-3.5 w-auto text-white" />
+                </div>
+                <div class="flex flex-col text-left">
+                  <span class="text-xs font-semibold text-white tracking-tight font-sans">iOS Client</span>
+                  <span class="text-[9px] text-[#22C55E] flex items-center gap-1 font-mono">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#22C55E] animate-pulse"></span>
+                    Glia Runtime
+                  </span>
+                </div>
+              </div>
 
-            <button
-              type="button"
-              aria-label="Opciones"
-              class="h-7 w-7 rounded-full bg-[#1c1c20] border border-[#2f2f35] flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer"
-            >
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-              </svg>
-            </button>
-          </div>
+              <button
+                type="button"
+                aria-label="Opciones"
+                class="h-7 w-7 rounded-full bg-[#2C2C2E] flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer"
+              >
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <circle cx="19" cy="12" r="2"></circle>
+                  <circle cx="5" cy="12" r="2"></circle>
+                </svg>
+              </button>
+            </div>
+          {:else}
+            <!-- Android Material 3 TopAppBar -->
+            <div class="px-4 py-2 flex items-center justify-between z-20 border-b border-[#2A2A30] bg-[#1E1E24]">
+              <div class="flex items-center gap-2.5">
+                <button type="button" aria-label="Volver" class="text-zinc-300 hover:text-white flex items-center cursor-pointer">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                  </svg>
+                </button>
+                <div class="h-6 w-6 rounded-full bg-[#162E20] border border-[#22C55E]/40 flex items-center justify-center">
+                  <AndroidLogo class="h-3.5 w-auto text-emerald-400" />
+                </div>
+                <div class="flex flex-col text-left">
+                  <span class="text-xs font-semibold text-zinc-100 font-sans tracking-wide">Android Client</span>
+                  <span class="text-[9px] text-emerald-400 flex items-center gap-1 font-mono">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Glia Runtime
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Opciones"
+                class="h-7 w-7 rounded-full hover:bg-white/10 flex items-center justify-center text-zinc-300 transition cursor-pointer"
+              >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.8"></circle>
+                  <circle cx="12" cy="12" r="1.8"></circle>
+                  <circle cx="12" cy="19" r="1.8"></circle>
+                </svg>
+              </button>
+            </div>
+          {/if}
 
           <!-- Relative Container for Chat and Superpower Overlays -->
           <div class="relative flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -1138,9 +1183,11 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Glia SDK Audio Note Bubble -->
+                  <!-- User Audio Note Bubble: iOS HIG vs Android Material 3 -->
                   <div class="flex justify-end">
-                    <div class="max-w-[85%] px-3.5 py-2.5 {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} text-white rounded-[18px] rounded-br-xs shadow-sm font-sans flex flex-col gap-1.5">
+                    <div
+                      class="max-w-[85%] px-3.5 py-2.5 {platform === 'ios' ? 'bg-[#007AFF] rounded-[20px] rounded-br-[4px]' : 'bg-[#1B6EF3] rounded-[24px] rounded-br-[6px]'} text-white shadow-sm font-sans flex flex-col gap-1.5"
+                    >
                       <div class="flex items-center gap-2.5">
                         <button
                           type="button"
@@ -1179,10 +1226,10 @@
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Glia SDK Photo Message Bubble -->
+                  <!-- User Photo Message Bubble: iOS HIG vs Android Material 3 -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} rounded-[18px] rounded-br-xs shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 {platform === 'ios' ? 'bg-[#007AFF] rounded-[20px] rounded-br-[4px]' : 'bg-[#1B6EF3] rounded-[24px] rounded-br-[6px]'} shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1205,19 +1252,31 @@
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: Glia SDK Blue (iOS #007aff / Android #2563eb, text-white) -->
-                  <div class="flex justify-end">
-                    <div
-                      class="max-w-[80%] px-4 py-2 {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} text-white font-medium text-xs leading-relaxed rounded-[18px] rounded-br-xs shadow-sm font-sans"
-                    >
-                      {msg.text}
-                    </div>
+                  <!-- User Question Bubble: iOS iMessage Blue vs Android Material 3 Blue -->
+                  <div class="flex flex-col items-end">
+                    {#if platform === 'ios'}
+                      <!-- iOS iMessage Bubble (Apple Blue with tail) -->
+                      <div
+                        class="max-w-[80%] px-4 py-2 bg-gradient-to-b from-[#007AFF] to-[#0066DF] text-white font-sans text-xs leading-relaxed rounded-[20px] rounded-br-[4px] shadow-sm"
+                      >
+                        {msg.text}
+                      </div>
+                      <span class="text-[9px] text-zinc-500 pr-1 mt-0.5 block text-right">6:04 • Entregado</span>
+                    {:else}
+                      <!-- Android Material 3 Bubble (Material You Primary with asymmetric corner) -->
+                      <div
+                        class="max-w-[80%] px-4 py-2 bg-[#1B6EF3] text-white font-sans text-xs leading-relaxed rounded-[24px] rounded-br-[6px] shadow-sm flex items-end justify-between gap-2"
+                      >
+                        <span>{msg.text}</span>
+                        <span class="text-[9px] text-white/75 shrink-0 font-mono leading-none mb-0.5">✓✓</span>
+                      </div>
+                    {/if}
                   </div>
                 {/if}
               {:else}
-                <!-- Assistant Dark Card with Platform Avatar -->
+                <!-- Assistant Message: iOS Secondary Fill vs Android M3 Surface Container -->
                 <div class="flex items-start gap-2 max-w-[90%]">
-                  <div class="h-6 w-6 rounded-full bg-[#1c1c20] border border-[#2f2f35] flex items-center justify-center shrink-0 mt-0.5">
+                  <div class="h-6 w-6 rounded-full {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]' : 'bg-[#162E20] border border-emerald-500/30'} flex items-center justify-center shrink-0 mt-0.5">
                     {#if platform === 'ios'}
                       <AppleLogo class="h-3 w-auto text-white" />
                     {:else}
@@ -1226,14 +1285,20 @@
                   </div>
 
                   <div
-                    class="px-4 py-3 bg-[#1c1c20] border border-[#2a2a30] text-zinc-100 text-xs leading-relaxed rounded-[20px] rounded-tl-xs font-sans shadow-sm flex-1"
+                    class="px-4 py-3 {platform === 'ios' ? 'bg-[#242426] border border-[#38383A]/70 rounded-[20px] rounded-tl-[4px]' : 'bg-[#2B2B30] border border-[#3E4046]/50 rounded-[24px] rounded-tl-[6px]'} text-zinc-100 text-xs leading-relaxed font-sans shadow-sm flex-1"
                   >
                     {#if msg.action}
-                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-[#25252c] text-zinc-300 rounded-lg text-[11px] font-medium border border-[#343440]">
-                        <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
-                          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                        </svg>
-                        <span>Action: {msg.action.name}</span>
+                      <div class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#3A3A3C] rounded-lg' : 'bg-[#1E1E24] border border-[#44474F] rounded-[8px]'} text-zinc-300 text-[11px] font-medium">
+                        {#if platform === 'ios'}
+                          <svg class="h-3 w-3 text-amber-400 fill-current" viewBox="0 0 24 24">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                          </svg>
+                        {:else}
+                          <svg class="h-3 w-3 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                          </svg>
+                        {/if}
+                        <span>{platform === 'ios' ? `Action: ${msg.action.name}` : `Tool: ${msg.action.name}`}</span>
                       </div>
                     {/if}
 
@@ -1254,40 +1319,71 @@
           </div>
         </div>
 
-        <!-- Quick Action Prompt Chips (Glia SDK Theme: surface #1c1c20, border #2a2a32, text #60a5fa) -->
-        <div class="px-3.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-t border-[#18181c] bg-[#0c0c0e]">
-          <button
-            type="button"
-            onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
-            class="shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-mono text-blue-300 bg-[#1c1c20] border border-[#2a2a32] hover:border-blue-500 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-          >
-            <AppleLogo class="h-3 w-auto text-white" />
-            <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
-          </button>
-          <button
-            type="button"
-            onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
-            class="shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-mono text-blue-300 bg-[#1c1c20] border border-[#2a2a32] hover:border-blue-500 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-          >
-            <AndroidLogo class="h-3 w-auto text-emerald-400" />
-            <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
-          </button>
-          <button
-            type="button"
-            onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
-            class="shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-mono text-blue-300 bg-[#1c1c20] border border-[#2a2a32] hover:border-blue-500 hover:text-white transition cursor-pointer flex items-center gap-1.5"
-          >
-            <svg class="h-3 w-3 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
-          </button>
+        <!-- Quick Action Prompt Chips (iOS HIG vs Android Material 3) -->
+        <div class="px-3.5 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'}">
+          {#if platform === 'ios'}
+            <!-- Apple HIG Capsule Chips -->
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
+              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <AppleLogo class="h-3 w-auto text-white" />
+              <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
+              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <AndroidLogo class="h-3 w-auto text-emerald-400" />
+              <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
+              class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-sans font-medium text-[#007AFF] bg-[#1C1C1E] border border-[#2C2C2E] hover:border-[#007AFF]/60 hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <svg class="h-3 w-3 text-[#007AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
+            </button>
+          {:else}
+            <!-- Android Material 3 Assist Chips (rounded-[8px], M3 surface and outline) -->
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How do I install the SDK in iOS with Swift?' : '¿Cómo instalo el SDK en iOS con Swift?')}
+              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <AppleLogo class="h-3 w-auto text-white" />
+              <span>{lang === 'en' ? 'Install in Swift / iOS' : 'Instalar en Swift / iOS'}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How do I configure the SDK in Android with Kotlin?' : '¿Cómo configuro el SDK en Android con Kotlin?')}
+              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <AndroidLogo class="h-3 w-auto text-emerald-400" />
+              <span>{lang === 'en' ? 'Configure in Android' : 'Configurar en Android'}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => handleSend(lang === 'en' ? 'How does the mobile runtime guarantee it is 100% Stateless?' : '¿Cómo garantiza el runtime móvil que es 100% Stateless?')}
+              class="shrink-0 px-3 py-1.5 rounded-[8px] text-[11px] font-sans font-medium text-[#A8C7FA] bg-[#1E1E24] border border-[#44474F] hover:border-[#A8C7FA] hover:text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <svg class="h-3 w-3 text-[#A8C7FA]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span>{lang === 'en' ? 'How does Stateless work?' : '¿Cómo funciona Stateless?'}</span>
+            </button>
+          {/if}
         </div>
 
         <!-- Input Bar: Audio Recording Active: + | señal | STOP | flecha hacia arriba -->
         {#if skills.audio}
           <div
-            class="px-3 py-2 border-t border-[#18181c] bg-[#0c0c0e] flex items-center gap-2 z-20 relative"
+            class="px-3 py-2 {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'} flex items-center gap-2 z-20 relative"
             data-testid="audio-recording-bar"
           >
             <!-- WhatsApp "+" Button on Left -->
@@ -1295,7 +1391,7 @@
               type="button"
               onclick={() => (showAttachMenu = !showAttachMenu)}
               aria-label={lang === 'en' ? 'Add attachment' : 'Adjuntar acción'}
-              class="h-8 w-8 rounded-full bg-[#18181c] border border-[#2f2f35] flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer shrink-0"
+              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA]'} flex items-center justify-center hover:text-white transition cursor-pointer shrink-0"
               data-testid="whatsapp-plus-btn"
             >
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -1306,13 +1402,13 @@
 
             <!-- Señal: Dynamic Real-time Soundwave -->
             <div
-              class="flex-1 h-8 bg-[#141418] border border-[#262630] rounded-full px-3 flex items-center justify-center min-w-0"
+              class="flex-1 h-8 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#2C2C2E] rounded-full' : 'bg-[#211F26] border border-[#44474F] rounded-[14px]'} px-3 flex items-center justify-center min-w-0"
               data-testid="audio-recording-input"
             >
               <div class="flex items-center gap-[3px] w-full justify-center" data-testid="audio-signal-wave">
                 {#each audioLevels as level, i}
                   <span
-                    class="w-[2.5px] {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#3b82f6]'} rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
+                    class="w-[2.5px] {platform === 'ios' ? 'bg-[#007AFF]' : 'bg-[#1B6EF3]'} rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
                     style="height: {isAudioPaused ? '4px' : `${level}px`};"
                   ></span>
                 {/each}
@@ -1324,10 +1420,10 @@
               type="button"
               onclick={handleStopRecording}
               aria-label={isAudioPaused ? (lang === 'en' ? 'Resume recording' : 'Reanudar grabación') : (lang === 'en' ? 'Stop recording' : 'Detener grabación')}
-              class="h-8 w-8 rounded-full bg-[#241414] border border-red-500/40 text-red-400 hover:bg-red-500/20 hover:border-red-400 flex items-center justify-center transition cursor-pointer shrink-0"
+              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#2C1517] border border-[#FF453A]/40 text-[#FF453A]' : 'rounded-[12px] bg-[#3B1214] border border-[#F2B8B5]/40 text-[#F2B8B5]'} flex items-center justify-center hover:opacity-80 transition cursor-pointer shrink-0"
               data-testid="audio-stop-btn"
             >
-              <div class="h-3 w-3 bg-red-400 rounded-[2px] {isAudioPaused ? 'opacity-50' : ''}"></div>
+              <div class="h-3 w-3 {platform === 'ios' ? 'bg-[#FF453A] rounded-[2px]' : 'bg-[#F2B8B5] rounded-[3px]'} {isAudioPaused ? 'opacity-50' : ''}"></div>
             </button>
 
             <!-- Flecha hacia arriba: Send voice note to chat -->
@@ -1335,7 +1431,7 @@
               type="button"
               onclick={handleSendVoiceNote}
               aria-label={lang === 'en' ? 'Send voice note' : 'Enviar nota de voz'}
-              class="h-8 w-8 rounded-full {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} text-white flex items-center justify-center font-extrabold shadow-[0_0_12px_rgba(37,99,235,0.5)] hover:opacity-90 transition cursor-pointer shrink-0"
+              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#007AFF] shadow-[0_2px_8px_rgba(0,122,255,0.4)]' : 'rounded-[12px] bg-[#1B6EF3] shadow-md'} text-white flex items-center justify-center font-extrabold hover:opacity-90 transition cursor-pointer shrink-0"
               data-testid="audio-send-btn"
             >
               <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1350,14 +1446,14 @@
               e.preventDefault();
               if (userInput.trim()) handleSend();
             }}
-            class="px-3 py-2 border-t border-[#18181c] bg-[#0c0c0e] flex items-center gap-2 z-20 relative"
+            class="px-3 py-2 {platform === 'ios' ? 'border-t border-[#242426] bg-[#000000]' : 'border-t border-[#2B2B30] bg-[#141218]'} flex items-center gap-2 z-20 relative"
           >
             <!-- WhatsApp "+" Action Button on Left -->
             <button
               type="button"
               onclick={() => (showAttachMenu = !showAttachMenu)}
               aria-label={lang === 'en' ? 'Add attachment' : 'Adjuntar acción'}
-              class="h-8 w-8 rounded-full bg-[#18181c] border border-[#2f2f35] flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-500 transition cursor-pointer shrink-0"
+              class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA]'} flex items-center justify-center hover:text-white transition cursor-pointer shrink-0"
               data-testid="whatsapp-plus-btn"
             >
               <svg class="h-4 w-4 {showAttachMenu ? 'rotate-45 text-white' : ''} transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -1368,14 +1464,14 @@
 
             <!-- Attachment Popup Menu (Camera from +) -->
             {#if showAttachMenu}
-              <div class="absolute bottom-12 left-3 bg-[#1c1c20] border border-[#2f2f35] rounded-2xl shadow-2xl p-1.5 z-50 flex flex-col gap-1 w-48 backdrop-blur-md">
+              <div class="absolute bottom-12 left-3 {platform === 'ios' ? 'bg-[#1C1C1E]/95 border border-[#2C2C2E] rounded-2xl backdrop-blur-xl' : 'bg-[#211F26] border border-[#44474F] rounded-[16px]'} shadow-2xl p-1.5 z-50 flex flex-col gap-1 w-48">
                 <button
                   type="button"
                   onclick={() => {
                     showAttachMenu = false;
                     skills.vision = true;
                   }}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
                   data-testid="whatsapp-camera-btn"
                 >
                   <div class="h-7 w-7 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
@@ -1390,7 +1486,7 @@
                 <button
                   type="button"
                   onclick={sendGalleryPhoto}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
                   data-testid="whatsapp-gallery-btn"
                 >
                   <div class="h-7 w-7 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
@@ -1409,7 +1505,7 @@
                     showAttachMenu = false;
                     handleSend(lang === 'en' ? '📄 [Architecture Document attached]' : '📄 [Documento de arquitectura adjunto]');
                   }}
-                  class="flex items-center gap-3 px-3 py-2 text-xs text-white hover:bg-[#282830] rounded-xl transition cursor-pointer text-left"
+                  class="flex items-center gap-3 px-3 py-2 text-xs text-white {platform === 'ios' ? 'hover:bg-[#2C2C2E] rounded-xl' : 'hover:bg-[#2B2B30] rounded-[10px]'} transition cursor-pointer text-left"
                 >
                   <div class="h-7 w-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1428,7 +1524,7 @@
               bind:value={userInput}
               placeholder={lang === 'en' ? 'Ask about the mobile SDK, Swift, Kotlin...' : 'Pregunta sobre el SDK móvil, Swift, Kotlin...'}
               disabled={isThinking}
-              class="flex-1 bg-[#18181c] border border-[#2c2c34] rounded-full px-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#3b82f6] transition min-w-0"
+              class="flex-1 {platform === 'ios' ? 'bg-[#1C1C1E] border border-[#2C2C2E] rounded-full focus:border-[#007AFF]' : 'bg-[#211F26] border border-[#44474F] rounded-[24px] focus:border-[#1B6EF3]'} px-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none transition min-w-0"
             />
 
             {#if userInput.trim()}
@@ -1437,7 +1533,7 @@
                 type="submit"
                 aria-label="Enviar mensaje"
                 disabled={isThinking}
-                class="h-8 w-8 rounded-full {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} flex items-center justify-center text-white font-extrabold shadow-[0_0_12px_rgba(37,99,235,0.5)] hover:opacity-90 transition cursor-pointer shrink-0"
+                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#007AFF] shadow-[0_2px_10px_rgba(0,122,255,0.4)]' : 'rounded-[12px] bg-[#1B6EF3] shadow-md'} flex items-center justify-center text-white font-extrabold hover:opacity-90 transition cursor-pointer shrink-0"
                 data-testid="send-msg-btn"
               >
                 <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1452,10 +1548,10 @@
                   skills.audio = true;
                 }}
                 aria-label={lang === 'en' ? 'Record voice message' : 'Grabar mensaje de voz'}
-                class="h-8 w-8 rounded-full bg-[#18181c] border border-[#2f2f35] flex items-center justify-center text-zinc-300 hover:text-white hover:border-zinc-500 transition cursor-pointer shrink-0"
+                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-zinc-300 hover:text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA] hover:text-white'} flex items-center justify-center transition cursor-pointer shrink-0"
                 data-testid="whatsapp-mic-btn"
               >
-                <svg class="h-4.5 w-4.5 text-zinc-300" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                   <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
                 </svg>
@@ -1467,7 +1563,7 @@
                 onclick={startLiveVoiceSession}
                 aria-label={lang === 'en' ? 'Gemini Live interactive conversation' : 'Conversación interactiva Gemini Live'}
                 title={lang === 'en' ? 'Gemini Live' : 'Modo Interactivo Live'}
-                class="h-8 w-8 rounded-full bg-[#18181c] border border-[#2f2f35] flex items-center justify-center text-zinc-300 hover:text-blue-400 hover:border-blue-500/60 transition cursor-pointer shrink-0 group"
+                class="h-8 w-8 {platform === 'ios' ? 'rounded-full bg-[#1C1C1E] border border-[#2C2C2E] text-zinc-300 hover:text-[#007AFF]' : 'rounded-[12px] bg-[#211F26] border border-[#44474F] text-[#A8C7FA] hover:text-white'} flex items-center justify-center transition cursor-pointer shrink-0 group"
                 data-testid="gemini-live-btn"
               >
                 <div class="flex items-center gap-[2.5px] h-4">
@@ -1480,52 +1576,103 @@
           </form>
         {/if}
 
-        <!-- Native Mobile Bottom Tab Bar -->
-        <nav class="border-t border-[#1a1a20] bg-[#0c0c0e] px-4 pt-2 pb-1 flex items-center justify-between z-20 select-none text-[10px] font-sans">
-          <!-- Tab: Home -->
-          <div class="flex flex-col items-center gap-1 text-zinc-500 hover:text-white cursor-pointer transition">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-            <span class="font-medium">Home</span>
-          </div>
-
-          <!-- Tab: Progreso / Progress -->
-          <div class="flex flex-col items-center gap-1 text-zinc-500 hover:text-white cursor-pointer transition">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-            <span class="font-medium">{lang === 'en' ? 'Progress' : 'Progreso'}</span>
-          </div>
-
-          <!-- Tab: Central Floating Plus Action Button (+) with Glia blue glow -->
-          <div class="relative -top-2 flex flex-col items-center cursor-pointer group">
-            <div class="h-11 w-11 rounded-full {platform === 'ios' ? 'bg-[#007aff]' : 'bg-[#2563eb]'} flex items-center justify-center text-white font-extrabold text-2xl shadow-[0_0_20px_rgba(37,99,235,0.7)] group-hover:scale-105 transition-transform">
-              <span class="leading-none mb-0.5">+</span>
+        <!-- Native Mobile Bottom Tab Bar: Apple HIG vs Material 3 Navigation Bar -->
+        {#if platform === 'ios'}
+          <!-- iOS Apple Tab Bar (Frosted Blur, SF Blue active tab) -->
+          <nav class="border-t border-[#242426] bg-[#000000]/90 backdrop-blur-xl px-4 pt-2 pb-1 flex items-center justify-between z-20 select-none text-[10px] font-sans">
+            <!-- Tab: Home -->
+            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+              </svg>
+              <span class="font-medium">Home</span>
             </div>
-          </div>
 
-          <!-- Tab: Chat IA / AI Chat (Active) -->
-          <div class="flex flex-col items-center gap-1 text-white cursor-pointer">
-            <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
-            </svg>
-            <span class="font-semibold text-white">{lang === 'en' ? 'AI Chat' : 'Chat IA'}</span>
-          </div>
+            <!-- Tab: Progreso / Progress -->
+            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              <span class="font-medium">{lang === 'en' ? 'Progress' : 'Progreso'}</span>
+            </div>
 
-          <!-- Tab: Perfil / Profile -->
-          <div class="flex flex-col items-center gap-1 text-zinc-500 hover:text-white cursor-pointer transition">
-            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-            <span class="font-medium">{lang === 'en' ? 'Profile' : 'Perfil'}</span>
-          </div>
-        </nav>
+            <!-- Tab: Central Floating Plus Action Button (+) -->
+            <div class="relative -top-2 flex flex-col items-center cursor-pointer group">
+              <div class="h-10 w-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white font-bold text-xl shadow-[0_2px_12px_rgba(0,122,255,0.5)] group-hover:scale-105 transition-transform">
+                <span class="leading-none mb-0.5">+</span>
+              </div>
+            </div>
+
+            <!-- Tab: Chat IA / AI Chat (Active) -->
+            <div class="flex flex-col items-center gap-1 text-[#007AFF] cursor-pointer">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+              </svg>
+              <span class="font-semibold">{lang === 'en' ? 'AI Chat' : 'Chat IA'}</span>
+            </div>
+
+            <!-- Tab: Perfil / Profile -->
+            <div class="flex flex-col items-center gap-1 text-[#8E8E93] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+              <span class="font-medium">{lang === 'en' ? 'Profile' : 'Perfil'}</span>
+            </div>
+          </nav>
+        {:else}
+          <!-- Android Material 3 Navigation Bar (M3 Pill Badge, M3 FAB) -->
+          <nav class="border-t border-[#2B2B30] bg-[#141218] px-3 pt-2 pb-1 flex items-center justify-between z-20 select-none text-[10px] font-sans">
+            <!-- Tab: Home -->
+            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+              </svg>
+              <span class="font-medium text-[#8E918F]">Home</span>
+            </div>
+
+            <!-- Tab: Progreso / Progress -->
+            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              <span class="font-medium text-[#8E918F]">{lang === 'en' ? 'Progress' : 'Progreso'}</span>
+            </div>
+
+            <!-- Tab: Central Floating Plus Action Button (M3 Rounded FAB) -->
+            <div class="relative -top-2 flex flex-col items-center cursor-pointer group">
+              <div class="h-11 w-11 rounded-[16px] bg-[#1B6EF3] flex items-center justify-center text-white font-medium text-2xl shadow-lg group-hover:scale-105 transition-transform">
+                <span class="leading-none mb-0.5">+</span>
+              </div>
+            </div>
+
+            <!-- Tab: Chat IA / AI Chat (Active with M3 Pill Badge) -->
+            <div class="flex flex-col items-center gap-1 cursor-pointer">
+              <div class="w-12 h-6 rounded-full bg-[#1B6EF3]/25 flex items-center justify-center text-[#A8C7FA]">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+                </svg>
+              </div>
+              <span class="font-medium text-[#E3E2E6]">{lang === 'en' ? 'AI Chat' : 'Chat IA'}</span>
+            </div>
+
+            <!-- Tab: Perfil / Profile -->
+            <div class="flex flex-col items-center gap-1 text-[#C4C7C5] hover:text-white cursor-pointer transition">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+              <span class="font-medium text-[#8E918F]">{lang === 'en' ? 'Profile' : 'Perfil'}</span>
+            </div>
+          </nav>
+        {/if}
         {/if}
 
-        <!-- Bottom Home Indicator -->
-        <div class="pb-2 pt-1 bg-[#0c0c0e] flex justify-center z-20">
-          <div class="w-32 h-1 bg-white/40 rounded-full"></div>
+        <!-- Bottom Home Indicator: Apple 128px Home Indicator vs Android Compact Gesture Bar -->
+        <div class="pb-2 pt-1 {platform === 'ios' ? 'bg-[#000000]' : 'bg-[#141218]'} flex justify-center z-20">
+          {#if platform === 'ios'}
+            <div class="w-32 h-1 bg-white/40 rounded-full"></div>
+          {:else}
+            <div class="w-18 h-[3.5px] bg-[#C4C7C5]/60 rounded-full"></div>
+          {/if}
         </div>
       </div>
     </div>
