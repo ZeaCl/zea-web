@@ -113,7 +113,7 @@ describe('MobileSimulator component', () => {
     });
   });
 
-  it('debe abrir la pantalla completa (100% screen con fondo bg-black) al hacer click en el menú superior izquierdo y permitir volver al chat', async () => {
+  it('debe abrir la pantalla completa (100% screen con fondo bg-black) al hacer click en el menú superior izquierdo con Nueva sesión, Configuración, Sesiones y Usuario logeado', async () => {
     render(MobileSimulator, {
       props: {
         lang: 'es',
@@ -128,12 +128,15 @@ describe('MobileSimulator component', () => {
     // 1. Click en menú -> Despliega la pantalla completa al 100%
     await fireEvent.click(menuBtn);
     expect(screen.getByTestId('menu-full-screen')).toBeInTheDocument();
-    expect(screen.getByText('Sesiones Activas')).toBeInTheDocument();
-    expect(screen.getByText('Arquitectura del Runtime')).toBeInTheDocument();
+    expect(screen.getByText('Nueva sesión')).toBeInTheDocument();
+    expect(screen.getByText('Configuración')).toBeInTheDocument();
+    expect(screen.getByText('Sesiones')).toBeInTheDocument();
+    expect(screen.getByText('Dev User')).toBeInTheDocument();
+    expect(screen.getByTestId('user-settings-btn')).toBeInTheDocument();
 
-    // 2. Click en botón Volver al Chat -> Regresa al chat
-    const backBtn = screen.getByTestId('menu-back-btn');
-    await fireEvent.click(backBtn);
+    // 2. Click en botón cerrar [X] -> Regresa al chat
+    const closeBtn = screen.getByTestId('menu-close-btn');
+    await fireEvent.click(closeBtn);
     expect(screen.queryByTestId('menu-full-screen')).not.toBeInTheDocument();
   });
 });

@@ -1101,36 +1101,21 @@
             </div>
           </div>
         {:else if showDrawerMenu}
-          <!-- FULL-SCREEN 100% MENU / SESSIONS SCREEN (Same bg-black as chat) -->
+          <!-- FULL-SCREEN 100% MENU / SESSIONS SCREEN (Same bg-black as chat, No Home Indicator) -->
           <div
             class="relative flex-1 bg-black flex flex-col justify-between overflow-hidden animate-in fade-in duration-150"
             data-testid="menu-full-screen"
           >
-            <!-- Top App Bar for Full Screen Menu (Matching chat padding and background) -->
-            <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
-              <!-- Back Button on Left -->
-              <button
-                type="button"
-                onclick={() => (showDrawerMenu = false)}
-                aria-label={lang === 'en' ? 'Back to chat' : 'Volver al chat'}
-                class="p-1.5 -ml-1.5 text-zinc-300 hover:text-white transition cursor-pointer flex items-center gap-1 rounded-full hover:bg-white/10"
-                data-testid="menu-back-btn"
-              >
-                <!-- Native Back Arrow Icon -->
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M15 19l-7-7 7-7" />
-                </svg>
-                <span class="text-xs font-medium text-zinc-200 font-sans">{lang === 'en' ? 'Chat' : 'Chat'}</span>
-              </button>
-
-              <!-- Platform Identity -->
+            <!-- Top App Bar for Full Screen Menu: iOS/Android Client at Top Left, Close [X] at Top Right -->
+            <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3' : 'px-5 py-2.5'}">
+              <!-- Platform Identity on Left -->
               <div class="flex items-center gap-2">
                 {#if platform === 'ios'}
-                  <AppleLogo class="h-3.5 w-auto text-white" />
+                  <AppleLogo class="h-4 w-auto text-white" />
                 {:else}
-                  <AndroidLogo class="h-4 w-auto text-emerald-400" />
+                  <AndroidLogo class="h-4.5 w-auto text-emerald-400" />
                 {/if}
-                <span class="text-[13px] font-semibold text-white tracking-tight font-sans">
+                <span class="text-sm font-semibold text-white tracking-tight font-sans">
                   {platform === 'ios' ? 'iOS Client' : 'Android Client'}
                 </span>
               </div>
@@ -1143,7 +1128,7 @@
                 class="p-1.5 -mr-1.5 text-zinc-400 hover:text-white transition cursor-pointer rounded-full hover:bg-white/10"
                 data-testid="menu-close-btn"
               >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -1151,25 +1136,83 @@
             </div>
 
             <!-- Scrollable Content of the 100% Screen -->
-            <div class="flex-1 overflow-y-auto {platform === 'android' ? 'px-6 py-4 space-y-5' : 'px-5 py-3.5 space-y-4'} text-left font-sans text-xs">
-              <!-- Section: Sessions -->
-              <div>
-                <div class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 mb-2.5 px-1">
-                  {lang === 'en' ? 'Active Sessions' : 'Sesiones Activas'}
+            <div class="flex-1 overflow-y-auto {platform === 'android' ? 'px-6 py-3 space-y-4.5' : 'px-5 py-3 space-y-4'} text-left font-sans text-xs">
+              <!-- 1. Nueva Sesión -->
+              <button
+                type="button"
+                onclick={() => {
+                  messages = [
+                    {
+                      id: Date.now().toString(),
+                      role: 'assistant',
+                      text: lang === 'en'
+                        ? 'New stateless session initialized. All computation runs on-device in memory.'
+                        : 'Nueva sesión stateless inicializada. Todo el procesamiento corre en el dispositivo.'
+                    }
+                  ];
+                  showDrawerMenu = false;
+                }}
+                class="w-full text-left p-3.5 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-400 text-white transition cursor-pointer flex items-center justify-between group shadow-sm"
+                data-testid="menu-new-session-btn"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="h-7 w-7 rounded-full bg-white/10 group-hover:bg-white/20 flex items-center justify-center text-white transition shrink-0">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-xs font-semibold text-white">{lang === 'en' ? 'New session' : 'Nueva sesión'}</p>
+                    <p class="text-[10px] text-zinc-400 font-mono">{lang === 'en' ? 'Start fresh on-device chat' : 'Iniciar chat limpio en memoria'}</p>
+                  </div>
                 </div>
-                <div class="space-y-2">
-                  <!-- Active Session Item -->
+                <span class="text-zinc-500 group-hover:text-zinc-300 font-mono text-xs">↵</span>
+              </button>
+
+              <!-- 2. Opciones de Configuración -->
+              <div>
+                <div class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 mb-2 px-1">
+                  {lang === 'en' ? 'Configuration' : 'Configuración'}
+                </div>
+                <div class="p-3.5 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] space-y-2 text-zinc-300">
+                  <div class="flex items-center justify-between text-[11px] py-0.5">
+                    <span class="text-zinc-400 font-mono">{lang === 'en' ? 'Runtime' : 'Runtime'}</span>
+                    <span class="font-medium text-white">100% Stateless</span>
+                  </div>
+                  <div class="flex items-center justify-between text-[11px] py-0.5 border-t border-zinc-800/60">
+                    <span class="text-zinc-400 font-mono">{lang === 'en' ? 'Platform SDK' : 'Plataforma SDK'}</span>
+                    <span class="font-medium text-white">{platform === 'ios' ? 'SwiftUI Native' : 'Jetpack Compose'}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-[11px] py-0.5 border-t border-zinc-800/60">
+                    <span class="text-zinc-400 font-mono">{lang === 'en' ? 'Storage Policy' : 'Almacenamiento'}</span>
+                    <span class="font-medium text-emerald-400">{lang === 'en' ? 'Zero Server Storage' : 'Zero Servidor (En Memoria)'}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-[11px] py-0.5 border-t border-zinc-800/60">
+                    <span class="text-zinc-400 font-mono">{lang === 'en' ? 'Connection' : 'Conexión'}</span>
+                    <span class="font-medium text-white">WebSocket Stream (&lt;20ms)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Sesiones y las conversaciones -->
+              <div>
+                <div class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 mb-2 px-1">
+                  {lang === 'en' ? 'Sessions' : 'Sesiones'}
+                </div>
+                <div class="space-y-1.5">
+                  <!-- Active Conversation -->
                   <button
                     type="button"
                     onclick={() => (showDrawerMenu = false)}
-                    class="w-full text-left p-3.5 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-500 text-white transition cursor-pointer flex items-center justify-between group"
+                    class="w-full text-left p-3 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] hover:border-zinc-500 text-white transition cursor-pointer flex items-center justify-between group"
                   >
-                    <div class="flex items-center gap-3 min-w-0">
+                    <div class="flex items-center gap-2.5 min-w-0">
                       <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0"></span>
                       <div class="min-w-0">
-                        <p class="text-xs font-semibold text-white truncate">{lang === 'en' ? 'Current Chat' : 'Chat Actual'}</p>
-                        <p class="text-[11px] text-zinc-400 truncate font-mono">
-                          {messages.length} {lang === 'en' ? 'messages in memory' : 'mensajes en memoria'}
+                        <p class="text-xs font-semibold text-white truncate">{lang === 'en' ? 'Current Chat' : 'Chat actual'}</p>
+                        <p class="text-[10.5px] text-zinc-400 truncate font-mono">
+                          {messages.length} {lang === 'en' ? 'messages' : 'mensajes'} • Stateless session
                         </p>
                       </div>
                     </div>
@@ -1178,7 +1221,31 @@
                     </svg>
                   </button>
 
-                  <!-- Start New Session Button -->
+                  <!-- Conversation 1 -->
+                  <button
+                    type="button"
+                    onclick={() => {
+                      messages = [
+                        {
+                          id: Date.now().toString(),
+                          role: 'assistant',
+                          text: platform === 'ios'
+                            ? (lang === 'en' ? 'Here is the Swift package setup for your SwiftUI views.' : 'Aquí tienes la configuración del paquete Swift para tus vistas SwiftUI.')
+                            : (lang === 'en' ? 'Here is the Kotlin setup with Jetpack Compose.' : 'Aquí tienes la configuración en Kotlin con Jetpack Compose.')
+                        }
+                      ];
+                      showDrawerMenu = false;
+                    }}
+                    class="w-full text-left p-2.5 px-3 rounded-xl bg-transparent hover:bg-[#1C1C20]/50 text-zinc-300 hover:text-white transition cursor-pointer flex items-center justify-between group"
+                  >
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="text-zinc-500 group-hover:text-zinc-300">💬</span>
+                      <span class="text-xs truncate">{platform === 'ios' ? 'Integración en SwiftUI' : 'Integración en Kotlin Compose'}</span>
+                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono shrink-0">1d</span>
+                  </button>
+
+                  <!-- Conversation 2 -->
                   <button
                     type="button"
                     onclick={() => {
@@ -1187,62 +1254,47 @@
                           id: Date.now().toString(),
                           role: 'assistant',
                           text: lang === 'en'
-                            ? 'New stateless session initialized. All computation runs on-device in memory.'
-                            : 'Nueva sesión stateless inicializada. Todo el procesamiento corre en el dispositivo.'
+                            ? 'Our direct WebSocket stream delivers sub-20ms latency with zero intermediary servers.'
+                            : 'El stream WebSocket directo ofrece latencia menor a 20ms sin servidores intermediarios.'
                         }
                       ];
                       showDrawerMenu = false;
                     }}
-                    class="w-full text-left p-3.5 rounded-2xl bg-[#1C1C20]/50 border border-[#2D2D34]/70 hover:bg-[#1C1C20] hover:border-zinc-500 text-zinc-300 hover:text-white transition cursor-pointer flex items-center gap-3"
+                    class="w-full text-left p-2.5 px-3 rounded-xl bg-transparent hover:bg-[#1C1C20]/50 text-zinc-300 hover:text-white transition cursor-pointer flex items-center justify-between group"
                   >
-                    <div class="h-6 w-6 rounded-full bg-white/5 flex items-center justify-center shrink-0 text-white">
-                      <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                      </svg>
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="text-zinc-500 group-hover:text-zinc-300">💬</span>
+                      <span class="text-xs truncate">{lang === 'en' ? 'Low-latency WebSockets' : 'WebSockets de baja latencia'}</span>
                     </div>
-                    <div>
-                      <p class="text-xs font-medium">{lang === 'en' ? 'Start New Session' : 'Nueva Sesión'}</p>
-                      <p class="text-[10px] text-zinc-500 font-mono">{lang === 'en' ? 'Reset in-memory runtime' : 'Reiniciar runtime en memoria'}</p>
-                    </div>
+                    <span class="text-[10px] text-zinc-500 font-mono shrink-0">2d</span>
                   </button>
-                </div>
-              </div>
-
-              <!-- Section: Architecture & Runtime Specs -->
-              <div>
-                <div class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 mb-2.5 px-1">
-                  {lang === 'en' ? 'Runtime Architecture' : 'Arquitectura del Runtime'}
-                </div>
-                <div class="p-3.5 rounded-2xl bg-[#1C1C20] border border-[#2D2D34] space-y-2.5 text-zinc-300">
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-zinc-400 font-mono">Architecture</span>
-                    <span class="font-medium text-white">100% Stateless</span>
-                  </div>
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-zinc-400 font-mono">Platform</span>
-                    <span class="font-medium text-white">{platform === 'ios' ? 'Swift / SwiftUI' : 'Kotlin / Compose'}</span>
-                  </div>
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-zinc-400 font-mono">Storage</span>
-                    <span class="font-medium text-emerald-400">Zero Server Disk</span>
-                  </div>
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="text-zinc-400 font-mono">Protocol</span>
-                    <span class="font-medium text-white">Direct WebSocket Stream</span>
-                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Bottom Return to Chat Action -->
-            <div class="{platform === 'android' ? 'p-6 pt-2 pb-3' : 'p-5 pt-2 pb-2.5'}">
+            <!-- Bottom User Profile Bar: Avatar, User Name, Gear Icon (No Home indicator) -->
+            <div class="px-5 py-3 border-t border-[#222226] bg-[#0E0E11] flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-zinc-700 to-zinc-500 border border-zinc-600 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm">
+                  DU
+                </div>
+                <div class="flex flex-col text-left">
+                  <span class="text-xs font-semibold text-white tracking-tight leading-tight">Dev User</span>
+                  <span class="text-[10px] text-zinc-400 font-mono leading-tight">dev@zea.cl</span>
+                </div>
+              </div>
+
+              <!-- Gear Icon (Tuerca de configuración) -->
               <button
                 type="button"
-                onclick={() => (showDrawerMenu = false)}
-                class="w-full py-3 px-4 rounded-xl bg-white text-zinc-950 font-semibold hover:bg-zinc-200 transition cursor-pointer text-xs flex items-center justify-center gap-2 shadow-sm"
+                aria-label={lang === 'en' ? 'Settings' : 'Configuración'}
+                class="h-8 w-8 rounded-full hover:bg-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition cursor-pointer"
+                data-testid="user-settings-btn"
               >
-                <span>{lang === 'en' ? 'Return to Chat' : 'Volver al Chat'}</span>
+                <svg class="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
               </button>
             </div>
           </div>
@@ -1679,14 +1731,16 @@
 
         {/if}
 
-        <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar -->
-        <div class="flex justify-center z-20 {platform === 'android' ? 'pb-3.5 pt-2 bg-[#121214]' : 'pb-2.5 pt-1.5 bg-[#000000]'}">
-          {#if platform === 'ios'}
-            <div class="w-32 h-1 bg-white/40 rounded-full"></div>
-          {:else}
-            <div class="w-20 h-1 bg-white/40 rounded-full"></div>
-          {/if}
-        </div>
+        <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar (Hidden on full screen menu) -->
+        {#if !showDrawerMenu}
+          <div class="flex justify-center z-20 {platform === 'android' ? 'pb-3.5 pt-2 bg-[#121214]' : 'pb-2.5 pt-1.5 bg-[#000000]'}">
+            {#if platform === 'ios'}
+              <div class="w-32 h-1 bg-white/40 rounded-full"></div>
+            {:else}
+              <div class="w-20 h-1 bg-white/40 rounded-full"></div>
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
   </div>
