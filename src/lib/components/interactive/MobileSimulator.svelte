@@ -1139,10 +1139,10 @@
             {#each messages as msg (msg.id)}
               {#if msg.role === 'user'}
                 {#if msg.isAudio}
-                  <!-- User Audio Note Bubble: WhatsApp Green Glia SDK (#005c4b) -->
+                  <!-- User Audio Note Bubble: Carbón Pizarra Luminoso (#3E414B) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[85%] px-3.5 py-2.5 bg-[#005c4b] border border-[#02735e]/50 text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
+                      class="max-w-[85%] px-3.5 py-2.5 bg-[#3E414B] border border-[#565965]/70 text-white rounded-[18px] shadow-sm font-sans flex flex-col gap-1.5"
                     >
                       <div class="flex items-center gap-2.5">
                         <button
@@ -1182,10 +1182,10 @@
                     </div>
                   </div>
                 {:else if msg.imageUrl}
-                  <!-- User Photo Message Bubble: WhatsApp Green Glia SDK (#005c4b) -->
+                  <!-- User Photo Message Bubble: Carbón Pizarra Luminoso (#3E414B) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[78%] p-1 bg-[#005c4b] border border-[#02735e]/50 rounded-[18px] shadow-md overflow-hidden relative group"
+                      class="max-w-[78%] p-1 bg-[#3E414B] border border-[#565965]/70 rounded-[18px] shadow-md overflow-hidden relative group"
                       data-testid="whatsapp-photo-message"
                     >
                       <div class="relative rounded-[15px] overflow-hidden bg-black/40">
@@ -1208,10 +1208,10 @@
                     </div>
                   </div>
                 {:else}
-                  <!-- User Question Bubble: WhatsApp Green Glia SDK (#005c4b, high contrast white text) -->
+                  <!-- User Question Bubble: Carbón Pizarra Luminoso (#3E414B, high contrast white text) -->
                   <div class="flex justify-end">
                     <div
-                      class="max-w-[80%] px-4 py-2.5 bg-[#005c4b] border border-[#02735e]/50 text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
+                      class="max-w-[80%] px-4 py-2.5 bg-[#3E414B] border border-[#565965]/70 text-white font-sans text-xs leading-relaxed rounded-[18px] shadow-sm"
                     >
                       {msg.text}
                     </div>
@@ -1307,7 +1307,7 @@
               </svg>
             </button>
 
-            <!-- Señal: Dynamic Real-time Soundwave (WhatsApp Green) -->
+            <!-- Señal: Dynamic Real-time Soundwave (Clean Zinc-200) -->
             <div
               class="flex-1 h-8 bg-[#1C1C20] border border-[#2D2D34] rounded-full px-3 flex items-center justify-center min-w-0"
               data-testid="audio-recording-input"
@@ -1315,7 +1315,7 @@
               <div class="flex items-center gap-[3px] w-full justify-center" data-testid="audio-signal-wave">
                 {#each audioLevels as level, i}
                   <span
-                    class="w-[2.5px] bg-[#00a884] rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
+                    class="w-[2.5px] bg-zinc-200 rounded-full transition-all duration-75 {isAudioPaused ? 'opacity-40' : ''}"
                     style="height: {isAudioPaused ? '4px' : `${level}px`};"
                   ></span>
                 {/each}
@@ -1333,15 +1333,15 @@
               <div class="h-3 w-3 bg-[#FF453A] rounded-[2px] {isAudioPaused ? 'opacity-50' : ''}"></div>
             </button>
 
-            <!-- Flecha hacia arriba: Send voice note to chat (WhatsApp Green) -->
+            <!-- Flecha hacia arriba: Send voice note to chat (Monochrome White Button) -->
             <button
               type="button"
               onclick={handleSendVoiceNote}
               aria-label={lang === 'en' ? 'Send voice note' : 'Enviar nota de voz'}
-              class="h-8 w-8 rounded-full bg-[#00a884] text-white flex items-center justify-center font-extrabold hover:bg-[#029070] transition cursor-pointer shrink-0 shadow-sm"
+              class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
               data-testid="audio-send-btn"
             >
-              <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
             </button>
@@ -1435,15 +1435,15 @@
             />
 
             {#if userInput.trim()}
-              <!-- Send arrow button when user types text (WhatsApp Green #00a884) -->
+              <!-- Send arrow button when user types text (Monochrome White Button) -->
               <button
                 type="submit"
                 aria-label="Enviar mensaje"
                 disabled={isThinking}
-                class="h-8 w-8 rounded-full bg-[#00a884] text-white flex items-center justify-center font-extrabold hover:bg-[#029070] transition cursor-pointer shrink-0 shadow-sm"
+                class="h-8 w-8 rounded-full bg-white text-zinc-950 flex items-center justify-center font-extrabold hover:bg-zinc-200 transition cursor-pointer shrink-0 shadow-sm"
                 data-testid="send-msg-btn"
               >
-                <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg class="h-4 w-4 text-zinc-950" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
               </button>
