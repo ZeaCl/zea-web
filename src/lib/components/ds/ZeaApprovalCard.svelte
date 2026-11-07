@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import type { ZeaTheme } from './tokens';
   import { ZEA_THEMES } from './tokens';
 
@@ -29,6 +30,8 @@
     onApprove?: () => void;
     onReject?: () => void;
   } = $props();
+
+  let isExpanded = $state(false);
 
   const cfg = $derived(ZEA_THEMES[theme] || ZEA_THEMES.sport);
 </script>
@@ -65,6 +68,24 @@
       <div class="flex-1 min-w-0">
         <p class="text-[13.5px] text-white truncate font-medium">{entityName}</p>
         <p class="text-[11px] text-zinc-400 truncate">{entityDetails}</p>
+        {#if citationText}
+          <button
+            type="button"
+            onclick={() => (isExpanded = !isExpanded)}
+            class="text-[10.5px] text-zinc-400 hover:text-zinc-200 transition cursor-pointer inline-flex items-center gap-1 mt-0.5"
+          >
+            <span>{isExpanded ? 'Ocultar alerta técnica' : 'Ver alerta técnica'}</span>
+            <svg
+              class="w-3 h-3 transition-transform {isExpanded ? 'rotate-180' : ''}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        {/if}
       </div>
 
       <!-- Decline button -->
@@ -93,10 +114,10 @@
       </button>
     </div>
 
-    {#if citationText}
-      <div class="p-2 rounded-xl bg-black/50 border border-white/5 text-[10.5px] font-mono text-zinc-300 leading-relaxed">
+    {#if citationText && isExpanded}
+      <p class="text-[11px] text-zinc-400 leading-relaxed pt-1.5 border-t border-white/5" in:fade={{ duration: 120 }}>
         {citationText}
-      </div>
+      </p>
     {/if}
   </section>
 {/if}
