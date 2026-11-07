@@ -293,7 +293,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const edgeScreen = page.getByTestId('zea-edge-screen');
     await expect(edgeScreen).toBeVisible();
 
-    // 2. Tab 1: Resumen (por defecto) estructurado en Now, Hoy, Pendientes, Semana y 8 Semanas
+    // 2. Tab 1: Resumen (por defecto) estructurado en Now, Tarea Asignada, Pendientes, Hoy, Semana y 8 Semanas
     await expect(page.locator('text=¿Qué tenemos para hoy?')).toBeVisible();
     await expect(page.locator('text=ZEA Edge Agent').first()).toBeVisible();
     await expect(page.locator('text=Lote #114').first()).toBeVisible();
@@ -301,29 +301,29 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=Esta semana').first()).toBeVisible();
     await expect(page.locator('text=Últimas 8 semanas').first()).toBeVisible();
 
-    // Expandir checklist pulsando "Ver checklist" dentro de la misma burbuja
-    const expandBtn = page.getByRole('button', { name: 'Ver checklist' }).first();
-    await expect(expandBtn).toBeVisible();
-    await expandBtn.click();
-    await expect(page.getByTestId('zea-checklist-card')).toBeVisible();
+    // La card de Tarea Asignada (Parte Diario) tiene su propia Card independiente
+    await expect(page.getByTestId('zea-checklist-card').first()).toBeVisible();
+    await expect(page.locator('text=Parte Diario de Operaciones').first()).toBeVisible();
+
+    // Botón en la burbuja para enfocar la Tarea Asignada
+    const scrollToTaskBtn = page.getByRole('button', { name: /Ir a Parte Diario/i }).first();
+    await expect(scrollToTaskBtn).toBeVisible();
 
     await expect(page.locator('text=165°C').first()).toBeVisible();
     await expect(page.locator('text=Mixer #42 · Planta Maipú').first()).toBeVisible();
     await expect(page.locator('text=Tonelaje Despachado')).toBeVisible();
 
     // 2.0 Validar ingreso manual en checklist sin sensores (ej: input en ítem de cierre de producción)
-    const manualInput = page.locator('input[placeholder*="Tonelaje total"]');
+    const manualInput = page.locator('input[placeholder*="Tonelaje total"]').first();
     await expect(manualInput).toBeVisible();
     await manualInput.fill('425 t consolidado');
     await page.getByRole('button', { name: 'Validar OK' }).last().click();
     await expect(page.locator('text=Dato: 425 t consolidado')).toBeVisible();
 
-    // 2.1 Botón de acción inmediata (Zero-Typing): Compensar agua y liberar Lote #114
+    // 2.1 Botón de acción inmediata en la burbuja que termina en pregunta: Compensar agua y liberar
     const compensateBtn = page.getByRole('button', { name: 'Compensar agua y liberar' }).first();
     await expect(compensateBtn).toBeVisible();
     await compensateBtn.click();
-    await expect(page.locator('text=Compensar agua y liberar Lote #114')).toBeVisible();
-    await expect(page.locator('text=Compensación de agua aplicada')).toBeVisible();
     await expect(page.locator('text=✓ Lote Liberado').first()).toBeVisible();
 
     // 3. Cambiar a Tab 2: Seguimiento

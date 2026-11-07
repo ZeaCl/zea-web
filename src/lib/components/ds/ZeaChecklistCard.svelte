@@ -58,7 +58,7 @@
 <section
   class={embedded
     ? 'space-y-2.5 w-full pt-1'
-    : 'p-4 rounded-[24px] bg-[#141418] border border-[#24242C] space-y-3'}
+    : 'p-4.5 rounded-[26px] bg-gradient-to-br from-[#201B0E] via-[#141412] to-[#0A0A0C] border border-[#383018] shadow-lg space-y-3.5'}
   data-testid="zea-checklist-card"
 >
   <!-- Top Header -->
