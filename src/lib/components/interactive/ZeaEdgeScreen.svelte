@@ -262,9 +262,10 @@
   ];
 
   const productionBars = [310, 340, 390, 420, 380, 450, 410, 420];
-  const plantDistribution = [
-    { label: 'Dominio Planta (Silos / Procesos)', percentage: 58, color: '#FFCD00' },
-    { label: 'Dominio Flota (Ruta / Terreno)', percentage: 42, color: '#71717A' }
+  const productionLabels = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'Hoy'];
+  const asphaltDistribution = [
+    { label: 'Asfalto AC-20', percentage: 58, color: '#FFCD00' },
+    { label: 'SMA-12 Antiruido', percentage: 42, color: '#71717A' }
   ];
 
   // =========================================================================
@@ -600,10 +601,16 @@
                     <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
                     <ZeaMetricTrend
                       theme="industrial"
-                      title="Últimas 8 semanas"
+                      title="Producción semanal"
                       badgeText="+14% vs mes anterior"
+                      metricValue="420 t"
+                      metricUnit="esta semana"
+                      metricSubtitle="3.120 t acumuladas en últimas 8 semanas · Prom. 390 t/sem"
+                      targetValue={400}
+                      targetLabel="Meta 400 t"
                       bars={productionBars}
-                      distribution={plantDistribution}
+                      barLabels={productionLabels}
+                      distribution={asphaltDistribution}
                     />
                   </div>
                 {/if}
@@ -731,10 +738,16 @@
           <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
           <ZeaMetricTrend
             theme="industrial"
-            title="Últimas 8 semanas"
+            title="Producción semanal"
             badgeText="+14% vs mes anterior"
+            metricValue="420 t"
+            metricUnit="esta semana"
+            metricSubtitle="3.120 t acumuladas en últimas 8 semanas · Prom. 390 t/sem"
+            targetValue={400}
+            targetLabel="Meta 400 t"
             bars={productionBars}
-            distribution={plantDistribution}
+            barLabels={productionLabels}
+            distribution={asphaltDistribution}
           />
         {/if}
       </div>
@@ -918,8 +931,14 @@
           theme="industrial"
           title="Producción & Capturas (Últimas 8 jornadas)"
           badgeText="+14% vs semana previa"
+          metricValue="420 t"
+          metricUnit="hoy"
+          metricSubtitle="Registro continuo IoT con tolerancia ±2.5°C y OCR activo"
+          targetValue={400}
+          targetLabel="Meta 400 t"
           bars={productionBars}
-          distribution={plantDistribution}
+          barLabels={productionLabels}
+          distribution={asphaltDistribution}
         />
       </div>
 
