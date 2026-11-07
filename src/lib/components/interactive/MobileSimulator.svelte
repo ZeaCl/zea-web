@@ -18,7 +18,7 @@
     lang = 'es',
     platform = 'ios',
     skills = $bindable({ audio: false, vision: false, security: false }),
-    activePillar = 'none',
+    activePillar = $bindable('none'),
     activeNav = 'developer'
   }: {
     lang?: 'en' | 'es';
@@ -1875,7 +1875,13 @@
           <ZeaSportScreen {lang} {platform} />
         {:else}
           <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->
-          <ZeaDefaultScreen {lang} {platform} />
+          <ZeaDefaultScreen
+            {lang}
+            {platform}
+            onNavigateToSport={() => {
+              activePillar = 'sport';
+            }}
+          />
         {/if}
 
         <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar (Hidden on full screen menu) -->

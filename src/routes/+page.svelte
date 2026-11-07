@@ -209,7 +209,7 @@
           {lang}
           {platform}
           bind:skills={skills}
-          {activePillar}
+          bind:activePillar={activePillar}
           {activeNav}
         />
       </div>

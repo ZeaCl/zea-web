@@ -87,7 +87,8 @@
             </div>
             {#if entry.actionLabel}
               <span
-                class="text-[11px] font-semibold text-black bg-[#FFCD00] hover:bg-[#FFE066] px-2.5 py-1 rounded-full transition shrink-0 ml-2 shadow-xs"
+                class="text-[11px] font-semibold px-2.5 py-1 rounded-full transition shrink-0 ml-2 shadow-xs"
+                style="background-color: {cfg.btnPrimaryBg}; color: {cfg.btnPrimaryText};"
               >
                 {entry.actionLabel}
               </span>

@@ -10,18 +10,19 @@
   import ZeaMetricTrend from '../ds/ZeaMetricTrend.svelte';
   import ZeaGliaBar from '../ds/ZeaGliaBar.svelte';
   import ZeaSheet from '../ds/ZeaSheet.svelte';
-  import ZeaChecklistCard, { type ZeaChecklistItem } from '../ds/ZeaChecklistCard.svelte';
 
   let {
     lang = 'es',
-    platform = 'ios'
+    platform = 'ios',
+    onNavigateToSport = () => {}
   }: {
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
+    onNavigateToSport?: () => void;
   } = $props();
 
-  // Navigation tabs: Resumen, Agenda, Hábitos, Perfil
-  let activeTab = $state<'summary' | 'agenda' | 'habits' | 'profile'>('summary');
+  // Navigation tabs: Resumen, Agenda, Deporte, Perfil
+  let activeTab = $state<'summary' | 'agenda' | 'sport' | 'profile'>('summary');
   let viewMode = $state<'chat' | 'app'>('chat');
 
   // Interactive toast
@@ -32,7 +33,6 @@
   let deployDone = $state(false);
   let cloudApprovalDone = $state(false);
   let cloudApprovalRejected = $state(false);
-  let checklistExpanded = $state(false);
 
   // Sheet modal state
   let sheetOpen = $state(false);
@@ -55,64 +55,6 @@
     sheetOpen = false;
   }
 
-  // =========================================================================
-  // 1. HABITS & ROUTINE CHECKLIST (Personal Life Calibration)
-  // =========================================================================
-  let habitItems = $state<ZeaChecklistItem[]>([
-    {
-      id: 'hb-1',
-      label: 'Café matutino sin pantallas ni notificaciones (20 min)',
-      checked: true,
-      requiresInput: false
-    },
-    {
-      id: 'hb-2',
-      label: 'Hidratación & Movilidad articular antes de pantalla',
-      checked: true,
-      requiresInput: true,
-      inputValue: '1.2 L agua',
-      inputPlaceholder: 'Ingresar litros (ej: 1.5 L)',
-      presetValues: ['1.5 L agua', '2.0 L agua']
-    },
-    {
-      id: 'hb-3',
-      label: 'Deploy Producción v2.4 (Sprint 14 Core)',
-      checked: false,
-      requiresInput: true,
-      inputValue: '',
-      inputPlaceholder: 'Hash commit (ej: 0x9f4a1c)',
-      presetValues: ['0x9f4a1c', 'PR #412']
-    },
-    {
-      id: 'hb-4',
-      label: 'Sesión de Fuerza en Gimnasio (13:00)',
-      checked: false,
-      requiresInput: true,
-      inputValue: '',
-      inputPlaceholder: 'Duración (ej: 50 min)',
-      presetValues: ['50 min fuerza', '60 min tren superior']
-    },
-    {
-      id: 'hb-5',
-      label: 'Cierre de jornada sin laptop abierta con la familia',
-      checked: false,
-      requiresInput: false
-    }
-  ]);
-
-  function toggleHabitItem(id: string) {
-    habitItems = habitItems.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
-    );
-  }
-
-  function handleHabitInput(id: string, value: string) {
-    habitItems = habitItems.map((item) =>
-      item.id === id ? { ...item, inputValue: value, checked: true } : item
-    );
-    showToast(`Dato registrado: ${value}`);
-  }
-
   function approveCloudPayment() {
     if (cloudApprovalDone) return;
     cloudApprovalDone = true;
@@ -120,21 +62,19 @@
   }
 
   // =========================================================================
-  // 2. TIMELINE ENTRIES (Hoy)
+  // 1. TIMELINE ENTRIES (Hoy)
   // =========================================================================
   const personalTimeline = $derived([
     {
       id: '1',
       time: '07:30',
-      title: 'Hábitos Matutinos & Foco',
-      subtitle: checklistExpanded
-        ? 'Ocultar checklist de hábitos'
-        : `${habitItems.filter((i) => i.checked).length} de ${habitItems.length} completados`,
-      actionLabel: checklistExpanded ? 'Ocultar' : 'Ver hábitos',
+      title: 'Hacer entrenamiento de fuerza',
+      subtitle: '50 min con Gus · Rutina de tren superior',
+      actionLabel: 'Ir a ZEA Sport',
       status: 'active' as const,
       onClick: () => {
-        checklistExpanded = !checklistExpanded;
-        showToast(checklistExpanded ? 'Hábitos desplegados' : 'Hábitos minimizados');
+        showToast('Abriendo ZEA Sport...');
+        onNavigateToSport();
       }
     },
     {
@@ -155,7 +95,7 @@
           title: 'Deploy Producción v2.4',
           driver: 'Banco X Core',
           type: 'Sprint 14',
-          plant: 'AWS us-east-1',
+          plant: 'GCP southamerica-west1',
           temp: '0 vulnerabilidades',
           destination: 'API Gateway & Core',
           status: 'Listo para deploy',
@@ -167,11 +107,11 @@
     {
       id: '4',
       time: '13:00',
-      title: 'Entrenamiento Gimnasio (Fuerza)',
-      subtitle: 'Salud · 50 min con entrenador personal',
+      title: 'Revisión Estratégica & Directorio',
+      subtitle: 'Métricas de crecimiento y finanzas de la empresa',
       status: 'available' as const,
-      actionLabel: 'Check-in',
-      onAction: () => showToast('Check-in de gimnasio registrado')
+      actionLabel: 'Ver detalles',
+      onAction: () => showToast('Revisión de directorio programada')
     },
     {
       id: '5',
@@ -226,7 +166,7 @@
       id: 'msg-1',
       sender: 'agent',
       time: '08:00',
-      text: '¡Buenos días, Carlos! Hoy tu foco principal es el Deploy a Producción a las 10:30, la sesión de gimnasio a las 13:00 y pádel a las 19:30. Tienes una aprobación pendiente de infraestructura. ¿Autorizamos la renovación de servidores Cloud ($149 USD)?',
+      text: '¡Buenos días, Carlos! A las 07:30 tienes tu entrenamiento de fuerza con Gus. Luego tu foco principal es el Deploy a Producción a las 10:30, directorio a las 13:00 y pádel a las 19:30. ¿Autorizamos la renovación de servidores Cloud ($149 USD)?',
       isPrimarySummary: true
     }
   ]);
@@ -408,23 +348,6 @@
                     entries={personalTimeline}
                   />
 
-                  <!-- Checklist Desplegado desde 07:30 -->
-                  {#if checklistExpanded}
-                    <div in:fade={{ duration: 150 }} id="habits-checklist-card">
-                      <ZeaChecklistCard
-                        theme="default"
-                        moduleBadge="RITUALES & FOCO"
-                        title="Hábitos & Calibración"
-                        subtitle="Rutina matutina, foco y desconexión"
-                        items={habitItems}
-                        actionLabel="Consolidar Hábitos"
-                        onToggleItem={toggleHabitItem}
-                        onInputSubmit={handleHabitInput}
-                        onAction={() => showToast('Hábitos del día sincronizados')}
-                      />
-                    </div>
-                  {/if}
-
                   <!-- 3. PENDIENTES: POR APROBAR -->
                   <ZeaApprovalCard
                     theme="default"
@@ -531,22 +454,6 @@
           entries={personalTimeline}
         />
 
-        {#if checklistExpanded}
-          <div in:fade={{ duration: 150 }} id="habits-checklist-card">
-            <ZeaChecklistCard
-              theme="default"
-              moduleBadge="RITUALES & FOCO"
-              title="Hábitos & Calibración"
-              subtitle="Rutina matutina, foco y desconexión"
-              items={habitItems}
-              actionLabel="Consolidar Hábitos"
-              onToggleItem={toggleHabitItem}
-              onInputSubmit={handleHabitInput}
-              onAction={() => showToast('Hábitos del día sincronizados')}
-            />
-          </div>
-        {/if}
-
         <!-- 3. PENDIENTES -->
         <ZeaApprovalCard
           theme="default"
@@ -592,8 +499,8 @@
     {#if viewMode === 'chat'}
       <ZeaGliaBar
         theme="default"
-        placeholder="Pregunta sobre el SDK móvil, tareas o hábitos..."
-        chips={['Aprobar Deploy v2.4', '¿Cómo viene el pádel hoy?', '¿Cuántas horas de foco llevo?']}
+        placeholder={lang === 'en' ? 'Ask about the mobile SDK, deploys or schedule...' : 'Pregunta sobre el SDK móvil, deploys o tu agenda...'}
+        chips={['Aprobar Deploy v2.4', '¿A qué hora es el pádel?', '¿Cuántas horas de foco llevo?']}
         bind:inputText={chatInputText}
         onSendPrompt={handleSendPrompt}
       />
@@ -626,16 +533,19 @@
       <span class="text-[10px] tracking-tight">Agenda</span>
     </button>
 
-    <!-- TAB 3: HÁBITOS -->
+    <!-- TAB 3: DEPORTE (Navega directo a ZEA Sport) -->
     <button
       type="button"
-      onclick={() => (activeTab = 'habits')}
-      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer {activeTab === 'habits' ? 'text-white font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
+      onclick={() => {
+        showToast('Abriendo ZEA Sport...');
+        onNavigateToSport();
+      }}
+      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer text-zinc-500 hover:text-white"
     >
       <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/>
       </svg>
-      <span class="text-[10px] tracking-tight">Hábitos</span>
+      <span class="text-[10px] tracking-tight">Deporte</span>
     </button>
 
     <!-- TAB 4: PERFIL -->
