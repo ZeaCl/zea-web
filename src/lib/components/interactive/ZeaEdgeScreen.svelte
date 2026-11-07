@@ -31,6 +31,8 @@
   let dischargeDone = $state(false);
   let approvalDone = $state(false);
   let approvalRejected = $state(false);
+  let batchApprovalDone = $state(false);
+  let batchApprovalRejected = $state(false);
   let rcaApprovalDone = $state(false);
   let rcaApprovalRejected = $state(false);
   let roadApprovalDone = $state(false);
@@ -129,6 +131,7 @@
   function compensateAndRelease() {
     if (urgentBatchCompleted) return;
     urgentBatchCompleted = true;
+    batchApprovalDone = true;
     parteDiarioItems[2].checked = true;
     parteDiarioItems[2].inputValue = '-18 L agua (28t)';
     parteDiarioItems[3].checked = true;
@@ -244,10 +247,16 @@
 
   let checklistChat = $state<ChatMessage[]>([
     {
+      id: 'chk-msg-0',
+      sender: 'user',
+      time: '08:00',
+      text: '¿Qué tenemos para hoy?'
+    },
+    {
       id: 'chk-msg-1',
       sender: 'agent',
       time: '08:00',
-      text: '¡Buenos días, Carlos! Ya capturé por telemetría el Silo 1 (170°C) y por visión QR el precinto del Mixer. Tenemos una alerta: los áridos de la Tolva 3 reportan +1.4% de humedad. ¿Compensamos agua automáticamente para liberar el Lote #114?',
+      text: '¡Buenos días, Carlos! Tienes 4 despachos programados hoy (420 de 500 t completadas). El Mixer #42 va en ruta hacia Autopista Central (165°C) y tenemos una autorización pendiente para liberar el Lote #114:',
       isPrimarySummary: true
     }
   ]);
@@ -497,7 +506,7 @@
 
                 {#if msg.isPrimarySummary}
                   <div class="w-full space-y-4 pt-1">
-                    <!-- Active Dispatch Focus Card (Mixer #42) -->
+                    <!-- 1. NOW: URGENCIA ACTUAL (ZeaFocusCard) -->
                     <ZeaFocusCard
                       theme="industrial"
                       badgeText="Despacho en ruta"
@@ -507,7 +516,7 @@
                       avatarText="M42"
                       title="Mixer #42 · Planta Maipú"
                       subtitle="Asfalto AC-20 · Frente Autopista Central · 28t"
-                      secondaryActionLabel="Telemetría IoT"
+                      secondaryActionLabel="Ver ficha camión"
                       primaryActionLabel="Confirmar Vertido"
                       primaryDoneLabel="✓ Vertido Registrado"
                       isDone={dischargeDone}
@@ -518,12 +527,55 @@
                       }}
                     />
 
-                    <!-- Summary Rings -->
+                    <!-- 2. EL DÍA: HOY (ZeaTimeline) -->
+                    <ZeaTimeline
+                      theme="industrial"
+                      title="Hoy"
+                      headerActionLabel="Ver seguimiento"
+                      onHeaderAction={() => (activeTab = 'tracking')}
+                      entries={timelineEntries}
+                    />
+
+                    <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
+                    <ZeaApprovalCard
+                      theme="industrial"
+                      title="Por aprobar"
+                      moduleBadge="CONTROL DE CALIDAD"
+                      domainBadge="Lote #114"
+                      avatarText="L114"
+                      entityName="Compensación Lote #114"
+                      entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
+                      citationText="Alerta técnica: Humedad de áridos fuera de rango (+1.4%). Autorizar compensación de -18L para liberar bachada."
+                      isApproved={batchApprovalDone}
+                      isRejected={batchApprovalRejected}
+                      onApprove={() => {
+                        batchApprovalDone = true;
+                        urgentBatchCompleted = true;
+                        parteDiarioItems[2].checked = true;
+                        parteDiarioItems[2].inputValue = '-18 L agua (28t)';
+                        showToast('Compensación del Lote #114 aprobada');
+                      }}
+                      onReject={() => {
+                        batchApprovalRejected = true;
+                        showToast('Compensación rechazada - Mantener fórmula standard');
+                      }}
+                    />
+
+                    <!-- 4. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
                     <ZeaConcentricRings
                       theme="industrial"
-                      title="Cumplimiento del Turno"
-                      subtitle="Planta & Flota en Terreno"
+                      title="Esta semana"
+                      subtitle="Planta Maipú & Flota en Terreno"
                       items={industrialRings}
+                    />
+
+                    <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
+                    <ZeaMetricTrend
+                      theme="industrial"
+                      title="Últimas 8 semanas"
+                      badgeText="+14% vs mes anterior"
+                      bars={productionBars}
+                      distribution={plantDistribution}
                     />
                   </div>
                 {/if}
@@ -570,25 +622,28 @@
             </p>
           </section>
 
-          <!-- URGENT PRIORITY FOCUS CARD IN APP MODE -->
+          <!-- 1. NOW: URGENCIA ACTUAL (ZeaFocusCard) -->
           <ZeaFocusCard
             theme="industrial"
-            badgeText="Prioridad Turno"
-            etaText="en 15 min"
-            mainMetric="Lote 114"
-            metricSuffix=" · 28t AC-20"
-            avatarText="P-1"
-            title="Dosificación Áridos & Silo 1"
-            subtitle="Tolva 3 (+1.4% humedad) · Requiere compensar -18L"
+            badgeText="Despacho en ruta"
+            etaText="arribo 18 min"
+            mainMetric="165°C"
+            metricSuffix=" · Mixer #42"
+            avatarText="M42"
+            title="Mixer #42 · Planta Maipú"
+            subtitle="Asfalto AC-20 · Frente Autopista Central · 28t"
             secondaryActionLabel={checklistExpanded ? 'Ocultar checklist' : 'Ver checklist'}
-            primaryActionLabel="Compensar y Liberar"
-            primaryDoneLabel="✓ Lote Liberado"
-            isDone={urgentBatchCompleted}
+            primaryActionLabel="Confirmar Vertido"
+            primaryDoneLabel="✓ Vertido Registrado"
+            isDone={dischargeDone}
             onSecondaryAction={() => {
               checklistExpanded = !checklistExpanded;
               showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
             }}
-            onPrimaryAction={compensateAndRelease}
+            onPrimaryAction={() => {
+              dischargeDone = true;
+              showToast('Vertido de Mixer #42 confirmado');
+            }}
           />
 
           {#if checklistExpanded}
@@ -605,24 +660,55 @@
             </div>
           {/if}
 
-          <ZeaFocusCard
+          <!-- 2. EL DÍA: HOY (ZeaTimeline) -->
+          <ZeaTimeline
             theme="industrial"
-            badgeText="Despacho en ruta"
-            etaText="arribo 18 min"
-            mainMetric="165°C"
-            metricSuffix=" · Mixer #42"
-            avatarText="M42"
-            title="Mixer #42 · Planta Maipú"
-            subtitle="Asfalto AC-20 · Frente Autopista Central · 28t"
-            secondaryActionLabel="Telemetría IoT"
-            primaryActionLabel="Confirmar Vertido"
-            primaryDoneLabel="✓ Vertido Registrado"
-            isDone={dischargeDone}
-            onSecondaryAction={() => openTruckDetails(fleetList[0])}
-            onPrimaryAction={() => {
-              dischargeDone = true;
-              showToast('Vertido de Mixer #42 confirmado');
+            title="Hoy"
+            headerActionLabel="Ver seguimiento"
+            onHeaderAction={() => (activeTab = 'tracking')}
+            entries={timelineEntries}
+          />
+
+          <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
+          <ZeaApprovalCard
+            theme="industrial"
+            title="Por aprobar"
+            moduleBadge="CONTROL DE CALIDAD"
+            domainBadge="Lote #114"
+            avatarText="L114"
+            entityName="Compensación Lote #114"
+            entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
+            citationText="Alerta técnica: Humedad de áridos fuera de rango (+1.4%). Autorizar compensación de -18L para liberar bachada."
+            isApproved={batchApprovalDone}
+            isRejected={batchApprovalRejected}
+            onApprove={() => {
+              batchApprovalDone = true;
+              urgentBatchCompleted = true;
+              parteDiarioItems[2].checked = true;
+              parteDiarioItems[2].inputValue = '-18 L agua (28t)';
+              showToast('Compensación del Lote #114 aprobada');
             }}
+            onReject={() => {
+              batchApprovalRejected = true;
+              showToast('Compensación rechazada - Mantener fórmula standard');
+            }}
+          />
+
+          <!-- 4. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
+          <ZeaConcentricRings
+            theme="industrial"
+            title="Esta semana"
+            subtitle="Planta Maipú & Flota en Terreno"
+            items={industrialRings}
+          />
+
+          <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
+          <ZeaMetricTrend
+            theme="industrial"
+            title="Últimas 8 semanas"
+            badgeText="+14% vs mes anterior"
+            bars={productionBars}
+            distribution={plantDistribution}
           />
         {/if}
       </div>

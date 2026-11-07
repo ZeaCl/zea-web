@@ -293,9 +293,13 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const edgeScreen = page.getByTestId('zea-edge-screen');
     await expect(edgeScreen).toBeVisible();
 
-    // 2. Tab 1: Resumen (por defecto) con expansión de checklist en la burbuja
+    // 2. Tab 1: Resumen (por defecto) estructurado en Now, Hoy, Pendientes, Semana y 8 Semanas
+    await expect(page.locator('text=¿Qué tenemos para hoy?')).toBeVisible();
     await expect(page.locator('text=ZEA Edge Agent').first()).toBeVisible();
-    await expect(page.locator('text=Lote #114')).toBeVisible();
+    await expect(page.locator('text=Lote #114').first()).toBeVisible();
+    await expect(page.locator('text=Por aprobar').first()).toBeVisible();
+    await expect(page.locator('text=Esta semana').first()).toBeVisible();
+    await expect(page.locator('text=Últimas 8 semanas').first()).toBeVisible();
 
     // Expandir checklist pulsando "Ver checklist" dentro de la misma burbuja
     const expandBtn = page.getByRole('button', { name: 'Ver checklist' }).first();
