@@ -1,6 +1,15 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
+  import { dragScroll } from '../ds/dragScroll';
+  import ZeaModeToggle from '../ds/ZeaModeToggle.svelte';
+  import ZeaFocusCard from '../ds/ZeaFocusCard.svelte';
+  import ZeaConcentricRings from '../ds/ZeaConcentricRings.svelte';
+  import ZeaTimeline from '../ds/ZeaTimeline.svelte';
+  import ZeaApprovalCard from '../ds/ZeaApprovalCard.svelte';
+  import ZeaMetricTrend from '../ds/ZeaMetricTrend.svelte';
+  import ZeaGliaBar from '../ds/ZeaGliaBar.svelte';
+  import ZeaSheet from '../ds/ZeaSheet.svelte';
 
   let {
     lang = 'es',
@@ -31,42 +40,6 @@
   let studentSearchQuery = $state('');
   let selectedStudentFilter = $state('all');
   let isCurrentDayBlocked = $state(false);
-
-  // Drag to scroll state for smooth desktop click-and-drag
-  let isDragging = false;
-  let startY = 0;
-  let startScrollTop = 0;
-  let activeScrollEl: HTMLElement | null = null;
-
-  // Action for drag-to-scroll on desktop without triggering a11y linter warnings
-  function dragScroll(node: HTMLElement) {
-    function onMouseDown(e: MouseEvent) {
-      const target = e.target as HTMLElement;
-      if (target.closest('button, input, textarea, a, [role="button"], select')) return;
-      isDragging = true;
-      startY = e.pageY;
-      activeScrollEl = node;
-      startScrollTop = node.scrollTop;
-    }
-    node.addEventListener('mousedown', onMouseDown);
-    return {
-      destroy() {
-        node.removeEventListener('mousedown', onMouseDown);
-      }
-    };
-  }
-
-  function handleMouseMove(e: MouseEvent) {
-    if (!isDragging || !activeScrollEl) return;
-    e.preventDefault();
-    const delta = (e.pageY - startY) * 1.25;
-    activeScrollEl.scrollTop = startScrollTop - delta;
-  }
-
-  function handleMouseUp() {
-    isDragging = false;
-    activeScrollEl = null;
-  }
 
   // Chat message management
   interface ChatMessage {
@@ -283,13 +256,16 @@
 
   // Apple Fitness concentric rings SVG calculations
   const coachRings = [
-    { r: 54, pct: 18 / 24, color: '#FA7343' },
-    { r: 41, pct: 42 / 50, color: '#A78BFA' },
-    { r: 28, pct: 28 / 30, color: '#5EEAD4' }
+    { label: 'Clases', value: '18 / 24', delta: '+3', pct: 18 / 24, color: '#FA7343' },
+    { label: 'Ocupación', value: '84%', delta: '+6%', pct: 0.84, color: '#A78BFA' },
+    { label: 'Alumnos activos', value: '28 / 30', delta: '=', pct: 28 / 30, color: '#5EEAD4' }
   ];
 
   const coachWeeks = [9, 11, 10, 13, 12, 14, 15, 18];
-  const maxCoachW = Math.max(...coachWeeks);
+  const sportDistribution = [
+    { label: 'Parque Araucano', percentage: 62 },
+    { label: 'Gimnasio Central', percentage: 38 }
+  ];
 
   const days = [
     { id: 'mon-26', label: 'Lun', date: 26, month: 'Oct', isToday: false },
@@ -383,9 +359,15 @@
       return matchSearch;
     });
   });
-</script>
 
-<svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
+  // Timeline entries for ZeaTimeline
+  const sportTimelineEntries = [
+    { id: '1', time: '08:00', title: 'Camila Alvarez', subtitle: 'Running · Completada', status: 'completed' as const },
+    { id: '2', time: '10:00', title: 'Felipe Soto', subtitle: 'Fuerza · Parque Araucano', status: 'active' as const, onClick: () => openStudentModal(studentsList[0]) },
+    { id: '3', time: '15:00', title: 'Cupo libre', subtitle: 'Gimnasio Central', status: 'available' as const, actionLabel: 'Compartir', onAction: () => showToast('Link de reserva copiado') },
+    { id: '4', time: '16:00', title: 'Rodrigo Morales', subtitle: 'Hipertrofia · Gimnasio Central', status: 'scheduled' as const }
+  ];
+</script>
 
 <!-- Outer Screen Container (Flex Column with min-h-0 for proper scroll containment) -->
 <div class="relative flex-1 min-h-0 bg-black flex flex-col justify-between overflow-hidden select-none text-white font-sans text-left" data-testid="zea-sport-screen">
@@ -415,45 +397,8 @@
             </div>
           </div>
 
-          <!-- Top-Right Mode Toggle: App vs Chat -->
-          <div class="inline-flex items-center p-0.5 rounded-full bg-[#16161C] border border-[#2B2B36] shadow-inner" data-testid="sport-mode-toggle">
-            <button
-              type="button"
-              onclick={() => {
-                viewMode = 'app';
-                showToast('Modo App clásica activado');
-              }}
-              aria-label="Modo App clásica"
-              title="Modo App clásica"
-              class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'app' ? 'bg-white/20 text-white shadow-xs font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-              data-testid="mode-app-btn"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-              </svg>
-            </button>
-            <button
-              type="button"
-              onclick={() => {
-                viewMode = 'chat';
-                showToast('Modo ZEA Chat AI activado');
-              }}
-              aria-label="Modo ZEA Chat AI"
-              title="Modo ZEA Chat AI"
-              class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'chat' ? 'bg-[#FA7343]/20 text-[#FA7343] border border-[#FA7343]/40 shadow-xs font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-              data-testid="mode-chat-btn"
-            >
-              <div class="relative flex items-center">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#FA7343]"></span>
-              </div>
-            </button>
-          </div>
+          <!-- Reusable Mode Switcher -->
+          <ZeaModeToggle bind:viewMode theme="sport" onToggle={(m) => showToast(m === 'chat' ? 'Modo ZEA Chat AI activado' : 'Modo App clásica activado')} />
         </div>
 
         <!-- Scrollable Chat Stream (Generative UI Cards inside Message Bubbles) -->
@@ -496,221 +441,71 @@
                 {#if msg.isPrimarySummary}
                   <div class="w-full space-y-4 pt-1">
                     
-                    <!-- COMPONENT 1: Próxima clase -->
-                    <section class="relative overflow-hidden rounded-[26px] p-4.5 border border-[#FA7343]/30 bg-gradient-to-br from-[#2B1810] via-[#141010] to-[#0A0A0C] shadow-lg">
-                      <div class="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-[#FA7343]/20 blur-3xl pointer-events-none"></div>
-                      <div class="relative">
-                        <div class="flex items-center justify-between">
-                          <span class="flex items-center gap-2 text-[12px] font-medium text-[#FDBA8C]">
-                            <span class="relative flex w-2 h-2">
-                              <span class="absolute inline-flex w-full h-full rounded-full bg-[#FA7343] opacity-75 animate-ping"></span>
-                              <span class="relative inline-flex w-2 h-2 rounded-full bg-[#FA7343]"></span>
-                            </span>
-                            Próxima clase
-                          </span>
-                          <span class="text-[11px] font-semibold text-white bg-white/10 px-2.5 py-1 rounded-full">en 25 min</span>
-                        </div>
+                    <!-- COMPONENT 1: Próxima clase (ZeaFocusCard) -->
+                    <ZeaFocusCard
+                      theme="sport"
+                      badgeText="Próxima clase"
+                      etaText="en 25 min"
+                      mainMetric="10:00"
+                      metricSuffix=" – 11:00"
+                      avatarText="FS"
+                      title="Felipe Soto"
+                      subtitle="Fuerza · Parque Araucano · 12ª sesión"
+                      secondaryActionLabel="Ver ficha"
+                      primaryActionLabel="Check-in"
+                      primaryDoneLabel="✓ Listo"
+                      isDone={checkinDone}
+                      onSecondaryAction={() => openStudentModal(studentsList[0])}
+                      onPrimaryAction={() => {
+                        checkinDone = true;
+                        showToast('Check-in registrado');
+                      }}
+                    />
 
-                        <div class="mt-3.5 text-[32px] font-semibold tracking-tight text-white leading-none tabular-nums font-mono">
-                          10:00<span class="text-zinc-500 text-[20px] font-medium"> – 11:00</span>
-                        </div>
+                    <!-- COMPONENT 2: Agenda del día (ZeaTimeline) -->
+                    <ZeaTimeline
+                      theme="sport"
+                      title="Hoy"
+                      headerActionLabel="Ver agenda"
+                      onHeaderAction={() => activeTab = 'agenda'}
+                      entries={sportTimelineEntries}
+                    />
 
-                        <div class="mt-3.5 flex items-center gap-3">
-                          <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-[13px] font-semibold text-white">FS</div>
-                          <div class="min-w-0">
-                            <p class="text-[14.5px] font-medium text-white">Felipe Soto</p>
-                            <p class="text-[11.5px] text-zinc-400">Fuerza · Parque Araucano · 12ª sesión</p>
-                          </div>
-                        </div>
+                    <!-- COMPONENT 3: Por aprobar (ZeaApprovalCard) -->
+                    <ZeaApprovalCard
+                      theme="sport"
+                      title="Por aprobar"
+                      avatarText="MV"
+                      entityName="Matías Valdés"
+                      entityDetails="Jue 29 · 09:00 · Rehab"
+                      isApproved={pendingApproved}
+                      isRejected={pendingRejected}
+                      onApprove={() => {
+                        pendingApproved = true;
+                        showToast('Reserva aprobada');
+                      }}
+                      onReject={() => {
+                        pendingRejected = true;
+                        showToast('Reserva rechazada');
+                      }}
+                    />
 
-                        <div class="mt-4 grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onclick={() => openStudentModal(studentsList[0])}
-                            class="py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-[12.5px] font-medium text-white transition cursor-pointer text-center"
-                          >
-                            Ver ficha
-                          </button>
-                          <button
-                            type="button"
-                            onclick={() => {
-                              checkinDone = true;
-                              showToast('Check-in registrado');
-                            }}
-                            class="py-2.5 rounded-2xl {checkinDone ? 'bg-emerald-500 text-black' : 'bg-white hover:bg-zinc-200 text-black'} text-[12.5px] font-semibold transition cursor-pointer text-center"
-                          >
-                            {checkinDone ? '✓ Listo' : 'Check-in'}
-                          </button>
-                        </div>
-                      </div>
-                    </section>
+                    <!-- COMPONENT 4: Anillos Concéntricos Apple Fitness (ZeaConcentricRings) -->
+                    <ZeaConcentricRings
+                      theme="sport"
+                      title="Esta semana"
+                      subtitle="27 oct – 2 nov"
+                      items={coachRings}
+                    />
 
-                    <!-- COMPONENT 2: Agenda del día (Timeline) -->
-                    <section class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C]">
-                      <div class="flex items-baseline justify-between mb-2.5">
-                        <h4 class="text-[15px] font-semibold text-white tracking-tight">Hoy</h4>
-                        <button
-                          type="button"
-                          onclick={() => activeTab = 'agenda'}
-                          class="text-[12px] text-zinc-400 hover:text-white transition cursor-pointer"
-                        >
-                          Ver agenda
-                        </button>
-                      </div>
-                      <ol class="relative">
-                        <li class="flex gap-3 py-2">
-                          <span class="w-11 shrink-0 text-[12px] tabular-nums text-zinc-500 pt-0.5 font-mono">08:00</span>
-                          <div class="flex-1 border-l border-[#2A2A31] pl-3 -my-2 py-2">
-                            <p class="text-[13px] text-zinc-500 line-through decoration-zinc-700">Camila Alvarez</p>
-                            <p class="text-[11px] text-zinc-600">Running · Completada</p>
-                          </div>
-                        </li>
-                        <li class="flex gap-3 py-2">
-                          <button
-                            type="button"
-                            class="flex-1 flex gap-3 text-left cursor-pointer group"
-                            onclick={() => openStudentModal(studentsList[0])}
-                          >
-                            <span class="w-11 shrink-0 text-[12px] tabular-nums text-[#FA7343] font-semibold pt-0.5 font-mono">10:00</span>
-                            <div class="flex-1 border-l-2 border-[#FA7343] pl-3 -my-2 py-2">
-                              <p class="text-[13.5px] text-white font-medium">Felipe Soto</p>
-                              <p class="text-[11.5px] text-zinc-400">Fuerza · Parque Araucano</p>
-                            </div>
-                          </button>
-                        </li>
-                        <li class="flex gap-3 py-2">
-                          <span class="w-11 shrink-0 text-[12px] tabular-nums text-zinc-400 pt-0.5 font-mono">15:00</span>
-                          <div class="flex-1 border-l border-dashed border-[#3A3A42] pl-3 -my-2 py-2 flex items-center justify-between">
-                            <div>
-                              <p class="text-[13px] text-zinc-300">Cupo libre</p>
-                              <p class="text-[11px] text-zinc-500">Gimnasio Central</p>
-                            </div>
-                            <button
-                              type="button"
-                              onclick={() => showToast('Link de reserva copiado')}
-                              class="text-[11px] font-medium text-white bg-white/10 hover:bg-white/15 px-2.5 py-1 rounded-full transition cursor-pointer"
-                            >
-                              Compartir
-                            </button>
-                          </div>
-                        </li>
-                        <li class="flex gap-3 py-2">
-                          <span class="w-11 shrink-0 text-[12px] tabular-nums text-zinc-400 pt-0.5 font-mono">16:00</span>
-                          <div class="flex-1 border-l border-[#2A2A31] pl-3 -my-2 py-2">
-                            <p class="text-[13px] text-zinc-200">Rodrigo Morales</p>
-                            <p class="text-[11px] text-zinc-500">Hipertrofia · Gimnasio Central</p>
-                          </div>
-                        </li>
-                      </ol>
-                    </section>
-
-                    <!-- COMPONENT 3: Por aprobar -->
-                    {#if !pendingApproved && !pendingRejected}
-                      <section class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C]">
-                        <h4 class="text-[15px] font-semibold text-white tracking-tight mb-2">Por aprobar</h4>
-                        <div class="flex items-center gap-3">
-                          <div class="w-9 h-9 rounded-full bg-[#1C1C20] flex items-center justify-center text-[12px] font-semibold text-zinc-200">MV</div>
-                          <div class="flex-1 min-w-0">
-                            <p class="text-[13.5px] text-white">Matías Valdés</p>
-                            <p class="text-[11px] text-zinc-500">Jue 29 · 09:00 · Rehab</p>
-                          </div>
-                          <button
-                            type="button"
-                            aria-label="Rechazar"
-                            onclick={() => {
-                              pendingRejected = true;
-                              showToast('Reserva rechazada');
-                            }}
-                            class="w-8 h-8 rounded-full bg-[#1C1C20] hover:bg-[#25252D] text-zinc-400 flex items-center justify-center transition cursor-pointer"
-                          >
-                            <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="Aprobar"
-                            onclick={() => {
-                              pendingApproved = true;
-                              showToast('Reserva aprobada');
-                            }}
-                            class="w-8 h-8 rounded-full bg-white hover:bg-zinc-200 text-black flex items-center justify-center transition cursor-pointer"
-                          >
-                            <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                          </button>
-                        </div>
-                      </section>
-                    {/if}
-
-                    <!-- COMPONENT 4: Anillos Concéntricos Apple Fitness -->
-                    <section class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C]">
-                      <div class="flex items-baseline justify-between mb-3">
-                        <h4 class="text-[15px] font-semibold text-white tracking-tight">Esta semana</h4>
-                        <span class="text-[11px] text-zinc-500 tabular-nums font-mono">27 oct – 2 nov</span>
-                      </div>
-                      <div class="flex items-center gap-4">
-                        <svg width="116" height="116" viewBox="0 0 130 130" class="shrink-0">
-                          {#each coachRings as { r, pct, color }}
-                            {@const c = 2 * Math.PI * r}
-                            <circle cx="65" cy="65" {r} fill="none" stroke={color} stroke-opacity="0.16" stroke-width="10"/>
-                            <circle
-                              cx="65"
-                              cy="65"
-                              {r}
-                              fill="none"
-                              stroke={color}
-                              stroke-width="10"
-                              stroke-linecap="round"
-                              stroke-dasharray="{(c * pct).toFixed(1)} {c.toFixed(1)}"
-                              transform="rotate(-90 65 65)"
-                            />
-                          {/each}
-                        </svg>
-                        <dl class="flex-1 space-y-2.5">
-                          <div>
-                            <dt class="text-[11px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#FA7343]"></span>Clases</dt>
-                            <dd class="text-[16px] font-semibold text-white tabular-nums font-mono">18<span class="text-zinc-500 font-normal">/24</span> <span class="text-[10px] font-medium text-[#FA7343] ml-1">+3</span></dd>
-                          </div>
-                          <div>
-                            <dt class="text-[11px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#A78BFA]"></span>Ocupación</dt>
-                            <dd class="text-[16px] font-semibold text-white tabular-nums font-mono">84% <span class="text-[10px] font-medium text-[#A78BFA] ml-1">+6%</span></dd>
-                          </div>
-                          <div>
-                            <dt class="text-[11px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#5EEAD4]"></span>Alumnos activos</dt>
-                            <dd class="text-[16px] font-semibold text-white tabular-nums font-mono">28<span class="text-zinc-500 font-normal">/30</span> <span class="text-[10px] font-medium text-zinc-500 ml-1">=</span></dd>
-                          </div>
-                        </dl>
-                      </div>
-                    </section>
-
-                    <!-- COMPONENT 5: Tendencia 8 semanas -->
-                    <section class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C]">
-                      <div class="flex items-baseline justify-between mb-3">
-                        <h4 class="text-[15px] font-semibold text-white tracking-tight">Últimas 8 semanas</h4>
-                        <span class="text-[11px] font-medium text-[#FA7343]">+20% vs mes anterior</span>
-                      </div>
-                      <div class="flex items-end gap-1.5 h-[80px]">
-                        {#each coachWeeks as v, i}
-                          {@const isCurrent = i === coachWeeks.length - 1}
-                          <div class="flex-1 flex flex-col items-center gap-1">
-                            <span class="text-[10px] tabular-nums font-mono {isCurrent ? 'text-white font-semibold' : 'text-transparent'}">{v}</span>
-                            <div
-                              class="w-full rounded-sm {isCurrent ? 'bg-[#FA7343]' : 'bg-[#2A2A31]'}"
-                              style="height:{Math.round((v / maxCoachW) * 58)}px"
-                            ></div>
-                          </div>
-                        {/each}
-                      </div>
-
-                      <div class="mt-4">
-                        <div class="flex h-1.5 rounded-full overflow-hidden gap-0.5">
-                          <div class="bg-zinc-200" style="width:62%"></div>
-                          <div class="bg-zinc-600" style="width:38%"></div>
-                        </div>
-                        <div class="flex justify-between mt-2 text-[11px]">
-                          <span class="text-zinc-300"><span class="inline-block w-2 h-2 rounded-full bg-zinc-200 mr-1.5"></span>Parque Araucano <span class="text-zinc-500 tabular-nums font-mono">62%</span></span>
-                          <span class="text-zinc-300"><span class="inline-block w-2 h-2 rounded-full bg-zinc-600 mr-1.5"></span>Gimnasio Central <span class="text-zinc-500 tabular-nums font-mono">38%</span></span>
-                        </div>
-                      </div>
-                    </section>
+                    <!-- COMPONENT 5: Tendencia 8 semanas (ZeaMetricTrend) -->
+                    <ZeaMetricTrend
+                      theme="sport"
+                      title="Últimas 8 semanas"
+                      badgeText="+20% vs mes anterior"
+                      bars={coachWeeks}
+                      distribution={sportDistribution}
+                    />
                   </div>
                 {/if}
 
@@ -750,71 +545,13 @@
         </div>
 
         <!-- Glia / Gemini Conversational Bar (Only in Chat Mode) -->
-        <div class="shrink-0 bg-black/95 border-t border-[#1C1C24] p-3 space-y-2 z-20">
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            <button
-              type="button"
-              onclick={() => handleSendPrompt('¿Cómo viene Felipe Soto?')}
-              class="shrink-0 px-3 py-1 rounded-full text-[11px] font-medium bg-[#16161C] border border-[#292934] text-zinc-300 hover:text-white hover:border-[#FA7343]/50 transition cursor-pointer"
-            >
-              ¿Cómo viene Felipe?
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSendPrompt('Aprobar reserva de Matías')}
-              class="shrink-0 px-3 py-1 rounded-full text-[11px] font-medium bg-[#16161C] border border-[#292934] text-zinc-300 hover:text-white hover:border-[#FA7343]/50 transition cursor-pointer"
-            >
-              Aprobar reserva de Matías
-            </button>
-            <button
-              type="button"
-              onclick={() => handleSendPrompt('¿Cuántos cupos quedan hoy?')}
-              class="shrink-0 px-3 py-1 rounded-full text-[11px] font-medium bg-[#16161C] border border-[#292934] text-zinc-300 hover:text-white hover:border-[#FA7343]/50 transition cursor-pointer"
-            >
-              Cupos libres hoy
-            </button>
-          </div>
-
-          <form
-            onsubmit={(e) => {
-              e.preventDefault();
-              handleSendPrompt(chatInputText);
-            }}
-            class="flex items-center gap-2"
-          >
-            <button
-              type="button"
-              onclick={() => handleSendPrompt('Actualizar resumen del día')}
-              aria-label="Modo de voz con ZEA Agent"
-              title="Hablar con ZEA Agent"
-              class="w-8 h-8 rounded-full bg-[#181820] border border-[#2C2C38] flex items-center justify-center text-zinc-300 hover:text-white hover:border-[#FA7343] transition cursor-pointer shrink-0"
-            >
-              <div class="flex items-center gap-[2px] h-3.5">
-                <span class="w-[2px] h-2 bg-current rounded-full"></span>
-                <span class="w-[2px] h-3.5 bg-current rounded-full"></span>
-                <span class="w-[2px] h-2.5 bg-current rounded-full"></span>
-              </div>
-            </button>
-
-            <div class="flex-1 relative">
-              <input
-                type="text"
-                bind:value={chatInputText}
-                placeholder="Pregunta a ZEA Agent o pide un cambio..."
-                class="w-full bg-[#141418] border border-[#262632] focus:border-[#FA7343]/60 rounded-full px-3.5 py-1.5 text-[12.5px] text-white placeholder-zinc-500 focus:outline-none transition"
-              />
-            </div>
-
-            <button
-              type="submit"
-              aria-label="Enviar instrucción"
-              class="w-8 h-8 rounded-full bg-white text-black hover:bg-zinc-200 flex items-center justify-center transition cursor-pointer shrink-0 disabled:opacity-40"
-              disabled={!chatInputText.trim()}
-            >
-              <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
-            </button>
-          </form>
-        </div>
+        <ZeaGliaBar
+          theme="sport"
+          placeholder="Pregunta a ZEA Agent o pide un cambio..."
+          chips={['¿Cómo viene Felipe Soto?', 'Aprobar reserva de Matías', '¿Cuántos cupos quedan hoy?']}
+          bind:inputText={chatInputText}
+          onSendPrompt={handleSendPrompt}
+        />
       </div>
     {:else}
       <!-- MODE B: APP CLÁSICA NATIVA (EXACT DASHBOARD VIEW) -->
@@ -826,45 +563,8 @@
             <span class="text-[11px] text-zinc-400 font-mono">Mar 27 oct</span>
           </div>
 
-          <!-- Top-Right Mode Toggle: App vs Chat -->
-          <div class="inline-flex items-center p-0.5 rounded-full bg-[#16161C] border border-[#2B2B36] shadow-inner" data-testid="sport-mode-toggle">
-            <button
-              type="button"
-              onclick={() => {
-                viewMode = 'app';
-                showToast('Modo App clásica activado');
-              }}
-              aria-label="Modo App clásica"
-              title="Modo App clásica"
-              class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'app' ? 'bg-white/20 text-white shadow-xs font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-              data-testid="mode-app-btn"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-              </svg>
-            </button>
-            <button
-              type="button"
-              onclick={() => {
-                viewMode = 'chat';
-                showToast('Modo ZEA Chat AI activado');
-              }}
-              aria-label="Modo ZEA Chat AI"
-              title="Modo ZEA Chat AI"
-              class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'chat' ? 'bg-[#FA7343]/20 text-[#FA7343] border border-[#FA7343]/40 shadow-xs font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-              data-testid="mode-chat-btn"
-            >
-              <div class="relative flex items-center">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#FA7343]"></span>
-              </div>
-            </button>
-          </div>
+          <!-- Reusable Mode Switcher -->
+          <ZeaModeToggle bind:viewMode theme="sport" onToggle={(m) => showToast(m === 'chat' ? 'Modo ZEA Chat AI activado' : 'Modo App clásica activado')} />
         </div>
 
         <!-- Scrollable Pure App Feed -->
@@ -881,221 +581,71 @@
             </p>
           </section>
 
-          <!-- Próxima clase -->
-          <section class="relative overflow-hidden rounded-[28px] p-5 border border-[#FA7343]/25 bg-gradient-to-br from-[#2B1810] via-[#141010] to-[#0A0A0C]">
-            <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#FA7343]/20 blur-3xl pointer-events-none"></div>
-            <div class="relative">
-              <div class="flex items-center justify-between">
-                <span class="flex items-center gap-2 text-[12px] font-medium text-[#FDBA8C]">
-                  <span class="relative flex w-2 h-2">
-                    <span class="absolute inline-flex w-full h-full rounded-full bg-[#FA7343] opacity-75 animate-ping"></span>
-                    <span class="relative inline-flex w-2 h-2 rounded-full bg-[#FA7343]"></span>
-                  </span>
-                  Próxima clase
-                </span>
-                <span class="text-[12px] font-semibold text-white bg-white/10 px-2.5 py-1 rounded-full">en 25 min</span>
-              </div>
+          <!-- Próxima clase (ZeaFocusCard) -->
+          <ZeaFocusCard
+            theme="sport"
+            badgeText="Próxima clase"
+            etaText="en 25 min"
+            mainMetric="10:00"
+            metricSuffix=" – 11:00"
+            avatarText="FS"
+            title="Felipe Soto"
+            subtitle="Fuerza · Parque Araucano · 12ª sesión"
+            secondaryActionLabel="Ver ficha"
+            primaryActionLabel="Check-in"
+            primaryDoneLabel="✓ Listo"
+            isDone={checkinDone}
+            onSecondaryAction={() => openStudentModal(studentsList[0])}
+            onPrimaryAction={() => {
+              checkinDone = true;
+              showToast('Check-in registrado');
+            }}
+          />
 
-              <div class="mt-4 text-[34px] font-semibold tracking-tight text-white leading-none tabular-nums font-mono">
-                10:00<span class="text-zinc-500 text-[22px] font-medium"> – 11:00</span>
-              </div>
+          <!-- Agenda del día (ZeaTimeline) -->
+          <ZeaTimeline
+            theme="sport"
+            title="Hoy"
+            headerActionLabel="Ver agenda"
+            onHeaderAction={() => activeTab = 'agenda'}
+            entries={sportTimelineEntries}
+          />
 
-              <div class="mt-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[13px] font-semibold text-white">FS</div>
-                <div class="min-w-0">
-                  <p class="text-[15px] font-medium text-white">Felipe Soto</p>
-                  <p class="text-[12px] text-zinc-400">Fuerza · Parque Araucano · 12ª sesión</p>
-                </div>
-              </div>
+          <!-- Por aprobar (ZeaApprovalCard) -->
+          <ZeaApprovalCard
+            theme="sport"
+            title="Por aprobar"
+            avatarText="MV"
+            entityName="Matías Valdés"
+            entityDetails="Jue 29 · 09:00 · Rehab"
+            isApproved={pendingApproved}
+            isRejected={pendingRejected}
+            onApprove={() => {
+              pendingApproved = true;
+              showToast('Reserva aprobada');
+            }}
+            onReject={() => {
+              pendingRejected = true;
+              showToast('Reserva rechazada');
+            }}
+          />
 
-              <div class="mt-5 grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onclick={() => openStudentModal(studentsList[0])}
-                  class="py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-[13px] font-medium text-white transition cursor-pointer text-center"
-                >
-                  Ver ficha
-                </button>
-                <button
-                  type="button"
-                  onclick={() => {
-                    checkinDone = true;
-                    showToast('Check-in registrado');
-                  }}
-                  class="py-2.5 rounded-2xl {checkinDone ? 'bg-emerald-500 text-black' : 'bg-white hover:bg-zinc-200 text-black'} text-[13px] font-semibold transition cursor-pointer text-center"
-                >
-                  {checkinDone ? '✓ Listo' : 'Check-in'}
-                </button>
-              </div>
-            </div>
-          </section>
+          <!-- Esta semana: anillos concéntricos Apple Fitness (ZeaConcentricRings) -->
+          <ZeaConcentricRings
+            theme="sport"
+            title="Esta semana"
+            subtitle="27 oct – 2 nov"
+            items={coachRings}
+          />
 
-          <!-- Agenda del día (Timeline) -->
-          <section>
-            <div class="flex items-baseline justify-between mb-2">
-              <h4 class="text-[17px] font-semibold text-white tracking-tight">Hoy</h4>
-              <button
-                type="button"
-                onclick={() => activeTab = 'agenda'}
-                class="text-[13px] text-zinc-400 hover:text-white transition cursor-pointer"
-              >
-                Ver agenda
-              </button>
-            </div>
-            <ol class="relative">
-              <li class="flex gap-3 py-2.5">
-                <span class="w-11 shrink-0 text-[13px] tabular-nums text-zinc-500 pt-0.5 font-mono">08:00</span>
-                <div class="flex-1 border-l border-[#2A2A31] pl-3 -my-2.5 py-2.5">
-                  <p class="text-[14px] text-zinc-500 line-through decoration-zinc-700">Camila Alvarez</p>
-                  <p class="text-[12px] text-zinc-600">Running · Completada</p>
-                </div>
-              </li>
-              <li class="flex gap-3 py-2.5">
-                <button
-                  type="button"
-                  class="flex-1 flex gap-3 text-left cursor-pointer group"
-                  onclick={() => openStudentModal(studentsList[0])}
-                >
-                  <span class="w-11 shrink-0 text-[13px] tabular-nums text-[#FA7343] font-semibold pt-0.5 font-mono">10:00</span>
-                  <div class="flex-1 border-l-2 border-[#FA7343] pl-3 -my-2.5 py-2.5">
-                    <p class="text-[14px] text-white font-medium">Felipe Soto</p>
-                    <p class="text-[12px] text-zinc-400">Fuerza · Parque Araucano</p>
-                  </div>
-                </button>
-              </li>
-              <li class="flex gap-3 py-2.5">
-                <span class="w-11 shrink-0 text-[13px] tabular-nums text-zinc-400 pt-0.5 font-mono">15:00</span>
-                <div class="flex-1 border-l border-dashed border-[#3A3A42] pl-3 -my-2.5 py-2.5 flex items-center justify-between">
-                  <div>
-                    <p class="text-[14px] text-zinc-300">Cupo libre</p>
-                    <p class="text-[12px] text-zinc-500">Gimnasio Central</p>
-                  </div>
-                  <button
-                    type="button"
-                    onclick={() => showToast('Link de reserva copiado')}
-                    class="text-[12px] font-medium text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-full transition cursor-pointer"
-                  >
-                    Compartir
-                  </button>
-                </div>
-              </li>
-              <li class="flex gap-3 py-2.5">
-                <span class="w-11 shrink-0 text-[13px] tabular-nums text-zinc-400 pt-0.5 font-mono">16:00</span>
-                <div class="flex-1 border-l border-[#2A2A31] pl-3 -my-2.5 py-2.5">
-                  <p class="text-[14px] text-zinc-200">Rodrigo Morales</p>
-                  <p class="text-[12px] text-zinc-500">Hipertrofia · Gimnasio Central</p>
-                </div>
-              </li>
-            </ol>
-          </section>
-
-          <!-- Por aprobar -->
-          {#if !pendingApproved && !pendingRejected}
-            <section>
-              <h4 class="text-[17px] font-semibold text-white tracking-tight mb-2">Por aprobar</h4>
-              <div class="flex items-center gap-3 py-2">
-                <div class="w-10 h-10 rounded-full bg-[#1C1C20] flex items-center justify-center text-[13px] font-semibold text-zinc-200">MV</div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[14px] text-white">Matías Valdés</p>
-                  <p class="text-[12px] text-zinc-500">Jue 29 · 09:00 · Rehab</p>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Rechazar"
-                  onclick={() => {
-                    pendingRejected = true;
-                    showToast('Reserva rechazada');
-                  }}
-                  class="w-9 h-9 rounded-full bg-[#1C1C20] hover:bg-[#25252D] text-zinc-400 flex items-center justify-center transition cursor-pointer"
-                >
-                  <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
-                </button>
-                <button
-                  type="button"
-                  aria-label="Aprobar"
-                  onclick={() => {
-                    pendingApproved = true;
-                    showToast('Reserva aprobada');
-                  }}
-                  class="w-9 h-9 rounded-full bg-white hover:bg-zinc-200 text-black flex items-center justify-center transition cursor-pointer"
-                >
-                  <svg class="w-4 h-4 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                </button>
-              </div>
-            </section>
-          {/if}
-
-          <!-- Esta semana: anillos concéntricos Apple Fitness -->
-          <section>
-            <div class="flex items-baseline justify-between mb-3">
-              <h4 class="text-[17px] font-semibold text-white tracking-tight">Esta semana</h4>
-              <span class="text-[12px] text-zinc-500 tabular-nums">27 oct – 2 nov</span>
-            </div>
-            <div class="flex items-center gap-5">
-              <svg width="130" height="130" viewBox="0 0 130 130" class="shrink-0">
-                {#each coachRings as { r, pct, color }}
-                  {@const c = 2 * Math.PI * r}
-                  <circle cx="65" cy="65" {r} fill="none" stroke={color} stroke-opacity="0.16" stroke-width="10"/>
-                  <circle
-                    cx="65"
-                    cy="65"
-                    {r}
-                    fill="none"
-                    stroke={color}
-                    stroke-width="10"
-                    stroke-linecap="round"
-                    stroke-dasharray="{(c * pct).toFixed(1)} {c.toFixed(1)}"
-                    transform="rotate(-90 65 65)"
-                  />
-                {/each}
-              </svg>
-              <dl class="flex-1 space-y-3">
-                <div>
-                  <dt class="text-[12px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#FA7343]"></span>Clases</dt>
-                  <dd class="text-[17px] font-semibold text-white tabular-nums font-mono">18<span class="text-zinc-500 font-normal">/24</span> <span class="text-[11px] font-medium text-[#FA7343] ml-1">+3</span></dd>
-                </div>
-                <div>
-                  <dt class="text-[12px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#A78BFA]"></span>Ocupación</dt>
-                  <dd class="text-[17px] font-semibold text-white tabular-nums font-mono">84% <span class="text-[11px] font-medium text-[#A78BFA] ml-1">+6%</span></dd>
-                </div>
-                <div>
-                  <dt class="text-[12px] text-zinc-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#5EEAD4]"></span>Alumnos activos</dt>
-                  <dd class="text-[17px] font-semibold text-white tabular-nums font-mono">28<span class="text-zinc-500 font-normal">/30</span> <span class="text-[11px] font-medium text-zinc-500 ml-1">=</span></dd>
-                </div>
-              </dl>
-            </div>
-          </section>
-
-          <!-- Tendencia -->
-          <section class="pb-2">
-            <div class="flex items-baseline justify-between mb-3">
-              <h4 class="text-[17px] font-semibold text-white tracking-tight">Últimas 8 semanas</h4>
-              <span class="text-[12px] font-medium text-[#FA7343]">+20% vs mes anterior</span>
-            </div>
-            <div class="flex items-end gap-2 h-[88px]">
-              {#each coachWeeks as v, i}
-                {@const isCurrent = i === coachWeeks.length - 1}
-                <div class="flex-1 flex flex-col items-center gap-1.5">
-                  <span class="text-[11px] tabular-nums font-mono {isCurrent ? 'text-white font-semibold' : 'text-transparent'}">{v}</span>
-                  <div
-                    class="w-full rounded-md {isCurrent ? 'bg-[#FA7343]' : 'bg-[#2A2A31]'}"
-                    style="height:{Math.round((v / maxCoachW) * 64)}px"
-                  ></div>
-                </div>
-              {/each}
-            </div>
-
-            <div class="mt-5">
-              <div class="flex h-2 rounded-full overflow-hidden gap-0.5">
-                <div class="bg-zinc-200" style="width:62%"></div>
-                <div class="bg-zinc-600" style="width:38%"></div>
-              </div>
-              <div class="flex justify-between mt-2 text-[12px]">
-                <span class="text-zinc-300"><span class="inline-block w-2 h-2 rounded-full bg-zinc-200 mr-1.5"></span>Parque Araucano <span class="text-zinc-500 tabular-nums">62%</span></span>
-                <span class="text-zinc-300"><span class="inline-block w-2 h-2 rounded-full bg-zinc-600 mr-1.5"></span>Gimnasio Central <span class="text-zinc-500 tabular-nums">38%</span></span>
-              </div>
-            </div>
-          </section>
+          <!-- Tendencia (ZeaMetricTrend) -->
+          <ZeaMetricTrend
+            theme="sport"
+            title="Últimas 8 semanas"
+            badgeText="+20% vs mes anterior"
+            bars={coachWeeks}
+            distribution={sportDistribution}
+          />
         </div>
       </div>
     {/if}
@@ -1127,27 +677,7 @@
             <span>{isCurrentDayBlocked ? 'Libre' : 'Activo'}</span>
           </button>
 
-          <!-- Mode Toggle -->
-          <div class="inline-flex items-center p-0.5 rounded-full bg-[#16161C] border border-[#2B2B36] shadow-inner">
-            <button
-              type="button"
-              onclick={() => viewMode = 'app'}
-              aria-label="Modo App clásica"
-              title="Modo App clásica"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'app' ? 'bg-white/20 text-white shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-            </button>
-            <button
-              type="button"
-              onclick={() => viewMode = 'chat'}
-              aria-label="Modo ZEA Chat AI"
-              title="Modo ZEA Chat AI"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'chat' ? 'bg-[#FA7343]/20 text-[#FA7343] border border-[#FA7343]/40 shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </button>
-          </div>
+          <ZeaModeToggle bind:viewMode theme="sport" />
         </div>
       </div>
 
@@ -1269,25 +799,13 @@
 
       <!-- Glia Input Bar only in Chat Mode -->
       {#if viewMode === 'chat'}
-        <div class="shrink-0 bg-black/95 border-t border-[#1C1C24] p-3 space-y-2 z-20">
-          <form
-            onsubmit={(e) => {
-              e.preventDefault();
-              handleSendPrompt(chatInputText);
-            }}
-            class="flex items-center gap-2"
-          >
-            <input
-              type="text"
-              bind:value={chatInputText}
-              placeholder="Pide un cambio de horario o reserva..."
-              class="flex-1 bg-[#141418] border border-[#262632] rounded-full px-3.5 py-1.5 text-[12.5px] text-white placeholder-zinc-500 focus:outline-none"
-            />
-            <button type="submit" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold">
-              →
-            </button>
-          </form>
-        </div>
+        <ZeaGliaBar
+          theme="sport"
+          placeholder="Pide un cambio de horario o reserva..."
+          chips={['Marcar día libre', 'Ver Parque Araucano', 'Horarios disponibles']}
+          bind:inputText={chatInputText}
+          onSendPrompt={handleSendPrompt}
+        />
       {/if}
     </div>
 
@@ -1312,27 +830,7 @@
             + Invitar
           </button>
 
-          <!-- Mode Toggle -->
-          <div class="inline-flex items-center p-0.5 rounded-full bg-[#16161C] border border-[#2B2B36] shadow-inner">
-            <button
-              type="button"
-              onclick={() => viewMode = 'app'}
-              aria-label="Modo App clásica"
-              title="Modo App clásica"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'app' ? 'bg-white/20 text-white shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-            </button>
-            <button
-              type="button"
-              onclick={() => viewMode = 'chat'}
-              aria-label="Modo ZEA Chat AI"
-              title="Modo ZEA Chat AI"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'chat' ? 'bg-[#FA7343]/20 text-[#FA7343] border border-[#FA7343]/40 shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </button>
-          </div>
+          <ZeaModeToggle bind:viewMode theme="sport" />
         </div>
       </div>
 
@@ -1427,25 +925,13 @@
       </div>
 
       {#if viewMode === 'chat'}
-        <div class="shrink-0 bg-black/95 border-t border-[#1C1C24] p-3 space-y-2 z-20">
-          <form
-            onsubmit={(e) => {
-              e.preventDefault();
-              handleSendPrompt(chatInputText);
-            }}
-            class="flex items-center gap-2"
-          >
-            <input
-              type="text"
-              bind:value={chatInputText}
-              placeholder="Preguntar sobre un alumno o plan..."
-              class="flex-1 bg-[#141418] border border-[#262632] rounded-full px-3.5 py-1.5 text-[12.5px] text-white placeholder-zinc-500 focus:outline-none"
-            />
-            <button type="submit" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold">
-              →
-            </button>
-          </form>
-        </div>
+        <ZeaGliaBar
+          theme="sport"
+          placeholder="Preguntar sobre un alumno o plan..."
+          chips={['Alumnos por renovar', 'Ver alumnos de Fuerza', 'Asistencia general']}
+          bind:inputText={chatInputText}
+          onSendPrompt={handleSendPrompt}
+        />
       {/if}
     </div>
 
@@ -1467,27 +953,7 @@
             Compartir link
           </button>
 
-          <!-- Mode Toggle -->
-          <div class="inline-flex items-center p-0.5 rounded-full bg-[#16161C] border border-[#2B2B36] shadow-inner">
-            <button
-              type="button"
-              onclick={() => viewMode = 'app'}
-              aria-label="Modo App clásica"
-              title="Modo App clásica"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'app' ? 'bg-white/20 text-white shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-            </button>
-            <button
-              type="button"
-              onclick={() => viewMode = 'chat'}
-              aria-label="Modo ZEA Chat AI"
-              title="Modo ZEA Chat AI"
-              class="px-2 py-1 rounded-full text-xs transition {viewMode === 'chat' ? 'bg-[#FA7343]/20 text-[#FA7343] border border-[#FA7343]/40 shadow-xs' : 'text-zinc-500 hover:text-zinc-300'}"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </button>
-          </div>
+          <ZeaModeToggle bind:viewMode theme="sport" />
         </div>
       </div>
 
@@ -1551,25 +1017,13 @@
       </div>
 
       {#if viewMode === 'chat'}
-        <div class="shrink-0 bg-black/95 border-t border-[#1C1C24] p-3 space-y-2 z-20">
-          <form
-            onsubmit={(e) => {
-              e.preventDefault();
-              handleSendPrompt(chatInputText);
-            }}
-            class="flex items-center gap-2"
-          >
-            <input
-              type="text"
-              bind:value={chatInputText}
-              placeholder="Preguntar sobre estadísticas o enlaces..."
-              class="flex-1 bg-[#141418] border border-[#262632] rounded-full px-3.5 py-1.5 text-[12.5px] text-white placeholder-zinc-500 focus:outline-none"
-            />
-            <button type="submit" class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold">
-              →
-            </button>
-          </form>
-        </div>
+        <ZeaGliaBar
+          theme="sport"
+          placeholder="Preguntar sobre estadísticas o enlaces..."
+          chips={['Copiar link de reservas', 'Ver facturación', 'Historial del mes']}
+          bind:inputText={chatInputText}
+          onSendPrompt={handleSendPrompt}
+        />
       {/if}
     </div>
   {/if}
@@ -1624,64 +1078,26 @@
     </button>
   </div>
 
-  <!-- BOTTOM SHEET (Ficha del alumno) -->
-  {#if sheetOpen && sheetStudent}
-    <button
-      type="button"
-      aria-label="Cerrar modal"
-      class="absolute inset-0 bg-black/60 z-30 transition-opacity cursor-pointer border-none"
-      onclick={closeSheet}
-    ></button>
-
-    <div
-      class="absolute inset-x-0 bottom-0 bg-[#1c1c24] border-t border-[#343445] rounded-t-[28px] p-5 shadow-2xl z-40 transition-transform font-sans"
-    >
-      <div class="w-10 h-1 bg-zinc-600 rounded-full mx-auto mb-4"></div>
-
-      <div class="flex items-center justify-between pb-3.5 border-b border-[#2D2D34]">
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-full bg-[#25252D] flex items-center justify-center text-[14px] font-semibold text-white">
-            {sheetStudent.initials}
-          </div>
-          <div>
-            <h4 class="font-semibold text-white text-[16px]">{sheetStudent.name}</h4>
-            <p class="text-[12px] text-zinc-400 mt-0.5">{sheetStudent.planLabel} · {sheetStudent.venue}</p>
-          </div>
-        </div>
-        <button
-          type="button"
-          aria-label="Cerrar ficha"
-          onclick={closeSheet}
-          class="p-1 rounded-full bg-white/10 text-zinc-400 hover:text-white cursor-pointer"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-
-      <!-- Progreso del plan mensual -->
-      <div class="mt-3.5 space-y-2">
-        <div class="flex items-baseline justify-between text-[12px]">
-          <span class="text-zinc-400">Progreso del ciclo actual</span>
-          <span class="text-white font-semibold font-mono">{sheetStudent.usedSessions} de {sheetStudent.totalSessions} sesiones</span>
-        </div>
-        <div class="h-2 rounded-full bg-[#25252D] overflow-hidden">
-          <div class="h-full rounded-full bg-[#FA7343]" style="width:{Math.round((sheetStudent.usedSessions / sheetStudent.totalSessions) * 100)}%;"></div>
-        </div>
-        <div class="grid grid-cols-2 gap-2 pt-2 text-center text-xs">
-          <div class="p-2 rounded-xl bg-black/40">
-            <span class="text-[11px] text-zinc-400 block">Asistencia</span>
-            <span class="font-semibold text-white text-[14px]">{sheetStudent.attendance}</span>
-          </div>
-          <div class="p-2 rounded-xl bg-black/40">
-            <span class="text-[11px] text-zinc-400 block">Sede</span>
-            <span class="font-semibold text-white text-[13px] truncate block">{sheetStudent.venue}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Reusable Bottom Sheet (Ficha del alumno) -->
+  {#if sheetStudent}
+    <ZeaSheet
+      theme="sport"
+      isOpen={sheetOpen}
+      avatarText={sheetStudent.initials}
+      title={sheetStudent.name}
+      subtitle="{sheetStudent.planLabel} · {sheetStudent.venue}"
+      progressLabel="Progreso del ciclo actual"
+      progressValueText="{sheetStudent.usedSessions} de {sheetStudent.totalSessions} sesiones"
+      progressPct={Math.round((sheetStudent.usedSessions / sheetStudent.totalSessions) * 100)}
+      stats={[
+        { label: 'Asistencia', value: sheetStudent.attendance },
+        { label: 'Sede', value: sheetStudent.venue }
+      ]}
+      onClose={closeSheet}
+    />
   {/if}
 
-  <!-- TOAST NOTIFICATION -->
+  <!-- Toast Notification -->
   {#if toastMessage}
     <div
       class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-[#22222d] border border-[#3b3b4f] text-zinc-100 font-medium text-xs rounded-full shadow-2xl z-50 flex items-center gap-2 pointer-events-none"

@@ -5,6 +5,7 @@
   import VisionIcon from '../atoms/VisionIcon.svelte';
   import MicIcon from '../atoms/MicIcon.svelte';
   import ZeaSportScreen from './ZeaSportScreen.svelte';
+  import ZeaEdgeScreen from './ZeaEdgeScreen.svelte';
 
   export interface ActiveSkills {
     audio: boolean;
@@ -1433,6 +1434,9 @@
               </button>
             </div>
           </div>
+        {:else if activePillar === 'edge'}
+          <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
+          <ZeaEdgeScreen {lang} {platform} />
         {:else if activePillar === 'sport'}
           <!-- ZEA Sport Native Gus Training Experience -->
           <ZeaSportScreen {lang} {platform} />
