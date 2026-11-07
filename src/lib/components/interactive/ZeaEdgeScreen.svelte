@@ -419,29 +419,17 @@
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
 
                   {#if msg.isPrimarySummary}
-                    <!-- Priority badge line with Lote 114 details -->
-                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-black/60 border border-[#FFCD00]/25">
-                      <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#FFCD00] animate-pulse"></span>
-                        <span class="text-[11px] font-mono text-[#FFCD00] uppercase font-bold tracking-tight">Prioridad Turno</span>
-                        <span class="text-xs font-semibold text-white">Lote 114</span>
-                        <span class="text-[11px] text-zinc-400 font-mono">· 28t AC-20</span>
-                      </div>
-                      <span class="text-[10px] font-mono text-zinc-400 bg-white/5 px-2 py-0.5 rounded-md">en 15 min</span>
-                    </div>
-
                     <!-- Botones de Acción Inmediata (Zero Typing) -->
                     <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-[#262418]">
                       <button
                         type="button"
                         onclick={compensateAndRelease}
                         disabled={urgentBatchCompleted}
-                        class="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-md {urgentBatchCompleted ? 'bg-[#27272A] text-zinc-400' : 'bg-[#FFCD00] hover:bg-[#FFE066] text-black font-bold'}"
+                        class="px-3.5 py-2 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md {urgentBatchCompleted ? 'bg-[#27272A] text-zinc-400' : 'bg-[#FFCD00] hover:bg-[#FFE066] text-black font-bold'}"
                       >
                         {#if urgentBatchCompleted}
                           <span>✓ Lote Liberado</span>
                         {:else}
-                          <span>💧</span>
                           <span>Compensar agua y liberar</span>
                         {/if}
                       </button>
@@ -610,7 +598,7 @@
         <ZeaGliaBar
           theme="industrial"
           placeholder="Consultar dosificación, silos o parte diario..."
-          chips={['💧 Compensar Lote #114', '📋 Estado Parte Diario', '🚚 Ubicación Mixer #42']}
+          chips={['Compensar agua y liberar', 'Estado Parte Diario', 'Ubicación Mixer #42']}
           bind:inputText={chatInputText}
           onSendPrompt={handleSendPrompt}
         />

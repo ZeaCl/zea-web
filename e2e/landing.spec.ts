@@ -293,12 +293,11 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const edgeScreen = page.getByTestId('zea-edge-screen');
     await expect(edgeScreen).toBeVisible();
 
-    // 2. Tab 1: Resumen (por defecto) con Focus Card de prioridad turno y expansión de checklist
+    // 2. Tab 1: Resumen (por defecto) con expansión de checklist en la burbuja
     await expect(page.locator('text=ZEA Edge Agent').first()).toBeVisible();
-    await expect(page.locator('text=Prioridad Turno')).toBeVisible();
-    await expect(page.locator('text=Lote 114')).toBeVisible();
+    await expect(page.locator('text=Lote #114')).toBeVisible();
 
-    // Expandir checklist pulsando "Ver checklist" en la Focus Card
+    // Expandir checklist pulsando "Ver checklist" dentro de la misma burbuja
     const expandBtn = page.getByRole('button', { name: 'Ver checklist' }).first();
     await expect(expandBtn).toBeVisible();
     await expandBtn.click();
@@ -309,7 +308,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=Tonelaje Despachado')).toBeVisible();
 
     // 2.1 Botón de acción inmediata (Zero-Typing): Compensar agua y liberar Lote #114
-    const compensateBtn = page.getByRole('button', { name: 'Compensar agua y liberar' });
+    const compensateBtn = page.getByRole('button', { name: 'Compensar agua y liberar' }).first();
     await expect(compensateBtn).toBeVisible();
     await compensateBtn.click();
     await expect(page.locator('text=Compensar agua y liberar Lote #114')).toBeVisible();
