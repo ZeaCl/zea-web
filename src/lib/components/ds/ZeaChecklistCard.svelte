@@ -18,6 +18,7 @@
     subtitle = '',
     items = [],
     actionLabel = '',
+    embedded = false,
     onToggleItem,
     onAction
   }: {
@@ -27,6 +28,7 @@
     subtitle?: string;
     items?: ZeaChecklistItem[];
     actionLabel?: string;
+    embedded?: boolean;
     onToggleItem?: (id: string) => void;
     onAction?: () => void;
   } = $props();
@@ -36,7 +38,9 @@
 </script>
 
 <section
-  class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C] space-y-3"
+  class={embedded
+    ? 'space-y-2.5 w-full pt-1'
+    : 'p-4 rounded-[24px] bg-[#141418] border border-[#24242C] space-y-3'}
   data-testid="zea-checklist-card"
 >
   <!-- Top Header -->
@@ -91,7 +95,7 @@
       <button
         type="button"
         onclick={() => onToggleItem?.(item.id)}
-        class="w-full p-2.5 rounded-2xl bg-[#1A1A20] hover:bg-[#22222A] border {item.checked ? 'border-white/10' : 'border-[#FFCD00]/40'} text-left transition flex items-start gap-2.5 cursor-pointer"
+        class="w-full p-2.5 rounded-xl {embedded ? 'bg-black/45 hover:bg-black/60' : 'bg-[#1A1A20] hover:bg-[#22222A]'} border {item.checked ? (embedded ? 'border-white/5' : 'border-white/10') : 'border-[#FFCD00]/40'} text-left transition flex items-start gap-2.5 cursor-pointer"
       >
         <!-- Checkbox indicator -->
         <div

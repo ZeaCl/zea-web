@@ -448,12 +448,13 @@
                       </button>
                     </div>
 
-                    <!-- EXPANDABLE CHECKLIST COMPONENT (Inmediatamente en la misma burbuja) -->
+                    <!-- EXPANDABLE CHECKLIST COMPONENT (Inmediatamente en la misma burbuja, sin doble card) -->
                     {#if checklistExpanded}
                       <div class="pt-2 border-t border-[#262418]" in:fade={{ duration: 150 }}>
                         <ZeaChecklistCard
                           theme="industrial"
                           title="Parte Diario"
+                          embedded={true}
                           items={parteDiarioItems}
                           actionLabel="Consolidar Turno"
                           onToggleItem={toggleParteDiarioItem}
