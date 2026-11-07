@@ -285,7 +285,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=ZEA Coach Agent').first()).toBeVisible();
   });
 
-  test('debe desplegar la interfaz industrial ZEA Edge (estilo Caterpillar amarillo/negro) con telemetría, flota y switch SCADA/Chat', async ({ page }) => {
+  test('debe desplegar la interfaz industrial ZEA Edge (estilo Caterpillar amarillo/negro) con las 4 secciones inferiores (Resumen, Seguimiento, Sensores, Perfil)', async ({ page }) => {
     const pillarEdge = page.getByTestId('pillar-edge');
     await pillarEdge.click();
 
@@ -293,36 +293,49 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const edgeScreen = page.getByTestId('zea-edge-screen');
     await expect(edgeScreen).toBeVisible();
 
-    // 2. Tab 1: Operaciones con telemetría de Mixer #42 a 165°C y anillos industriales
+    // 2. Tab 1: Resumen (por defecto) con Focus Card de prioridad turno y expansión de checklist
     await expect(page.locator('text=ZEA Edge Agent').first()).toBeVisible();
+    await expect(page.locator('text=Prioridad Turno')).toBeVisible();
+    await expect(page.locator('text=Lote 114')).toBeVisible();
+
+    // Expandir checklist pulsando "Ver checklist" en la Focus Card
+    const expandBtn = page.getByRole('button', { name: 'Ver checklist' }).first();
+    await expect(expandBtn).toBeVisible();
+    await expandBtn.click();
+    await expect(page.getByTestId('zea-checklist-card')).toBeVisible();
+
     await expect(page.locator('text=165°C').first()).toBeVisible();
     await expect(page.locator('text=Mixer #42 · Planta Maipú').first()).toBeVisible();
     await expect(page.locator('text=Tonelaje Despachado')).toBeVisible();
 
-    // 3. Cambiar a Tab Flota IoT
-    await page.getByRole('button', { name: 'Flota IoT', exact: true }).click();
-    await expect(page.locator('text=18 ACTIVOS')).toBeVisible();
-    await expect(page.locator('text=Planta Maipú').first()).toBeVisible();
+    // 3. Cambiar a Tab 2: Seguimiento
+    await page.getByRole('button', { name: 'Seguimiento', exact: true }).click();
+    await expect(page.locator('text=Flujo Operativo End-to-End')).toBeVisible();
+    await expect(page.locator('text=Avance Consolidado del Turno')).toBeVisible();
 
-    // 4. Cambiar a Tab Cuadrillas
-    await page.getByRole('button', { name: 'Cuadrillas', exact: true }).click();
-    await expect(page.locator('text=Cuadrilla Alpha (Pavimentación)')).toBeVisible();
-
-    // 5. Cambiar a Tab Planta
-    await page.getByRole('button', { name: 'Planta', exact: true }).click();
+    // 4. Cambiar a Tab 3: Sensores
+    await page.getByRole('button', { name: 'Sensores', exact: true }).click();
+    await expect(page.getByTestId('zea-retina-capture-card')).toBeVisible();
     await expect(page.locator('text=Silo de Asfalto #1 (AC-20)')).toBeVisible();
+    await expect(page.locator('text=18 ACTIVOS')).toBeVisible();
 
-    // 6. Volver a Operaciones y alternar entre Modo SCADA clásica y Modo Chat AI
-    await page.getByRole('button', { name: 'Operaciones', exact: true }).click();
+    // 5. Cambiar a Tab 4: Perfil (Jefe de Planta)
+    await page.getByRole('button', { name: 'Perfil', exact: true }).click();
+    await expect(page.locator('text=Carlos Hinostroza')).toBeVisible();
+    await expect(page.locator('text=Jefe de Operaciones & Planta · Planta Maipú')).toBeVisible();
+    await expect(page.locator('text=ID: OPR-786 · Certificado ITO')).toBeVisible();
+
+    // 6. Volver a Resumen y alternar entre Modo App Clásica y Modo Chat AI
+    await page.getByRole('button', { name: 'Resumen', exact: true }).click();
     const modeAppBtn = page.getByTestId('mode-app-btn').first();
     const modeChatBtn = page.getByTestId('mode-chat-btn').first();
 
-    // Cambiar a SCADA clásica
+    // Cambiar a Modo App Clásica
     await modeAppBtn.click();
-    await expect(page.locator('text=Panel de Despacho')).toBeVisible();
+    await expect(page.locator('text=Parte Diario de Planta')).toBeVisible();
     await expect(page.locator('text=165°C').first()).toBeVisible();
 
-    // Volver a Chat AI
+    // Volver a Modo Chat AI
     await modeChatBtn.click();
     await expect(page.locator('text=ZEA Edge Agent').first()).toBeVisible();
   });
