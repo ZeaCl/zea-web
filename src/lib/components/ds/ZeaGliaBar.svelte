@@ -82,7 +82,7 @@
     <!-- Send Button -->
     <button
       type="submit"
-      aria-label="Enviar instrucción"
+      aria-label="Enviar mensaje"
       class="w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer shrink-0 disabled:opacity-40"
       style="{theme === 'industrial' ? `background-color: ${cfg.btnPrimaryBg}; color: ${cfg.btnPrimaryText};` : 'background-color: #FFFFFF; color: #000000;'}"
       disabled={!inputText.trim()}

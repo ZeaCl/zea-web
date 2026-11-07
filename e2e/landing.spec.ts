@@ -43,6 +43,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
   });
 
   test('debe alternar el idioma entre ES y ENG usando el switch estilo iOS', async ({ page }) => {
+    await page.getByTestId('nav-developer').click();
     const switchBtn = page.getByTestId('ios-lang-switch');
     const btnEn = page.getByTestId('lang-btn-en');
     const btnEs = page.getByTestId('lang-btn-es');
@@ -143,7 +144,8 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
   });
 
   test('debe capturar foto desde la cámara y desplegar la tarjeta de foto estilo WhatsApp en el chat', async ({ page }) => {
-    // 1. Abrir menú (+) y presionar cámara
+    // 1. Abrir vista developer para WhatsApp simulator y presionar cámara
+    await page.getByTestId('nav-developer').click();
     const plusBtn = page.getByTestId('whatsapp-plus-btn');
     await plusBtn.click();
     const cameraBtn = page.getByTestId('whatsapp-camera-btn');
@@ -173,7 +175,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const pillarVenture = page.getByTestId('pillar-venture');
 
     await expect(pillarEdge).toBeVisible();
-    await expect(pillarEdge).toContainText('ZEA Edge');
+    await expect(pillarEdge).toContainText(/ZEA (Industries|Edge)/);
     await expect(pillarEdge).toContainText('Industrial');
 
     await expect(pillarSport).toBeVisible();

@@ -1,4 +1,4 @@
-export type ZeaTheme = 'sport' | 'industrial' | 'funds';
+export type ZeaTheme = 'sport' | 'industrial' | 'funds' | 'default';
 
 export interface ZeaThemeConfig {
   name: ZeaTheme;
@@ -16,6 +16,20 @@ export interface ZeaThemeConfig {
 }
 
 export const ZEA_THEMES: Record<ZeaTheme, ZeaThemeConfig> = {
+  default: {
+    name: 'default',
+    accent: '#FFFFFF', // Clean Titanium Monochrome
+    accentMuted: 'rgba(255, 255, 255, 0.12)',
+    accentBorder: 'rgba(255, 255, 255, 0.25)',
+    glow: 'rgba(255, 255, 255, 0.15)',
+    cardBgGradient: 'from-[#222228] via-[#141418] to-[#0A0A0C]',
+    btnPrimaryBg: '#FFFFFF',
+    btnPrimaryText: '#000000',
+    btnPrimaryHover: 'hover:bg-zinc-200',
+    ringColors: ['#FFFFFF', '#A1A1AA', '#52525B'],
+    pillActiveBg: '#FFFFFF',
+    pillActiveText: '#000000'
+  },
   sport: {
     name: 'sport',
     accent: '#FA7343',

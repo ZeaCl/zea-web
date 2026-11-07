@@ -7,7 +7,7 @@
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
   let activeNav = $state<'products' | 'industries' | 'developer'>('industries');
-  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture'>('none');
+  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default'>('default');
   const t = $derived(content[lang]);
 
   let skills = $state<ActiveSkills>({
@@ -86,7 +86,7 @@
                 class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
               >
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-white tracking-tight">ZEA Edge</span>
+                  <span class="text-sm font-bold text-white tracking-tight">ZEA Industries</span>
                   <span class="text-[10.5px] font-mono text-zinc-400">Industrial</span>
                 </div>
                 <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -141,7 +141,21 @@
               <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
                 {t.mobilePlatform.industriesLabel}
               </span>
-              <div class="grid grid-cols-3 gap-4 border-t border-white/[0.08] pt-3">
+              <div class="grid grid-cols-4 gap-2.5 border-t border-white/[0.08] pt-3">
+                <button
+                  type="button"
+                  onclick={() => activePillar = 'default'}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="pillar-core"
+                >
+                  <span class="text-xs font-semibold block transition {activePillar === 'default' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                    ZEA
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                    Personal
+                  </span>
+                </button>
+
                 <button
                   type="button"
                   onclick={() => activePillar = 'edge'}
@@ -196,6 +210,7 @@
           {platform}
           bind:skills={skills}
           {activePillar}
+          {activeNav}
         />
       </div>
     </div>

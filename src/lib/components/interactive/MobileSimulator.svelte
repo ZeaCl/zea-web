@@ -6,6 +6,7 @@
   import MicIcon from '../atoms/MicIcon.svelte';
   import ZeaSportScreen from './ZeaSportScreen.svelte';
   import ZeaEdgeScreen from './ZeaEdgeScreen.svelte';
+  import ZeaDefaultScreen from './ZeaDefaultScreen.svelte';
 
   export interface ActiveSkills {
     audio: boolean;
@@ -17,12 +18,14 @@
     lang = 'es',
     platform = 'ios',
     skills = $bindable({ audio: false, vision: false, security: false }),
-    activePillar = 'none'
+    activePillar = 'none',
+    activeNav = 'developer'
   }: {
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
     skills?: ActiveSkills;
     activePillar?: 'none' | 'edge' | 'sport' | 'venture';
+    activeNav?: string;
   } = $props();
 
   let isThinking = $state(false);
@@ -1434,13 +1437,7 @@
               </button>
             </div>
           </div>
-        {:else if activePillar === 'edge'}
-          <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
-          <ZeaEdgeScreen {lang} {platform} />
-        {:else if activePillar === 'sport'}
-          <!-- ZEA Sport Native Gus Training Experience -->
-          <ZeaSportScreen {lang} {platform} />
-        {:else}
+        {:else if activeNav === 'developer' || skills.audio || skills.vision || skills.security || activePillar === 'venture'}
           <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
           <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
             <div class="flex items-center gap-2.5">
@@ -1870,7 +1867,15 @@
             {/if}
           </form>
         {/if}
-
+        {:else if activePillar === 'edge'}
+          <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
+          <ZeaEdgeScreen {lang} {platform} />
+        {:else if activePillar === 'sport'}
+          <!-- ZEA Sport Native Gus Training Experience -->
+          <ZeaSportScreen {lang} {platform} />
+        {:else}
+          <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->
+          <ZeaDefaultScreen {lang} {platform} />
         {/if}
 
         <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar (Hidden on full screen menu) -->

@@ -40,9 +40,11 @@
 <section
   class="relative overflow-hidden rounded-[26px] p-4.5 border bg-gradient-to-br shadow-lg transition-all"
   style="border-color: {cfg.accentBorder};"
+  class:from-[#222228]={theme === 'default'}
   class:from-[#282108]={theme === 'industrial'}
   class:from-[#2B1810]={theme === 'sport'}
   class:from-[#0F241C]={theme === 'funds'}
+  class:via-[#141418]={theme === 'default'}
   class:via-[#141412]={theme === 'industrial'}
   class:via-[#141010]={theme === 'sport'}
   class:via-[#0E1513]={theme === 'funds'}
