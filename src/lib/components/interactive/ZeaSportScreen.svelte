@@ -426,12 +426,7 @@
                 </div>
               </div>
             {:else}
-              <div class="flex flex-col items-start gap-2 pr-2" in:fade={{ duration: 120 }}>
-                <div class="flex items-center gap-2">
-                  <div class="w-5 h-5 rounded-full bg-[#FA7343] flex items-center justify-center text-[10px] font-bold text-black">Z</div>
-                  <span class="text-[12px] font-semibold text-zinc-300">ZEA Coach Agent</span>
-                </div>
-
+              <div class="flex flex-col items-start gap-1.5 pr-2" in:fade={{ duration: 120 }}>
                 <!-- Text Bubble -->
                 <div class="bg-[#141418] border border-[#24242C] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>

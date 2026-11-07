@@ -414,32 +414,44 @@
                 <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} <span class="text-[#FFCD00]">✓✓</span></span>
               </div>
             {:else}
-              <div class="flex flex-col items-start gap-2 pr-1" in:fade={{ duration: 120 }}>
-                <div class="flex items-center gap-2">
-                  <div class="w-5 h-5 rounded-full bg-[#FFCD00] flex items-center justify-center text-[10px] font-black text-black">Z</div>
-                  <span class="text-[12px] font-semibold text-zinc-300">ZEA Edge Agent</span>
-                </div>
-                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%] space-y-2.5">
+              <div class="flex flex-col items-start gap-1.5 pr-1 w-full" in:fade={{ duration: 120 }}>
+                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[22px] rounded-tl-xs px-4 py-3 max-w-[96%] space-y-3 shadow-lg">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
 
-                  {#if msg.isPrimarySummary && !urgentBatchCompleted}
+                  {#if msg.isPrimarySummary}
+                    <!-- Priority badge line with Lote 114 details -->
+                    <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-black/60 border border-[#FFCD00]/25">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#FFCD00] animate-pulse"></span>
+                        <span class="text-[11px] font-mono text-[#FFCD00] uppercase font-bold tracking-tight">Prioridad Turno</span>
+                        <span class="text-xs font-semibold text-white">Lote 114</span>
+                        <span class="text-[11px] text-zinc-400 font-mono">· 28t AC-20</span>
+                      </div>
+                      <span class="text-[10px] font-mono text-zinc-400 bg-white/5 px-2 py-0.5 rounded-md">en 15 min</span>
+                    </div>
+
                     <!-- Botones de Acción Inmediata (Zero Typing) -->
                     <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-[#262418]">
                       <button
                         type="button"
                         onclick={compensateAndRelease}
-                        class="px-3 py-1.5 rounded-xl bg-[#FFCD00] hover:bg-[#FFE066] text-black font-semibold text-[12px] flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                        disabled={urgentBatchCompleted}
+                        class="px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-md {urgentBatchCompleted ? 'bg-[#27272A] text-zinc-400' : 'bg-[#FFCD00] hover:bg-[#FFE066] text-black font-bold'}"
                       >
-                        <span>💧</span>
-                        <span>Compensar agua y liberar</span>
+                        {#if urgentBatchCompleted}
+                          <span>✓ Lote Liberado</span>
+                        {:else}
+                          <span>💧</span>
+                          <span>Compensar agua y liberar</span>
+                        {/if}
                       </button>
                       <button
                         type="button"
                         onclick={() => {
                           checklistExpanded = !checklistExpanded;
-                          showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
+                          showToast(checklistExpanded ? 'Parte Diario desplegado' : 'Parte Diario minimizado');
                         }}
-                        class="px-3 py-1.5 rounded-xl bg-[#221F10] hover:bg-[#302B16] border border-[#FFCD00]/30 text-[#FFCD00] font-medium text-[12px] flex items-center gap-1.5 transition cursor-pointer"
+                        class="px-3 py-2 rounded-xl bg-[#221F10] hover:bg-[#302B16] border border-[#FFCD00]/30 text-[#FFCD00] font-medium text-xs flex items-center gap-1.5 transition cursor-pointer"
                       >
                         <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
@@ -447,35 +459,10 @@
                         <span>{checklistExpanded ? 'Ocultar checklist' : 'Ver checklist (2/4)'}</span>
                       </button>
                     </div>
-                  {/if}
-                </div>
 
-                {#if msg.isPrimarySummary}
-                  <div class="w-full space-y-4 pt-1">
-                    <!-- URGENT PRIORITY FOCUS CARD (Igual que Próxima Clase en ZEA Sport) -->
-                    <ZeaFocusCard
-                      theme="industrial"
-                      badgeText="Prioridad Turno"
-                      etaText="en 15 min"
-                      mainMetric="Lote 114"
-                      metricSuffix=" · 28t AC-20"
-                      avatarText="P-1"
-                      title="Dosificación Áridos & Silo 1"
-                      subtitle="Tolva 3 (+1.4% humedad) · Requiere compensar -18L"
-                      secondaryActionLabel={checklistExpanded ? 'Ocultar checklist' : 'Ver checklist'}
-                      primaryActionLabel="Compensar y Liberar"
-                      primaryDoneLabel="✓ Lote Liberado"
-                      isDone={urgentBatchCompleted}
-                      onSecondaryAction={() => {
-                        checklistExpanded = !checklistExpanded;
-                        showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
-                      }}
-                      onPrimaryAction={compensateAndRelease}
-                    />
-
-                    <!-- EXPANDABLE CHECKLIST COMPONENT (Parte Diario) -->
+                    <!-- EXPANDABLE CHECKLIST COMPONENT (Inmediatamente en la misma burbuja) -->
                     {#if checklistExpanded}
-                      <div in:fade={{ duration: 150 }}>
+                      <div class="pt-2 border-t border-[#262418]" in:fade={{ duration: 150 }}>
                         <ZeaChecklistCard
                           theme="industrial"
                           title="Parte Diario"
@@ -486,7 +473,11 @@
                         />
                       </div>
                     {/if}
+                  {/if}
+                </div>
 
+                {#if msg.isPrimarySummary}
+                  <div class="w-full space-y-4 pt-1">
                     <!-- Active Dispatch Focus Card (Mixer #42) -->
                     <ZeaFocusCard
                       theme="industrial"
@@ -648,11 +639,7 @@
                 <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} ✓✓</span>
               </div>
             {:else}
-              <div class="flex flex-col items-start gap-2 pr-1">
-                <div class="flex items-center gap-2">
-                  <div class="w-5 h-5 rounded-full bg-[#FFCD00] flex items-center justify-center text-[10px] font-black text-black">Z</div>
-                  <span class="text-[12px] font-semibold text-zinc-300">ZEA Edge Agent</span>
-                </div>
+              <div class="flex flex-col items-start gap-1.5 pr-1">
                 <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
                 </div>
@@ -729,11 +716,7 @@
                 <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} ✓✓</span>
               </div>
             {:else}
-              <div class="flex flex-col items-start gap-2 pr-1">
-                <div class="flex items-center gap-2">
-                  <div class="w-5 h-5 rounded-full bg-[#FFCD00] flex items-center justify-center text-[10px] font-black text-black">Z</div>
-                  <span class="text-[12px] font-semibold text-zinc-300">ZEA Edge Agent</span>
-                </div>
+              <div class="flex flex-col items-start gap-1.5 pr-1">
                 <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
                 </div>
