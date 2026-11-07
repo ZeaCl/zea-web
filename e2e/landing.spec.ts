@@ -301,13 +301,15 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=Esta semana').first()).toBeVisible();
     await expect(page.locator('text=Últimas 8 semanas').first()).toBeVisible();
 
-    // La card de Tarea Asignada (Parte Diario) tiene su propia Card independiente
+    // En el componente Hoy (a las 07:30) se encuentra el hito de Parte Diario de Planta
+    await expect(page.locator('text=Parte Diario de Planta').first()).toBeVisible();
+    const openParteDiarioBtn = page.getByRole('button', { name: /Parte Diario de Planta/i }).first();
+    await expect(openParteDiarioBtn).toBeVisible();
+    await openParteDiarioBtn.click();
+
+    // Al clickear el hito 07:30, se despliega la card de Tarea Asignada (Parte Diario de Operaciones)
     await expect(page.getByTestId('zea-checklist-card').first()).toBeVisible();
     await expect(page.locator('text=Parte Diario de Operaciones').first()).toBeVisible();
-
-    // Botón en la burbuja para enfocar la Tarea Asignada
-    const scrollToTaskBtn = page.getByRole('button', { name: /Ir a Parte Diario/i }).first();
-    await expect(scrollToTaskBtn).toBeVisible();
 
     await expect(page.locator('text=165°C').first()).toBeVisible();
     await expect(page.locator('text=Mixer #42 · Planta Maipú').first()).toBeVisible();
@@ -350,7 +352,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
 
     // Cambiar a Modo App Clásica
     await modeAppBtn.click();
-    await expect(page.locator('text=Parte Diario de Planta')).toBeVisible();
+    await expect(page.locator('text=Parte Diario de Planta').first()).toBeVisible();
     await expect(page.locator('text=165°C').first()).toBeVisible();
 
     // Volver a Modo Chat AI

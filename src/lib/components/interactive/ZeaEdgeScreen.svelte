@@ -166,12 +166,46 @@
   // =========================================================================
   // 2. SEGUIMIENTO DATA (Workflows, Cola O(1), SLA & Anillos)
   // =========================================================================
-  const timelineEntries = [
-    { id: '1', time: '07:30', title: 'Parte Diario & Escaneo QR Tolva #08', subtitle: 'Planta · Cola O(1) sincronizada (<1s) · ERP al día', status: 'completed' as const, onClick: () => showToast('Tolva #08 verificada') },
-    { id: '2', time: '08:42', title: 'Workflow Despacho · Mixer #42 (Rodrigo Baeza)', subtitle: 'Flota · Asfalto AC-20 a 165°C · Frente Autopista', status: 'active' as const, onClick: () => openTruckDetails(fleetList[0]) },
-    { id: '3', time: '11:30', title: 'Validación Cita Técnica & Orden Silo 2', subtitle: 'Planta · Esperando firma de Jefe de Planta', status: 'available' as const, actionLabel: 'Autorizar', onAction: () => showToast('Orden de Silo 2 autorizada') },
-    { id: '4', time: '13:00', title: 'Cierre Guía DTE & Auditoría Terreno', subtitle: 'Flota · Despacho con guía electrónica firmada', status: 'scheduled' as const }
-  ];
+  const timelineEntries = $derived([
+    {
+      id: '1',
+      time: '07:30',
+      title: 'Parte Diario de Planta',
+      subtitle: checklistExpanded
+        ? 'Ocultar checklist del turno'
+        : `${parteDiarioItems.filter((i) => i.checked).length} de ${parteDiarioItems.length} verificaciones`,
+      actionLabel: checklistExpanded ? 'Ocultar' : 'Ver parte diario',
+      status: 'active' as const,
+      onClick: () => {
+        checklistExpanded = !checklistExpanded;
+        showToast(checklistExpanded ? 'Parte Diario desplegado' : 'Parte Diario minimizado');
+      }
+    },
+    {
+      id: '2',
+      time: '08:42',
+      title: 'Workflow Despacho · Mixer #42 (Rodrigo Baeza)',
+      subtitle: 'Flota · Asfalto AC-20 a 165°C · Frente Autopista',
+      status: 'active' as const,
+      onClick: () => openTruckDetails(fleetList[0])
+    },
+    {
+      id: '3',
+      time: '11:30',
+      title: 'Validación Cita Técnica & Orden Silo 2',
+      subtitle: 'Planta · Esperando firma de Jefe de Planta',
+      status: 'available' as const,
+      actionLabel: 'Autorizar',
+      onAction: () => showToast('Orden de Silo 2 autorizada')
+    },
+    {
+      id: '4',
+      time: '13:00',
+      title: 'Cierre Guía DTE & Auditoría Terreno',
+      subtitle: 'Flota · Despacho con guía electrónica firmada',
+      status: 'scheduled' as const
+    }
+  ]);
 
   const industrialRings = [
     { label: 'Tonelaje Despachado', value: '420 / 500 t', delta: '+35 t vs ayer', pct: 420 / 500, color: '#FFCD00' },
@@ -464,7 +498,7 @@
                 <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[22px] rounded-tl-xs px-4 py-3 max-w-[96%] space-y-3 shadow-lg">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
 
-                  <!-- Botones de Acción Inmediata (porque el mensaje termina en pregunta) -->
+                  <!-- Botones de Acción Inmediata (porque el mensaje termina en pregunta de alerta) -->
                   {#if msg.id === 'chk-msg-1'}
                     <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-[#262418]">
                       <button
@@ -478,16 +512,6 @@
                         {:else}
                           <span>Compensar agua y liberar</span>
                         {/if}
-                      </button>
-                      <button
-                        type="button"
-                        onclick={scrollToParteDiario}
-                        class="px-3 py-2 rounded-xl bg-[#221F10] hover:bg-[#302B16] border border-[#FFCD00]/30 text-[#FFCD00] font-medium text-xs flex items-center gap-1.5 transition cursor-pointer"
-                      >
-                        <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                        </svg>
-                        <span>Ir a Parte Diario ({parteDiarioItems.filter(i => i.checked).length}/4)</span>
                       </button>
                     </div>
                   {/if}
@@ -516,20 +540,31 @@
                       }}
                     />
 
-                    <!-- 2. TAREA ASIGNADA: PARTE DIARIO (ZeaChecklistCard con su propia Card) -->
-                    <div id="parte-diario-task-card">
-                      <ZeaChecklistCard
-                        theme="industrial"
-                        moduleBadge="TAREA ASIGNADA"
-                        title="Parte Diario de Operaciones"
-                        subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
-                        items={parteDiarioItems}
-                        actionLabel="Consolidar y Firmar Turno"
-                        onToggleItem={toggleParteDiarioItem}
-                        onInputSubmit={handleParteDiarioInput}
-                        onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
-                      />
-                    </div>
+                    <!-- 2. EL DÍA: HOY (ZeaTimeline con hito 07:30 Parte Diario) -->
+                    <ZeaTimeline
+                      theme="industrial"
+                      title="Hoy"
+                      headerActionLabel="Ver seguimiento"
+                      onHeaderAction={() => (activeTab = 'tracking')}
+                      entries={timelineEntries}
+                    />
+
+                    <!-- Despliegue interactivo del Parte Diario activado desde el hito 07:30 de Hoy -->
+                    {#if checklistExpanded}
+                      <div in:fade={{ duration: 150 }} id="parte-diario-task-card">
+                        <ZeaChecklistCard
+                          theme="industrial"
+                          moduleBadge="TAREA ASIGNADA"
+                          title="Parte Diario de Operaciones"
+                          subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
+                          items={parteDiarioItems}
+                          actionLabel="Consolidar y Firmar Turno"
+                          onToggleItem={toggleParteDiarioItem}
+                          onInputSubmit={handleParteDiarioInput}
+                          onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
+                        />
+                      </div>
+                    {/if}
 
                     <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
                     <ZeaApprovalCard
@@ -556,16 +591,7 @@
                       }}
                     />
 
-                    <!-- 4. EL DÍA: HOY (ZeaTimeline) -->
-                    <ZeaTimeline
-                      theme="industrial"
-                      title="Hoy"
-                      headerActionLabel="Ver seguimiento"
-                      onHeaderAction={() => (activeTab = 'tracking')}
-                      entries={timelineEntries}
-                    />
-
-                    <!-- 5. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
+                    <!-- 4. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
                     <ZeaConcentricRings
                       theme="industrial"
                       title="Esta semana"
@@ -573,7 +599,7 @@
                       items={industrialRings}
                     />
 
-                    <!-- 6. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
+                    <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
                     <ZeaMetricTrend
                       theme="industrial"
                       title="Últimas 8 semanas"
@@ -647,20 +673,7 @@
             }}
           />
 
-          <!-- 2. TAREA ASIGNADA: PARTE DIARIO (ZeaChecklistCard con su propia Card) -->
-          <ZeaChecklistCard
-            theme="industrial"
-            moduleBadge="TAREA ASIGNADA"
-            title="Parte Diario de Operaciones"
-            subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
-            items={parteDiarioItems}
-            actionLabel="Consolidar y Firmar Turno"
-            onToggleItem={toggleParteDiarioItem}
-            onInputSubmit={handleParteDiarioInput}
-            onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
-          />
-
-          <!-- 2. EL DÍA: HOY (ZeaTimeline) -->
+          <!-- 2. EL DÍA: HOY (ZeaTimeline con hito 07:30 Parte Diario) -->
           <ZeaTimeline
             theme="industrial"
             title="Hoy"
@@ -668,6 +681,23 @@
             onHeaderAction={() => (activeTab = 'tracking')}
             entries={timelineEntries}
           />
+
+          <!-- Despliegue interactivo del Parte Diario activado desde el hito 07:30 de Hoy -->
+          {#if checklistExpanded}
+            <div in:fade={{ duration: 150 }} id="parte-diario-task-card">
+              <ZeaChecklistCard
+                theme="industrial"
+                moduleBadge="TAREA ASIGNADA"
+                title="Parte Diario de Operaciones"
+                subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
+                items={parteDiarioItems}
+                actionLabel="Consolidar y Firmar Turno"
+                onToggleItem={toggleParteDiarioItem}
+                onInputSubmit={handleParteDiarioInput}
+                onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
+              />
+            </div>
+          {/if}
 
           <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
           <ZeaApprovalCard

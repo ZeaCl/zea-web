@@ -76,7 +76,7 @@
           <button
             type="button"
             onclick={() => entry.onClick?.()}
-            class="flex-1 flex gap-3 text-left cursor-pointer group"
+            class="flex-1 flex items-center justify-between text-left cursor-pointer group"
           >
             <div
               class="flex-1 pl-3 -my-2 py-2"
@@ -85,6 +85,13 @@
               <p class="text-[13.5px] text-white font-medium group-hover:text-zinc-200 transition">{entry.title}</p>
               <p class="text-[11.5px] text-zinc-400">{entry.subtitle}</p>
             </div>
+            {#if entry.actionLabel}
+              <span
+                class="text-[11px] font-semibold text-black bg-[#FFCD00] hover:bg-[#FFE066] px-2.5 py-1 rounded-full transition shrink-0 ml-2 shadow-xs"
+              >
+                {entry.actionLabel}
+              </span>
+            {/if}
           </button>
         {:else}
           <div
