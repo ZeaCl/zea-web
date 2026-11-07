@@ -50,7 +50,9 @@
 <section class="p-4 rounded-[24px] bg-[#141418] border border-[#24242C]">
   <div class="flex items-baseline justify-between mb-3">
     <h4 class="text-[15px] font-semibold text-white tracking-tight">{title}</h4>
-    <span class="text-[11px] text-zinc-500 tabular-nums font-mono">{subtitle}</span>
+    {#if subtitle}
+      <span class="text-[11px] text-zinc-500 tabular-nums font-mono">{subtitle}</span>
+    {/if}
   </div>
 
   <div class="flex items-center gap-4">

@@ -570,8 +570,6 @@
                     <ZeaApprovalCard
                       theme="industrial"
                       title="Por aprobar"
-                      moduleBadge="CONTROL DE CALIDAD"
-                      domainBadge="Lote #114"
                       avatarText="L114"
                       entityName="Compensación Lote #114"
                       entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
@@ -595,7 +593,7 @@
                     <ZeaConcentricRings
                       theme="industrial"
                       title="Esta semana"
-                      subtitle="Planta Maipú & Flota en Terreno"
+                      subtitle=""
                       items={industrialRings}
                     />
 
@@ -703,8 +701,6 @@
           <ZeaApprovalCard
             theme="industrial"
             title="Por aprobar"
-            moduleBadge="CONTROL DE CALIDAD"
-            domainBadge="Lote #114"
             avatarText="L114"
             entityName="Compensación Lote #114"
             entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
@@ -728,7 +724,7 @@
           <ZeaConcentricRings
             theme="industrial"
             title="Esta semana"
-            subtitle="Planta Maipú & Flota en Terreno"
+            subtitle=""
             items={industrialRings}
           />
 
