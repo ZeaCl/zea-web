@@ -1,6 +1,4 @@
 <script lang="ts">
-  import AppleLogo from '../atoms/AppleLogo.svelte';
-  import AndroidLogo from '../atoms/AndroidLogo.svelte';
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
   import { dragScroll } from '../ds/dragScroll';
@@ -308,15 +306,11 @@
   <header class="px-5 pt-3 pb-2.5 bg-black/95 backdrop-blur-md border-b border-[#222228] flex items-center justify-between z-20 shrink-0">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold text-white text-xs font-mono shadow-sm">
-        {#if platform === 'ios'}
-          <AppleLogo class="h-4 w-auto text-white" />
-        {:else}
-          <AndroidLogo class="h-4.5 w-auto text-emerald-400" />
-        {/if}
+        Z
       </div>
       <div>
         <h2 class="text-sm font-semibold tracking-tight text-white leading-tight">
-          {platform === 'ios' ? 'iOS Client' : 'Android Client'} · ZEA
+          ZEA Personal agent
         </h2>
         <p class="text-[10px] text-zinc-400 font-mono">Personal AI OS</p>
       </div>

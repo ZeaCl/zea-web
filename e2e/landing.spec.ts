@@ -13,7 +13,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
 
     const simulator = page.getByTestId('mobile-simulator');
     await expect(simulator).toBeVisible();
-    await expect(page.locator('text=iOS Client')).toBeVisible();
+    await expect(page.locator('text=ZEA Personal agent')).toBeVisible();
   });
 
   test('debe contener el icono de GitHub y los iconos de Apple/Android en el header', async ({ page }) => {
