@@ -43,4 +43,24 @@ describe('Header component', () => {
     expect(switchBtn).toHaveAttribute('aria-checked', 'false');
     expect(btnEs).toHaveClass('font-bold');
   });
+
+  it('debe renderizar los enlaces de navegación Products, Developer e Industries y permitir cambiar activeNav', async () => {
+    render(Header, { props: { lang: 'es', activeNav: 'industries' } });
+
+    const navProducts = screen.getByTestId('nav-products');
+    const navDeveloper = screen.getByTestId('nav-developer');
+    const navIndustries = screen.getByTestId('nav-industries');
+
+    expect(navProducts).toBeInTheDocument();
+    expect(navDeveloper).toBeInTheDocument();
+    expect(navIndustries).toBeInTheDocument();
+
+    expect(navIndustries).toHaveClass('text-white font-bold');
+
+    await fireEvent.click(navDeveloper);
+    expect(navDeveloper).toHaveClass('text-white font-bold');
+
+    await fireEvent.click(navProducts);
+    expect(navProducts).toHaveClass('text-white font-bold');
+  });
 });

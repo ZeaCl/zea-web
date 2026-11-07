@@ -129,6 +129,30 @@ export interface I18nContent {
     trustCenter: string;
     contact: string;
   };
+  mobilePlatform: {
+    tag: string;
+    industriesLabel: string;
+    titlePrefix: string;
+    titleHighlight: string;
+    subtitle: string;
+    pillars: {
+      edge: {
+        title: string;
+        label: string;
+        desc: string;
+      };
+      sport: {
+        title: string;
+        label: string;
+        desc: string;
+      };
+      venture: {
+        title: string;
+        label: string;
+        desc: string;
+      };
+    };
+  };
 }
 
 export const content: Record<Language, I18nContent> = {
@@ -260,6 +284,30 @@ export const content: Record<Language, I18nContent> = {
       terms: 'Términos de Servicio',
       trustCenter: 'Centro de Confianza & Seguridad',
       contact: 'Contacto Comercial'
+    },
+    mobilePlatform: {
+      tag: 'ZEA',
+      industriesLabel: 'Industrias',
+      titlePrefix: 'The Mobile-Native ',
+      titleHighlight: 'AI Platform',
+      subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
+      pillars: {
+        edge: {
+          title: 'ZEA Edge',
+          label: 'Industrial',
+          desc: 'Operaciones de terreno y faenas'
+        },
+        sport: {
+          title: 'ZEA Sport',
+          label: 'Athletic',
+          desc: 'Biomecánica y alto rendimiento'
+        },
+        venture: {
+          title: 'ZEA Funds',
+          label: 'Private Funds',
+          desc: 'Gestión y gobernanza de fondos'
+        }
+      }
     }
   },
   en: {
@@ -390,6 +438,30 @@ export const content: Record<Language, I18nContent> = {
       terms: 'Terms of Service',
       trustCenter: 'Trust & Security Center',
       contact: 'Commercial Inquiries'
+    },
+    mobilePlatform: {
+      tag: 'ZEA',
+      industriesLabel: 'Industries',
+      titlePrefix: 'The Mobile-Native ',
+      titleHighlight: 'AI Platform',
+      subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
+      pillars: {
+        edge: {
+          title: 'ZEA Edge',
+          label: 'Industrial',
+          desc: 'Field operations & worksites'
+        },
+        sport: {
+          title: 'ZEA Sport',
+          label: 'Athletic',
+          desc: 'Biomechanics & athletics'
+        },
+        venture: {
+          title: 'ZEA Funds',
+          label: 'Private Funds',
+          desc: 'Private funds & governance'
+        }
+      }
     }
   }
 };

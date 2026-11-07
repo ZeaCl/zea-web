@@ -31,11 +31,7 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const androidTab = page.getByTestId('header-tab-android');
     const iosTab = page.getByTestId('header-tab-ios');
 
-    // Inicialmente iOS: AgentRuntime.swift e iOS Client
-    await expect(page.locator('text=AgentRuntime.swift')).toBeVisible();
-    await expect(page.locator('text=iOS Client')).toBeVisible();
-
-    // Click Android in header -> changes code to AgentRuntime.kt and phone to Android Client
+    // Click Android in header -> activates developer view, changes code to AgentRuntime.kt and phone to Android Client
     await androidTab.click();
     await expect(page.locator('text=AgentRuntime.kt')).toBeVisible();
     await expect(page.locator('text=Android Client')).toBeVisible();
@@ -63,6 +59,9 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
   });
 
   test('debe activar superpoderes (Dev Magic) con los iconos minimalistas sin texto', async ({ page }) => {
+    // Cambiar a la vista developer
+    await page.getByTestId('nav-developer').click();
+
     const audioBtn = page.getByTestId('skill-toggle-audio');
     const visionBtn = page.getByTestId('skill-toggle-vision');
     const securityBtn = page.getByTestId('skill-toggle-security');
@@ -107,6 +106,9 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
   });
 
   test('debe soportar la barra de entrada estilo WhatsApp con (+), input, cámara y micrófono reactivos', async ({ page }) => {
+    // Activar vista developer para verificar sincronización bidireccional entre la cámara/audio y el snippet
+    await page.getByTestId('nav-developer').click();
+
     // 1. Botones iniciales presentes estilo WhatsApp: (+), micrófono y botón interactivo Gemini Live
     const plusBtn = page.getByTestId('whatsapp-plus-btn');
     const micBtn = page.getByTestId('whatsapp-mic-btn');
@@ -157,5 +159,129 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     const photoMessage = page.getByTestId('whatsapp-photo-message');
     await expect(photoMessage).toBeVisible();
     await expect(page.locator('img[alt="Foto capturada"]')).toBeVisible();
+  });
+
+  test('debe desplegar el hero Mobile-Native AI Platform y las industrias (Edge, Sport, Funds)', async ({ page }) => {
+    // 1. Verificar Hero Title
+    const h1 = page.locator('h1');
+    await expect(h1).toContainText('The Mobile-Native');
+    await expect(h1).toContainText('AI Platform');
+
+    // 2. Verificar las 3 industrias con sus etiquetas
+    const pillarEdge = page.getByTestId('pillar-edge');
+    const pillarSport = page.getByTestId('pillar-sport');
+    const pillarVenture = page.getByTestId('pillar-venture');
+
+    await expect(pillarEdge).toBeVisible();
+    await expect(pillarEdge).toContainText('ZEA Edge');
+    await expect(pillarEdge).toContainText('Industrial');
+
+    await expect(pillarSport).toBeVisible();
+    await expect(pillarSport).toContainText('ZEA Sport');
+    await expect(pillarSport).toContainText('Athletic');
+
+    await expect(pillarVenture).toBeVisible();
+    await expect(pillarVenture).toContainText('ZEA Funds');
+    await expect(pillarVenture).toContainText('Private Funds');
+
+    // 3. Click en industria cambia selección y actualiza el teléfono
+    await pillarEdge.click();
+    await expect(pillarEdge.locator('span').first()).toHaveClass(/underline/);
+    await expect(page.locator('text=Mixer #42')).toBeVisible();
+    await expect(page.locator('text=agent.use(IndustrialTelemetry)')).toBeVisible();
+
+    await pillarSport.click();
+    await expect(pillarSport.locator('span').first()).toHaveClass(/underline/);
+    await expect(page.locator('text=Hola, Gustavo')).toBeVisible();
+    await expect(page.getByText('Próxima clase', { exact: true })).toBeVisible();
+    await expect(page.locator('text=Felipe Soto').first()).toBeVisible();
+
+    await pillarVenture.click();
+    await expect(pillarVenture.locator('span').first()).toHaveClass(/underline/);
+    await expect(page.locator('text=AUM consolidado: $14.85M USD')).toBeVisible();
+    await expect(page.locator('text=agent.use(FundLedgerAudit)')).toBeVisible();
+  });
+
+  test('debe navegar fluidamente entre Products, Developer e Industries desde el menú superior', async ({ page }) => {
+    const navProducts = page.getByTestId('nav-products');
+    const navDeveloper = page.getByTestId('nav-developer');
+    const navIndustries = page.getByTestId('nav-industries');
+
+    // 1. Ir a Products -> Muestra el suite de productos
+    await navProducts.click();
+    await expect(navProducts).toHaveClass(/font-bold/);
+    await expect(page.locator('text=Suite de Productos')).toBeVisible();
+
+    // 2. Ir a Developer -> Muestra el editor de código y la arquitectura
+    await navDeveloper.click();
+    await expect(navDeveloper).toHaveClass(/font-bold/);
+    await expect(page.locator('text=AgentRuntime.swift')).toBeVisible();
+
+    // 3. Volver a Industries -> Muestra el titular principal y los 3 pilares
+    await navIndustries.click();
+    await expect(navIndustries).toHaveClass(/font-bold/);
+    await expect(page.getByTestId('pillar-edge')).toBeVisible();
+  });
+
+  test('debe desplegar la interfaz nativa ZEA Sport (Gus Training) con anillos, agenda y alumnos al pulsar ZEA Sport', async ({ page }) => {
+    const pillarSport = page.getByTestId('pillar-sport');
+    await pillarSport.click();
+
+    // 1. La pantalla nativa ZEA Sport debe estar visible
+    const sportScreen = page.getByTestId('zea-sport-screen');
+    await expect(sportScreen).toBeVisible();
+
+    // 2. Tab 1: Resumen conversacional con Felipe Soto, Próxima clase y anillos Apple Fitness
+    await expect(page.locator('text=Hola, Gustavo')).toBeVisible();
+    await expect(page.locator('text=¿Qué tenemos para hoy?')).toBeVisible();
+    await expect(page.locator('text=ZEA Coach Agent').first()).toBeVisible();
+
+    const scrollBox = await page.locator('[data-testid="zea-sport-screen"] .overflow-y-auto').boundingBox();
+    if (scrollBox) {
+      await page.mouse.move(scrollBox.x + scrollBox.width / 2, scrollBox.y + scrollBox.height / 2);
+      await page.mouse.wheel(0, 200);
+      await page.waitForTimeout(100);
+    }
+    const afterWheelScrollTop = await page.evaluate(() => {
+      const el = document.querySelector('[data-testid="zea-sport-screen"] .overflow-y-auto');
+      return el ? el.scrollTop : 0;
+    });
+    expect(afterWheelScrollTop).toBeGreaterThan(0);
+
+    await expect(page.locator('text=Felipe Soto').first()).toBeVisible();
+    await expect(page.getByText('Próxima clase', { exact: true })).toBeVisible();
+    await expect(page.getByText('Clases', { exact: true })).toBeVisible();
+    await expect(page.locator('text=Ocupación')).toBeVisible();
+
+    // 3. Cambiar a Tab Agenda
+    await page.getByRole('button', { name: 'Agenda', exact: true }).click();
+    await expect(page.locator('text=Octubre 2026')).toBeVisible();
+    await expect(page.locator('text=Parque Araucano').first()).toBeVisible();
+
+    // 4. Cambiar a Tab Alumnos
+    await page.getByRole('button', { name: 'Alumnos', exact: true }).click();
+    await expect(page.locator('text=28 activos')).toBeVisible();
+    await expect(page.locator('text=Camila Alvarez')).toBeVisible();
+
+    // 5. Cambiar a Tab Perfil
+    await page.getByRole('button', { name: 'Perfil', exact: true }).click();
+    await expect(page.locator('text=Gustavo Hinostroza')).toBeVisible();
+    await expect(page.locator('text=Coach certificado ZEA')).toBeVisible();
+
+    // 6. Volver a Resumen y alternar entre Modo App Clásica y Modo Chat AI
+    await page.getByRole('button', { name: 'Resumen', exact: true }).click();
+    const modeAppBtn = page.getByTestId('mode-app-btn').first();
+    const modeChatBtn = page.getByTestId('mode-chat-btn').first();
+
+    // Cambiar a Modo App clásica (sin burbuja de chat)
+    await modeAppBtn.click();
+    await expect(page.locator('text=¿Qué tenemos para hoy?')).not.toBeVisible();
+    await expect(page.locator('text=Hola, Gustavo')).toBeVisible();
+    await expect(page.getByText('Próxima clase', { exact: true })).toBeVisible();
+
+    // Volver a Modo Chat AI (con burbuja de chat y asistente)
+    await modeChatBtn.click();
+    await expect(page.locator('text=¿Qué tenemos para hoy?')).toBeVisible();
+    await expect(page.locator('text=ZEA Coach Agent').first()).toBeVisible();
   });
 });

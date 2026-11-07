@@ -4,6 +4,7 @@
   import AndroidLogo from '../atoms/AndroidLogo.svelte';
   import VisionIcon from '../atoms/VisionIcon.svelte';
   import MicIcon from '../atoms/MicIcon.svelte';
+  import ZeaSportScreen from './ZeaSportScreen.svelte';
 
   export interface ActiveSkills {
     audio: boolean;
@@ -14,11 +15,13 @@
   let {
     lang = 'es',
     platform = 'ios',
-    skills = $bindable({ audio: false, vision: false, security: false })
+    skills = $bindable({ audio: false, vision: false, security: false }),
+    activePillar = 'none'
   }: {
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
     skills?: ActiveSkills;
+    activePillar?: 'none' | 'edge' | 'sport' | 'venture';
   } = $props();
 
   let isThinking = $state(false);
@@ -150,14 +153,149 @@
     }
   ];
 
+  // Scenarios per Industry Pillar (Using realistic fictional operations)
+  const edgeMessagesEs: SimulatorMessage[] = [
+    {
+      id: 'edge-1',
+      role: 'user',
+      text: 'Glia, recepcionando Mixer #42 en Tramo Km 12. Temperatura de asfalto en 154°C y asentamiento de cono en 8.5 cm. ¿Cumple con la norma técnica de faena?',
+      isAudio: true,
+      audioDuration: '0:07'
+    },
+    {
+      id: 'edge-2',
+      role: 'assistant',
+      text: '✓ Conforme. Temperatura en rango operativo óptimo (145°C – 165°C). Asentamiento de cono dentro de tolerancia (±1.0 cm). Sello de recepción generado, validado con ITO y almacenado 100% offline en el dispositivo sin requerir internet.',
+      action: {
+        name: 'agent.use(IndustrialTelemetry)',
+        params: 'faena="Autopista Tramo Km 12", mixer=42, status="verified_offline"',
+        status: 'success'
+      }
+    }
+  ];
+
+  const edgeMessagesEn: SimulatorMessage[] = [
+    {
+      id: 'edge-1',
+      role: 'user',
+      text: 'Glia, receiving Concrete Mixer #42 at Highway Mile 12. Mix temperature at 154°C and slump cone at 8.5 cm. Does it meet field technical specifications?',
+      isAudio: true,
+      audioDuration: '0:07'
+    },
+    {
+      id: 'edge-2',
+      role: 'assistant',
+      text: '✓ Compliant. Mix temperature within optimal field placement window (145°C – 165°C). Slump test within tolerance. Inspection receipt certified, validated with site inspector, and stored 100% offline on-device with zero cloud dependency.',
+      action: {
+        name: 'agent.use(IndustrialTelemetry)',
+        params: 'site="Highway Mile 12", mixer=42, status="verified_offline"',
+        status: 'success'
+      }
+    }
+  ];
+
+  const sportMessagesEs: SimulatorMessage[] = [
+    {
+      id: 'sport-1',
+      role: 'user',
+      text: 'Glia, serie 3 de sentadillas con 120 kg terminada. ¿Cómo estuvo la profundidad y el quiebre de cadera?',
+      isAudio: true,
+      audioDuration: '0:05'
+    },
+    {
+      id: 'sport-2',
+      role: 'assistant',
+      text: '✓ 5 repeticiones válidas. Profundidad alcanzada a 92° en todas las repeticiones. En la repetición 4 hubo un leve valgo en rodilla derecha corregido en milisegundos. Bitácora de biomecánica actualizada y lista para tu coach.',
+      action: {
+        name: 'agent.use(BiomechanicsVision)',
+        params: 'exercise="back_squat", depth="92deg", valid_reps=5',
+        status: 'success'
+      }
+    }
+  ];
+
+  const sportMessagesEn: SimulatorMessage[] = [
+    {
+      id: 'sport-1',
+      role: 'user',
+      text: 'Glia, set 3 of back squats with 120 kg completed. How was my depth and hip hinge?',
+      isAudio: true,
+      audioDuration: '0:05'
+    },
+    {
+      id: 'sport-2',
+      role: 'assistant',
+      text: '✓ 5/5 valid repetitions. Depth reached 92° across all reps. Minor right knee valgus detected on rep 4 and corrected in real time. Biomechanics log synced for your coach.',
+      action: {
+        name: 'agent.use(BiomechanicsVision)',
+        params: 'exercise="back_squat", depth="92deg", valid_reps=5',
+        status: 'success'
+      }
+    }
+  ];
+
+  const ventureMessagesEs: SimulatorMessage[] = [
+    {
+      id: 'venture-1',
+      role: 'user',
+      text: 'Glia, ¿cuál es el AUM consolidado del Fondo I al cierre de hoy y cuánto capital líquido disponible tenemos?',
+      isAudio: true,
+      audioDuration: '0:06'
+    },
+    {
+      id: 'venture-2',
+      role: 'assistant',
+      text: 'AUM consolidado: $14.85M USD. Capital líquido disponible: $2.4M USD. 32 aportantes conciliados al 100% contra el banco custodio. Llamada de capital #4 lista para aprobación con FaceID.',
+      action: {
+        name: 'agent.use(FundLedgerAudit)',
+        params: 'fund="Infraestructura I", aum="$14.85M", reconciled=true',
+        status: 'success'
+      }
+    }
+  ];
+
+  const ventureMessagesEn: SimulatorMessage[] = [
+    {
+      id: 'venture-1',
+      role: 'user',
+      text: 'Glia, what is Fund I’s consolidated AUM as of today’s close and what is our available dry powder?',
+      isAudio: true,
+      audioDuration: '0:06'
+    },
+    {
+      id: 'venture-2',
+      role: 'assistant',
+      text: 'Consolidated AUM: $14.85M USD. Available dry powder: $2.4M USD. 32 LPs fully reconciled against custodian bank. Capital Call #4 queued for FaceID sign-off.',
+      action: {
+        name: 'agent.use(FundLedgerAudit)',
+        params: 'fund="Infra I", aum="$14.85M", reconciled=true',
+        status: 'success'
+      }
+    }
+  ];
+
   let messages = $state<SimulatorMessage[]>(initialMessagesEs);
   let prevLang = $state<string>('');
+  let lastPillar = $state<'none' | 'edge' | 'sport' | 'venture'>('none');
 
   $effect(() => {
-    if (lang !== prevLang) {
-      prevLang = lang;
+    const currentLang = lang;
+    const currentPillar = activePillar;
+
+    if (currentPillar !== lastPillar || currentLang !== prevLang) {
+      lastPillar = currentPillar;
+      prevLang = currentLang;
+
       untrack(() => {
-        messages = lang === 'en' ? initialMessagesEn : initialMessagesEs;
+        if (currentPillar === 'edge') {
+          messages = currentLang === 'en' ? edgeMessagesEn : edgeMessagesEs;
+        } else if (currentPillar === 'sport') {
+          messages = currentLang === 'en' ? sportMessagesEn : sportMessagesEs;
+        } else if (currentPillar === 'venture') {
+          messages = currentLang === 'en' ? ventureMessagesEn : ventureMessagesEs;
+        } else {
+          messages = currentLang === 'en' ? initialMessagesEn : initialMessagesEs;
+        }
       });
     }
   });
@@ -599,7 +737,7 @@
       skills = { ...skills, audio: false };
     }
 
-    const audioMsgId = Date.now().toString();
+    const audioMsgId = `voice-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     messages = [
       ...messages,
       {
@@ -627,7 +765,7 @@
       messages = [
         ...messages,
         {
-          id: Date.now().toString(),
+          id: `asst-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
           role: 'assistant',
           text: responseText,
           action: {
@@ -1295,6 +1433,9 @@
               </button>
             </div>
           </div>
+        {:else if activePillar === 'sport'}
+          <!-- ZEA Sport Native Gus Training Experience -->
+          <ZeaSportScreen {lang} {platform} />
         {:else}
           <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
           <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">

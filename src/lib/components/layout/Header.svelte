@@ -7,14 +7,21 @@
 
   let {
     lang = $bindable<'es' | 'en'>('es'),
-    platform = $bindable<'ios' | 'android'>('ios')
+    platform = $bindable<'ios' | 'android'>('ios'),
+    activeNav = $bindable<'products' | 'industries' | 'developer'>('industries')
   }: {
     lang?: Language;
     platform?: 'ios' | 'android';
+    activeNav?: 'products' | 'industries' | 'developer';
   } = $props();
 
   function toggleLang() {
     lang = lang === 'es' ? 'en' : 'es';
+  }
+
+  function handleSelectPlatform(target: 'ios' | 'android') {
+    platform = target;
+    activeNav = 'developer';
   }
 </script>
 
@@ -25,42 +32,76 @@
       <ZeaLogo class="h-4 w-auto text-white" />
     </a>
 
-    <!-- Right Actions: GitHub Icon + Iconos Sueltos Apple/Android + Switch de Idioma estilo iOS -->
-    <div class="flex items-center gap-4">
-      <!-- GitHub Link Icon sin marcos -->
-      <a
-        href="https://github.com/ZeaCl"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-zinc-400 hover:text-white transition p-1 flex items-center justify-center cursor-pointer"
-        aria-label="GitHub"
-        data-testid="github-link"
-      >
-        <GitHubLogo class="h-4 w-auto" />
-      </a>
-
-      <!-- Platform Switcher: Solo los iconos sin marcos ni cajas -->
-      <div class="flex items-center gap-2.5">
+    <!-- Right Container: Main Nav + Utility Actions -->
+    <div class="flex items-center gap-5 sm:gap-6">
+      <!-- Main Nav: Products, Developer, Industries alineados a la derecha -->
+      <nav class="flex items-center gap-4 sm:gap-6 text-xs font-mono uppercase tracking-wider select-none">
         <button
           type="button"
-          onclick={() => (platform = 'ios')}
-          data-testid="header-tab-ios"
-          aria-label="Apple iOS"
-          class="transition-all duration-200 cursor-pointer p-1 flex items-center justify-center {platform === 'ios' ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] scale-110' : 'text-zinc-500 hover:text-zinc-300'}"
+          onclick={() => activeNav = 'products'}
+          class="transition cursor-pointer {activeNav === 'products' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
+          data-testid="nav-products"
         >
-          <AppleLogo class="h-4 w-auto" />
+          {lang === 'es' ? 'Products' : 'Products'}
         </button>
 
         <button
           type="button"
-          onclick={() => (platform = 'android')}
-          data-testid="header-tab-android"
-          aria-label="Android"
-          class="transition-all duration-200 cursor-pointer p-1 flex items-center justify-center {platform === 'android' ? 'text-[#3ddc84] drop-shadow-[0_0_8px_rgba(61,220,132,0.6)] scale-110' : 'text-zinc-500 hover:text-zinc-300'}"
+          onclick={() => activeNav = 'developer'}
+          class="transition cursor-pointer {activeNav === 'developer' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
+          data-testid="nav-developer"
         >
-          <AndroidLogo class="h-4 w-auto" />
+          Developer
         </button>
-      </div>
+
+        <button
+          type="button"
+          onclick={() => activeNav = 'industries'}
+          class="transition cursor-pointer {activeNav === 'industries' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
+          data-testid="nav-industries"
+        >
+          {lang === 'es' ? 'Industries' : 'Industries'}
+        </button>
+      </nav>
+
+      <div class="h-3 w-px bg-white/10 hidden sm:block"></div>
+
+      <!-- Right Actions: GitHub Icon + Iconos Sueltos Apple/Android + Switch de Idioma estilo iOS -->
+      <div class="flex items-center gap-3.5 sm:gap-4">
+        <!-- GitHub Link Icon sin marcos -->
+        <a
+          href="https://github.com/ZeaCl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-zinc-400 hover:text-white transition p-1 flex items-center justify-center cursor-pointer"
+          aria-label="GitHub"
+          data-testid="github-link"
+        >
+          <GitHubLogo class="h-4 w-auto" />
+        </a>
+
+        <!-- Platform Switcher: Solo los iconos sin marcos ni cajas -->
+        <div class="flex items-center gap-2.5">
+          <button
+            type="button"
+            onclick={() => handleSelectPlatform('ios')}
+            data-testid="header-tab-ios"
+            aria-label="Apple iOS"
+            class="transition-all duration-200 cursor-pointer p-1 flex items-center justify-center {platform === 'ios' ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] scale-110' : 'text-zinc-500 hover:text-zinc-300'}"
+          >
+            <AppleLogo class="h-4 w-auto" />
+          </button>
+
+          <button
+            type="button"
+            onclick={() => handleSelectPlatform('android')}
+            data-testid="header-tab-android"
+            aria-label="Android"
+            class="transition-all duration-200 cursor-pointer p-1 flex items-center justify-center {platform === 'android' ? 'text-[#3ddc84] drop-shadow-[0_0_8px_rgba(61,220,132,0.6)] scale-110' : 'text-zinc-500 hover:text-zinc-300'}"
+          >
+            <AndroidLogo class="h-4 w-auto" />
+          </button>
+        </div>
 
       <!-- Language Selector: Switch estilo iOS con texto ES | ENG limpio -->
       <div class="flex items-center gap-2 font-mono text-xs select-none" data-testid="lang-switcher-container">
@@ -99,4 +140,5 @@
       </div>
     </div>
   </div>
+</div>
 </header>
