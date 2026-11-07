@@ -9,6 +9,10 @@
     citation?: string;
     evidenceTag?: string;
     checked: boolean;
+    requiresInput?: boolean;
+    inputValue?: string;
+    inputPlaceholder?: string;
+    presetValues?: string[];
   }
 
   let {
@@ -20,6 +24,7 @@
     actionLabel = '',
     embedded = false,
     onToggleItem,
+    onInputSubmit,
     onAction
   }: {
     theme?: ZeaTheme;
@@ -30,11 +35,24 @@
     actionLabel?: string;
     embedded?: boolean;
     onToggleItem?: (id: string) => void;
+    onInputSubmit?: (id: string, value: string) => void;
     onAction?: () => void;
   } = $props();
 
   const cfg = $derived(ZEA_THEMES[theme] || ZEA_THEMES.industrial);
   const completedCount = $derived(items.filter((i) => i.checked).length);
+
+  function submitItemInput(item: ZeaChecklistItem) {
+    const val = item.inputValue?.trim() || item.presetValues?.[0] || '';
+    if (val) {
+      item.inputValue = val;
+      item.checked = true;
+      onInputSubmit?.(item.id, val);
+    } else {
+      item.checked = !item.checked;
+      onToggleItem?.(item.id);
+    }
+  }
 </script>
 
 <section
@@ -92,49 +110,125 @@
   <!-- Checklist Items -->
   <div class="space-y-2">
     {#each items as item (item.id)}
-      <button
-        type="button"
-        onclick={() => onToggleItem?.(item.id)}
-        class="w-full p-2.5 rounded-xl {embedded ? 'bg-black/45 hover:bg-black/60' : 'bg-[#1A1A20] hover:bg-[#22222A]'} border {item.checked ? (embedded ? 'border-white/5' : 'border-white/10') : 'border-[#FFCD00]/40'} text-left transition flex items-start gap-2.5 cursor-pointer"
+      <div
+        class="w-full p-2.5 rounded-xl {embedded ? 'bg-black/45 hover:bg-black/60' : 'bg-[#1A1A20] hover:bg-[#22222A]'} border {item.checked ? (embedded ? 'border-white/5' : 'border-white/10') : 'border-[#FFCD00]/40'} text-left transition flex flex-col gap-2"
       >
-        <!-- Checkbox indicator -->
-        <div
-          class="w-5 h-5 rounded-lg mt-0.5 flex items-center justify-center shrink-0 transition font-bold text-[11px]"
-          style={item.checked
-            ? `background-color: ${cfg.accent}; color: ${cfg.btnPrimaryText};`
-            : 'background-color: #101014; border: 1.5px solid #52525B; color: transparent;'}
-        >
-          ✓
-        </div>
+        <!-- Header Row (Checkbox + Label + Badges) -->
+        <div class="flex items-start gap-2.5 w-full">
+          <!-- Checkbox button -->
+          <button
+            type="button"
+            onclick={() => {
+              if (item.checked) {
+                item.checked = false;
+                onToggleItem?.(item.id);
+              } else if (!item.requiresInput) {
+                item.checked = true;
+                onToggleItem?.(item.id);
+              } else {
+                submitItemInput(item);
+              }
+            }}
+            class="w-5 h-5 rounded-lg mt-0.5 flex items-center justify-center shrink-0 transition font-bold text-[11px] cursor-pointer"
+            style={item.checked
+              ? `background-color: ${cfg.accent}; color: ${cfg.btnPrimaryText};`
+              : 'background-color: #101014; border: 1.5px solid #52525B; color: transparent;'}
+            aria-label={item.checked ? `Desmarcar ${item.label}` : `Marcar ${item.label}`}
+          >
+            ✓
+          </button>
 
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between gap-1.5">
-            <p class="text-[12.5px] font-medium {item.checked ? 'text-zinc-200' : 'text-white font-semibold'} leading-snug">
-              {item.label}
-            </p>
-            {#if item.domain}
-              <span class="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-zinc-300 border border-white/10 shrink-0">
-                {item.domain}
-              </span>
-            {/if}
-          </div>
-
-          {#if item.citation || item.evidenceTag}
-            <div class="flex flex-wrap items-center gap-1.5 mt-1">
-              {#if item.citation}
-                <span class="text-[10px] font-mono text-zinc-400 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">
-                  {item.citation}
-                </span>
-              {/if}
-              {#if item.evidenceTag}
-                <span class="text-[9.5px] font-mono text-emerald-400/90">
-                  {item.evidenceTag}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-1.5">
+              <p class="text-[12.5px] font-medium {item.checked ? 'text-zinc-200' : 'text-white font-semibold'} leading-snug">
+                {item.label}
+              </p>
+              {#if item.domain}
+                <span class="text-[9.5px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-zinc-300 border border-white/10 shrink-0">
+                  {item.domain}
                 </span>
               {/if}
             </div>
-          {/if}
+
+            <!-- Value Display if already registered -->
+            {#if item.checked && item.inputValue}
+              <div class="flex items-center gap-1.5 mt-1">
+                <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#FFCD00]/15 text-[#FFCD00] border border-[#FFCD00]/30">
+                  Dato: {item.inputValue}
+                </span>
+                <button
+                  type="button"
+                  onclick={() => {
+                    item.checked = false;
+                    onToggleItem?.(item.id);
+                  }}
+                  class="text-[9.5px] text-zinc-500 hover:text-zinc-300 transition underline cursor-pointer"
+                >
+                  editar
+                </button>
+              </div>
+            {/if}
+
+            {#if item.citation || item.evidenceTag}
+              <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                {#if item.citation}
+                  <span class="text-[10px] font-mono text-zinc-400 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">
+                    {item.citation}
+                  </span>
+                {/if}
+                {#if item.evidenceTag}
+                  <span class="text-[9.5px] font-mono text-emerald-400/90">
+                    {item.evidenceTag}
+                  </span>
+                {/if}
+              </div>
+            {/if}
+          </div>
         </div>
-      </button>
+
+        <!-- Manual Input Row (when requiresInput and not yet checked) -->
+        {#if item.requiresInput && !item.checked}
+          <div class="w-full pt-1.5 border-t border-white/5 pl-7 space-y-1.5">
+            <div class="flex items-center gap-1.5">
+              <input
+                type="text"
+                placeholder={item.inputPlaceholder || 'Ingresar valor para validar...'}
+                bind:value={item.inputValue}
+                onkeydown={(e) => {
+                  if (e.key === 'Enter') submitItemInput(item);
+                }}
+                class="flex-1 px-2.5 py-1.5 rounded-lg bg-black/70 border border-white/15 text-white text-[12px] placeholder:text-zinc-500 focus:outline-none focus:border-[#FFCD00] font-mono"
+              />
+              <button
+                type="button"
+                onclick={() => submitItemInput(item)}
+                class="px-3 py-1.5 rounded-lg bg-[#FFCD00] hover:bg-[#FFE066] text-black font-bold text-[11px] transition cursor-pointer shrink-0"
+              >
+                Validar OK
+              </button>
+            </div>
+
+            <!-- Quick Preset Chips -->
+            {#if item.presetValues && item.presetValues.length > 0}
+              <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                <span class="text-[9.5px] text-zinc-500 font-mono">Sugerido:</span>
+                {#each item.presetValues as preset}
+                  <button
+                    type="button"
+                    onclick={() => {
+                      item.inputValue = preset;
+                      submitItemInput(item);
+                    }}
+                    class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10 transition cursor-pointer"
+                  >
+                    {preset}
+                  </button>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
     {/each}
   </div>
 

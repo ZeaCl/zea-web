@@ -307,6 +307,13 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=Mixer #42 · Planta Maipú').first()).toBeVisible();
     await expect(page.locator('text=Tonelaje Despachado')).toBeVisible();
 
+    // 2.0 Validar ingreso manual en checklist sin sensores (ej: input en ítem de cierre de producción)
+    const manualInput = page.locator('input[placeholder*="Tonelaje total"]');
+    await expect(manualInput).toBeVisible();
+    await manualInput.fill('425 t consolidado');
+    await page.getByRole('button', { name: 'Validar OK' }).last().click();
+    await expect(page.locator('text=Dato: 425 t consolidado')).toBeVisible();
+
     // 2.1 Botón de acción inmediata (Zero-Typing): Compensar agua y liberar Lote #114
     const compensateBtn = page.getByRole('button', { name: 'Compensar agua y liberar' }).first();
     await expect(compensateBtn).toBeVisible();

@@ -68,27 +68,47 @@
     {
       id: 'pd-1',
       label: 'Lectura Horómetros iniciales de planta (Secador & Mezclador)',
-      checked: true
+      checked: true,
+      requiresInput: true,
+      inputValue: '4,812.5 hrs',
+      inputPlaceholder: 'Ej: 4812.5 hrs',
+      presetValues: ['4,812.5 hrs', '4,850.0 hrs']
     },
     {
       id: 'pd-2',
       label: 'Medición de Estanques de Combustible (GLP / Petróleo / R20)',
-      checked: true
+      checked: true,
+      requiresInput: true,
+      inputValue: '84% (145 t)',
+      inputPlaceholder: 'Ej: 84% o 145 t',
+      presetValues: ['84% (145 t)', '90% (160 t)']
     },
     {
       id: 'pd-3',
       label: 'Dosificación de Áridos y Filler por Fórmula (Lote #114)',
-      checked: false
+      checked: false,
+      requiresInput: true,
+      inputValue: '',
+      inputPlaceholder: 'Ingresar compensación (ej: -18 L)',
+      presetValues: ['-18 L agua (28t)', 'Fórmula standard']
     },
     {
       id: 'pd-4',
       label: 'Despacho & Guías Mixer #42 / Tolva #08',
-      checked: false
+      checked: false,
+      requiresInput: true,
+      inputValue: '',
+      inputPlaceholder: 'Número de guía (ej: Guía #88412)',
+      presetValues: ['Guía #88412', 'Guía #88413']
     },
     {
       id: 'pd-5',
       label: 'Cierre de Producción del Día',
-      checked: false
+      checked: false,
+      requiresInput: true,
+      inputValue: '',
+      inputPlaceholder: 'Tonelaje total (ej: 420 t)',
+      presetValues: ['420 t en norma', '450 t']
     }
   ]);
 
@@ -96,14 +116,23 @@
     parteDiarioItems = parteDiarioItems.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    showToast('Parte Diario actualizado en cola local');
+    showToast('Parte Diario actualizado');
+  }
+
+  function handleParteDiarioInput(id: string, value: string) {
+    parteDiarioItems = parteDiarioItems.map((item) =>
+      item.id === id ? { ...item, checked: true, inputValue: value } : item
+    );
+    showToast(`Dato validado: ${value}`);
   }
 
   function compensateAndRelease() {
     if (urgentBatchCompleted) return;
     urgentBatchCompleted = true;
     parteDiarioItems[2].checked = true;
+    parteDiarioItems[2].inputValue = '-18 L agua (28t)';
     parteDiarioItems[3].checked = true;
+    parteDiarioItems[3].inputValue = 'Guía #88412';
     showToast('Compensación de -18L aplicada y Lote #114 liberado');
 
     const now = '08:02';
@@ -458,6 +487,7 @@
                           items={parteDiarioItems}
                           actionLabel="Consolidar Turno"
                           onToggleItem={toggleParteDiarioItem}
+                          onInputSubmit={handleParteDiarioInput}
                           onAction={() => showToast('Parte Diario sincronizado')}
                         />
                       </div>
@@ -523,6 +553,7 @@
                       items={parteDiarioItems}
                       actionLabel="Consolidar Turno"
                       onToggleItem={toggleParteDiarioItem}
+                      onInputSubmit={handleParteDiarioInput}
                       onAction={() => showToast('Parte Diario sincronizado')}
                     />
                   </div>
@@ -568,6 +599,7 @@
                 items={parteDiarioItems}
                 actionLabel="Consolidar Turno"
                 onToggleItem={toggleParteDiarioItem}
+                onInputSubmit={handleParteDiarioInput}
                 onAction={() => showToast('Parte Diario sincronizado')}
               />
             </div>
