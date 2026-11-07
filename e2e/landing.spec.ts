@@ -308,6 +308,14 @@ test.describe('ZEA Web Mobile Simulator Experience & Dev Magic', () => {
     await expect(page.locator('text=Mixer #42 · Planta Maipú').first()).toBeVisible();
     await expect(page.locator('text=Tonelaje Despachado')).toBeVisible();
 
+    // 2.1 Botón de acción inmediata (Zero-Typing): Compensar agua y liberar Lote #114
+    const compensateBtn = page.getByRole('button', { name: 'Compensar agua y liberar' });
+    await expect(compensateBtn).toBeVisible();
+    await compensateBtn.click();
+    await expect(page.locator('text=Compensar agua y liberar Lote #114')).toBeVisible();
+    await expect(page.locator('text=Compensación de agua aplicada')).toBeVisible();
+    await expect(page.locator('text=✓ Lote Liberado').first()).toBeVisible();
+
     // 3. Cambiar a Tab 2: Seguimiento
     await page.getByRole('button', { name: 'Seguimiento', exact: true }).click();
     await expect(page.locator('text=Flujo Operativo End-to-End')).toBeVisible();

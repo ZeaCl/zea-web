@@ -99,6 +99,38 @@
     showToast('Parte Diario actualizado en cola local');
   }
 
+  function compensateAndRelease() {
+    if (urgentBatchCompleted) return;
+    urgentBatchCompleted = true;
+    parteDiarioItems[2].checked = true;
+    parteDiarioItems[3].checked = true;
+    showToast('Compensación de -18L aplicada y Lote #114 liberado');
+
+    const now = '08:02';
+    checklistChat = [
+      ...checklistChat,
+      {
+        id: `usr-comp-${Date.now()}`,
+        sender: 'user',
+        time: now,
+        text: 'Compensar agua y liberar Lote #114'
+      }
+    ];
+
+    setTimeout(() => {
+      checklistChat = [
+        ...checklistChat,
+        {
+          id: `agt-comp-${Date.now()}`,
+          sender: 'agent',
+          time: now,
+          text: 'Compensación de agua aplicada (-18 L). Lote #114 cargado en Mixer #42. Tambor a 165°C en ruta por Autopista Central. Parte Diario al 100% con firma digital.'
+        }
+      ];
+      scrollToBottom(summaryScrollEl);
+    }, 250);
+  }
+
   // =========================================================================
   // 2. SEGUIMIENTO DATA (Workflows, Cola O(1), SLA & Anillos)
   // =========================================================================
@@ -186,20 +218,8 @@
       id: 'chk-msg-1',
       sender: 'agent',
       time: '08:00',
-      text: '¡Buenos días, Carlos! Tienes 1 prioridad urgente en Planta Maipú para el despacho de la mañana antes de consolidar el Parte Diario:',
+      text: '¡Buenos días, Carlos! Ya capturé por telemetría el Silo 1 (170°C) y por visión QR el precinto del Mixer. Tenemos una alerta: los áridos de la Tolva 3 reportan +1.4% de humedad. ¿Compensamos agua automáticamente para liberar el Lote #114?',
       isPrimarySummary: true
-    },
-    {
-      id: 'chk-msg-2',
-      sender: 'user',
-      time: '08:15',
-      text: '¿Cómo viene la dosificación del Lote #114 y el Mixer #42?'
-    },
-    {
-      id: 'chk-msg-3',
-      sender: 'agent',
-      time: '08:16',
-      text: 'Lote #114 listo con áridos compensados. Mixer #42 cargó 28t y va en ruta por Autopista Central a 165°C.'
     }
   ]);
 
@@ -299,7 +319,13 @@
       let reply = '';
       let quickCard: ChatMessage['quickCard'] = null;
 
-      if (lower.includes('mixer') || lower.includes('42')) {
+      if (lower.includes('compensar') || lower.includes('liberar') || lower.includes('114')) {
+        urgentBatchCompleted = true;
+        parteDiarioItems[2].checked = true;
+        parteDiarioItems[3].checked = true;
+        reply = 'Compensación de agua aplicada (-18 L). Lote #114 cargado en Mixer #42. Tambor a 165°C en ruta por Autopista Central. Parte Diario al 100% con firma digital.';
+        showToast('Lote #114 liberado');
+      } else if (lower.includes('mixer') || lower.includes('42')) {
         reply = 'Mixer #42 en ruta por Autopista Central km 14. Sensores térmicos reportan tambor a 165.2°C y QR de guía validado.';
         quickCard = 'mixer42';
       } else if (lower.includes('aprobar') || lower.includes('hitl') || lower.includes('firma')) {
@@ -393,8 +419,35 @@
                   <div class="w-5 h-5 rounded-full bg-[#FFCD00] flex items-center justify-center text-[10px] font-black text-black">Z</div>
                   <span class="text-[12px] font-semibold text-zinc-300">ZEA Edge Agent</span>
                 </div>
-                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
+                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%] space-y-2.5">
                   <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
+
+                  {#if msg.isPrimarySummary && !urgentBatchCompleted}
+                    <!-- Botones de Acción Inmediata (Zero Typing) -->
+                    <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-[#262418]">
+                      <button
+                        type="button"
+                        onclick={compensateAndRelease}
+                        class="px-3 py-1.5 rounded-xl bg-[#FFCD00] hover:bg-[#FFE066] text-black font-semibold text-[12px] flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                      >
+                        <span>💧</span>
+                        <span>Compensar agua y liberar</span>
+                      </button>
+                      <button
+                        type="button"
+                        onclick={() => {
+                          checklistExpanded = !checklistExpanded;
+                          showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
+                        }}
+                        class="px-3 py-1.5 rounded-xl bg-[#221F10] hover:bg-[#302B16] border border-[#FFCD00]/30 text-[#FFCD00] font-medium text-[12px] flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                        <span>{checklistExpanded ? 'Ocultar checklist' : 'Ver checklist (2/4)'}</span>
+                      </button>
+                    </div>
+                  {/if}
                 </div>
 
                 {#if msg.isPrimarySummary}
@@ -408,21 +461,16 @@
                       metricSuffix=" · 28t AC-20"
                       avatarText="P-1"
                       title="Dosificación Áridos & Silo 1"
-                      subtitle="Control de humedad y carga para Mixer #42"
+                      subtitle="Tolva 3 (+1.4% humedad) · Requiere compensar -18L"
                       secondaryActionLabel={checklistExpanded ? 'Ocultar checklist' : 'Ver checklist'}
-                      primaryActionLabel="Completar"
-                      primaryDoneLabel="✓ Realizado"
+                      primaryActionLabel="Compensar y Liberar"
+                      primaryDoneLabel="✓ Lote Liberado"
                       isDone={urgentBatchCompleted}
                       onSecondaryAction={() => {
                         checklistExpanded = !checklistExpanded;
                         showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
                       }}
-                      onPrimaryAction={() => {
-                        urgentBatchCompleted = true;
-                        // auto-check items 1, 2, 3
-                        parteDiarioItems[2].checked = true;
-                        showToast('Prioridad completada y registrada en el Parte Diario');
-                      }}
+                      onPrimaryAction={compensateAndRelease}
                     />
 
                     <!-- EXPANDABLE CHECKLIST COMPONENT (Parte Diario) -->
@@ -520,20 +568,16 @@
             metricSuffix=" · 28t AC-20"
             avatarText="P-1"
             title="Dosificación Áridos & Silo 1"
-            subtitle="Control de humedad y carga para Mixer #42"
+            subtitle="Tolva 3 (+1.4% humedad) · Requiere compensar -18L"
             secondaryActionLabel={checklistExpanded ? 'Ocultar checklist' : 'Ver checklist'}
-            primaryActionLabel="Completar"
-            primaryDoneLabel="✓ Realizado"
+            primaryActionLabel="Compensar y Liberar"
+            primaryDoneLabel="✓ Lote Liberado"
             isDone={urgentBatchCompleted}
             onSecondaryAction={() => {
               checklistExpanded = !checklistExpanded;
               showToast(checklistExpanded ? 'Checklist desplegado' : 'Checklist minimizado');
             }}
-            onPrimaryAction={() => {
-              urgentBatchCompleted = true;
-              parteDiarioItems[2].checked = true;
-              showToast('Prioridad completada y registrada');
-            }}
+            onPrimaryAction={compensateAndRelease}
           />
 
           {#if checklistExpanded}
@@ -574,8 +618,8 @@
       {#if viewMode === 'chat'}
         <ZeaGliaBar
           theme="industrial"
-          placeholder="Consultar Parte Diario o checklist offline..."
-          chips={['Estado Parte Diario', 'Verificar Mixer #42', 'Sincronizar cola offline']}
+          placeholder="Consultar dosificación, silos o parte diario..."
+          chips={['💧 Compensar Lote #114', '📋 Estado Parte Diario', '🚚 Ubicación Mixer #42']}
           bind:inputText={chatInputText}
           onSendPrompt={handleSendPrompt}
         />
