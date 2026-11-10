@@ -287,7 +287,7 @@ export const content: Record<Language, I18nContent> = {
     },
     mobilePlatform: {
       tag: 'ZEA',
-      industriesLabel: 'Industrias',
+      industriesLabel: 'Productos',
       titlePrefix: 'The Mobile-Native ',
       titleHighlight: 'AI Platform',
       subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
@@ -299,13 +299,13 @@ export const content: Record<Language, I18nContent> = {
         },
         sport: {
           title: 'ZEA Sport',
-          label: 'Athletic',
-          desc: 'Biomecánica y alto rendimiento'
+          label: 'Sport Operations',
+          desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
           title: 'ZEA Funds',
-          label: 'Private Funds',
-          desc: 'Gestión y gobernanza de fondos'
+          label: 'Private Capital',
+          desc: 'Gobernanza y gestión de capital privado'
         }
       }
     }
@@ -441,7 +441,7 @@ export const content: Record<Language, I18nContent> = {
     },
     mobilePlatform: {
       tag: 'ZEA',
-      industriesLabel: 'Industries',
+      industriesLabel: 'Products',
       titlePrefix: 'The Mobile-Native ',
       titleHighlight: 'AI Platform',
       subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
@@ -453,13 +453,13 @@ export const content: Record<Language, I18nContent> = {
         },
         sport: {
           title: 'ZEA Sport',
-          label: 'Athletic',
-          desc: 'Biomechanics & athletics'
+          label: 'Sport Operations',
+          desc: 'Coach management, venues & athletes'
         },
         venture: {
           title: 'ZEA Funds',
-          label: 'Private Funds',
-          desc: 'Private funds & governance'
+          label: 'Private Capital',
+          desc: 'Private capital & governance'
         }
       }
     }

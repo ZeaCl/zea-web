@@ -103,12 +103,12 @@
               >
                 <div class="flex items-center justify-between">
                   <span class="text-sm font-bold text-white tracking-tight">ZEA Sport</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Athletic</span>
+                  <span class="text-[10.5px] font-mono text-zinc-400">Sport Operations</span>
                 </div>
                 <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                   {lang === 'es'
-                    ? 'Análisis biomecánico en tiempo real para deportistas y entrenadores. Detección de técnica y conteo de repeticiones.'
-                    : 'Real-time on-device biomechanics for athletes and coaches. Technique validation and repetition tracking.'}
+                    ? 'Operaciones agénticas para academias y entidades deportivas. Gestión de entrenadores, control de asistencia y rendimiento.'
+                    : 'Agentic operations for athletic academies and clubs. Centralized coach management, athlete attendance, and performance.'}
                 </p>
               </button>
 
@@ -119,7 +119,7 @@
               >
                 <div class="flex items-center justify-between">
                   <span class="text-sm font-bold text-white tracking-tight">ZEA Funds</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Private Funds</span>
+                  <span class="text-[10.5px] font-mono text-zinc-400">Private Capital</span>
                 </div>
                 <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                   {lang === 'es'
@@ -149,10 +149,10 @@
                   data-testid="pillar-core"
                 >
                   <span class="text-xs font-semibold block transition {activePillar === 'default' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                    ZEA
+                    ZEA Personal
                   </span>
-                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
-                    Personal
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    Personal AI
                   </span>
                 </button>
 
