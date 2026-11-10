@@ -42,7 +42,7 @@
           class="transition cursor-pointer {activeNav === 'products' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
           data-testid="nav-products"
         >
-          {lang === 'es' ? 'Products' : 'Products'}
+          {lang === 'es' ? 'Productos' : 'Products'}
         </button>
 
         <button
@@ -60,7 +60,7 @@
           class="transition cursor-pointer {activeNav === 'industries' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
           data-testid="nav-industries"
         >
-          {lang === 'es' ? 'Industries' : 'Industries'}
+          {lang === 'es' ? 'Industrias' : 'Industries'}
         </button>
       </nav>
 
@@ -68,7 +68,7 @@
 
       <!-- Right Actions: GitHub Icon + Iconos Sueltos Apple/Android + Switch de Idioma estilo iOS -->
       <div class="flex items-center gap-3.5 sm:gap-4">
-        <!-- GitHub Link Icon sin marcos -->
+        <!-- GitHub Link Icon sin marcos (ampliado) -->
         <a
           href="https://github.com/ZeaCl"
           target="_blank"
@@ -77,7 +77,7 @@
           aria-label="GitHub"
           data-testid="github-link"
         >
-          <GitHubLogo class="h-4 w-auto" />
+          <GitHubLogo class="h-5 w-auto" />
         </a>
 
         <!-- Platform Switcher: Solo los iconos sin marcos ni cajas -->
