@@ -287,15 +287,15 @@ export const content: Record<Language, I18nContent> = {
     },
     mobilePlatform: {
       tag: 'ZEA',
-      industriesLabel: 'Productos',
+      industriesLabel: 'Verticales',
       titlePrefix: 'The Mobile-Native ',
       titleHighlight: 'AI Platform',
       subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
       pillars: {
         edge: {
-          title: 'ZEA Edge',
-          label: 'Operaciones en Terreno',
-          desc: 'Procesos industriales y faenas 100% offline'
+          title: 'Maquinaria',
+          label: 'Maquinaria & Flota',
+          desc: 'Trazabilidad de equipos, tolvas y faenas 100% offline'
         },
         sport: {
           title: 'ZEA Sport',
@@ -441,15 +441,15 @@ export const content: Record<Language, I18nContent> = {
     },
     mobilePlatform: {
       tag: 'ZEA',
-      industriesLabel: 'Products',
+      industriesLabel: 'Verticals',
       titlePrefix: 'The Mobile-Native ',
       titleHighlight: 'AI Platform',
       subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
       pillars: {
         edge: {
-          title: 'ZEA Edge',
-          label: 'Field Operations',
-          desc: 'Industrial processes & 100% offline field operations'
+          title: 'Machinery',
+          label: 'Machinery & Fleet',
+          desc: 'Heavy equipment tracking, haul trucks & 100% offline operations'
         },
         sport: {
           title: 'ZEA Sport',

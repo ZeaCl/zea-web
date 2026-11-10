@@ -68,65 +68,124 @@
             />
           </div>
         {:else if activeNav === 'products'}
-          <!-- Products View: Sovereign Product Suite -->
-          <div class="space-y-5 text-left">
-            <div>
-              <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2">
-                {lang === 'es' ? 'Suite de Productos' : 'Product Suite'}
-              </span>
-              <h1 class="text-4xl sm:text-5xl lg:text-5xl font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
-                <span class="text-white">The Mobile-Native </span><span class="z-gradient-text">AI Platform</span>
-              </h1>
+          <!-- Platform Core & Verticals View -->
+          <div class="space-y-6 text-left max-h-[calc(100vh-130px)] overflow-y-auto pr-2 scroll-smooth">
+            <!-- 1. COMPONENTE CORE / PLATFORM (PRIMERO) -->
+            <div class="space-y-3.5">
+              <div>
+                <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-1.5">
+                  {lang === 'es' ? 'Plataforma Core' : 'Core Platform'}
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold leading-[1.1] tracking-[-0.03em] text-white">
+                  <span class="text-white">The Mobile-Native </span><span class="z-gradient-text">AI Platform</span>
+                </h1>
+                <p class="text-xs text-zinc-400 font-sans leading-relaxed mt-1">
+                  {lang === 'es'
+                    ? 'Infraestructura soberana y runtime nativo para operaciones móviles de alta exigencia.'
+                    : 'Sovereign infrastructure and native runtime engineered for mission-critical mobile operations.'}
+                </p>
+              </div>
+
+              <div class="space-y-2.5 pt-0.5">
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Cloud</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Control Plane & Sync</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Autenticación soberana (IAM), orquestación de workflows deterministas, telemetría de activos y sincronización multi-tenant.'
+                      : 'Sovereign IAM authentication, deterministic workflow orchestration, real-time asset telemetry, and multi-tenant synchronization.'}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Edge</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">On-Device Runtime</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Runtime en Swift y Kotlin 100% offline, visión computacional en el dispositivo, Secure Enclave y latencia menor a 20ms.'
+                      : 'Native Swift and Kotlin runtime running 100% offline, on-device vision AI, hardware Secure Enclave, and sub-20ms latency.'}
+                  </p>
+                </button>
+              </div>
             </div>
 
-            <div class="space-y-3 pt-1">
-              <button
-                type="button"
-                onclick={() => { activeNav = 'industries'; activePillar = 'edge'; }}
-                class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-white tracking-tight">ZEA Edge</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Operaciones en Terreno</span>
-                </div>
-                <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+            <!-- 2. COMPONENTE VERTICALES OPERATIVAS (SEGUNDO) -->
+            <div class="space-y-3.5 pt-4 border-t border-white/[0.08]">
+              <div>
+                <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-1.5">
+                  {lang === 'es' ? 'Soluciones de Industria' : 'Industry Solutions'}
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold leading-[1.12] tracking-[-0.03em] text-white">
+                  <span class="text-white">{lang === 'es' ? 'Verticales ' : 'Operational '}</span><span class="z-gradient-text">{lang === 'es' ? 'Operativas' : 'Verticals'}</span>
+                </h2>
+                <p class="text-xs text-zinc-400 font-sans leading-relaxed mt-1">
                   {lang === 'es'
-                    ? 'Procesos industriales y faenas 100% offline. Visión artificial y checklists por voz para terreno.'
-                    : 'Industrial processes and 100% offline field operations. Computer vision and voice-driven field checklists.'}
+                    ? 'Aplicaciones móviles diseñadas para flujos de trabajo críticos de negocio.'
+                    : 'Turnkey mobile applications purpose-built for high-stakes operational workflows.'}
                 </p>
-              </button>
+              </div>
 
-              <button
-                type="button"
-                onclick={() => { activeNav = 'industries'; activePillar = 'sport'; }}
-                class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-white tracking-tight">ZEA Sport</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Sport Operations</span>
-                </div>
-                <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
-                  {lang === 'es'
-                    ? 'Operaciones agénticas para academias y entidades deportivas. Gestión de entrenadores, control de asistencia y rendimiento.'
-                    : 'Agentic operations for athletic academies and clubs. Centralized coach management, athlete attendance, and performance.'}
-                </p>
-              </button>
+              <div class="space-y-2.5 pt-0.5">
+                <button
+                  type="button"
+                  onclick={() => { activeNav = 'industries'; activePillar = 'edge'; }}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight">{lang === 'es' ? 'Maquinaria & Flota' : 'Machinery & Fleet'}</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Heavy Equipment & Fleet</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Checklists pre-operacionales diarios, control de tolvas en ruta, temperatura de mezcla y partes diarios en faena 100% offline.'
+                      : 'Daily pre-operational checklists, haul truck dispatch, thermal mix verification, and 100% offline field logs.'}
+                  </p>
+                </button>
 
-              <button
-                type="button"
-                onclick={() => { activeNav = 'industries'; activePillar = 'venture'; }}
-                class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-white tracking-tight">ZEA Funds</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Private Capital</span>
-                </div>
-                <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
-                  {lang === 'es'
-                    ? 'Gobernanza de capital privado desde el móvil. Conciliaciones con custodio y firma de llamadas de capital con FaceID.'
-                    : 'Mobile-first private capital governance. Custodian reconciliations and FaceID capital call approvals.'}
-                </p>
-              </button>
+                <button
+                  type="button"
+                  onclick={() => { activeNav = 'industries'; activePillar = 'sport'; }}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight">ZEA Sport</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Sport Operations</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Operaciones agénticas para academias y entidades deportivas. Gestión de entrenadores, control de asistencia y rendimiento.'
+                      : 'Agentic operations for athletic academies and clubs. Centralized coach management, athlete attendance, and performance.'}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => { activeNav = 'industries'; activePillar = 'venture'; }}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight">ZEA Funds</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Private Capital</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Gobernanza de capital privado desde el móvil. Conciliaciones con custodio y firma de llamadas de capital con FaceID.'
+                      : 'Mobile-first private capital governance. Custodian reconciliations and FaceID capital call approvals.'}
+                  </p>
+                </button>
+              </div>
             </div>
           </div>
         {:else}

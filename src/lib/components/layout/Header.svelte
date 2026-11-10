@@ -42,7 +42,7 @@
           class="transition cursor-pointer {activeNav === 'products' ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-zinc-400 hover:text-white'}"
           data-testid="nav-products"
         >
-          {lang === 'es' ? 'Productos' : 'Products'}
+          {lang === 'es' ? 'Verticales' : 'Verticals'}
         </button>
 
         <button
