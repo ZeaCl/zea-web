@@ -2,12 +2,14 @@
   import Header from '$lib/components/layout/Header.svelte';
   import MobileSimulator from '$lib/components/interactive/MobileSimulator.svelte';
   import CodeEditorSnippet, { type ActiveSkills } from '$lib/components/interactive/CodeEditorSnippet.svelte';
+  import ZeaContactDrawer from '$lib/components/interactive/ZeaContactDrawer.svelte';
   import { content, type Language } from '$lib/config/i18n';
 
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
   let activeNav = $state<'products' | 'industries' | 'developer'>('industries');
   let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default'>('default');
+  let isContactDrawerOpen = $state(false);
   const t = $derived(content[lang]);
 
   let skills = $state<ActiveSkills>({
@@ -31,8 +33,8 @@
 </svelte:head>
 
 <div class="relative min-h-screen w-full bg-[#141418] text-[#f4f4f6] flex flex-col selection:bg-emerald-500/30 selection:text-white">
-  <!-- Minimalist Header with pure typography ZEA Logo, Products / Developer / Industries Nav, and Right Utility Actions -->
-  <Header bind:lang bind:platform bind:activeNav />
+  <!-- Minimalist Header with pure typography ZEA Logo, Get Started CTA, and Right Utility Actions -->
+  <Header bind:lang bind:platform bind:activeNav onGetStarted={() => (isContactDrawerOpen = true)} />
 
   <!-- Center Experience: Contextual Stage + Mobile Simulator -->
   <main class="flex-1 w-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-6 relative overflow-hidden">
@@ -370,4 +372,11 @@
       </div>
     </div>
   </main>
+
+  <!-- Palantir-style Contact / Demo Request Slide-Over Drawer with Titanium Phone Tokens -->
+  <ZeaContactDrawer
+    isOpen={isContactDrawerOpen}
+    {lang}
+    onClose={() => (isContactDrawerOpen = false)}
+  />
 </div>
