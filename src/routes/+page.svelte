@@ -93,6 +93,22 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Multi-Agent Engine</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Autonomous AI Agents</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Servidor agéntico y runtime distribuido Glia para orquestar redes de agentes autónomos colaborativos con memoria y herramientas.'
+                      : 'Glia agentic server and distributed runtime to orchestrate collaborative autonomous agent networks with memory and tools.'}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
+                >
+                  <div class="flex items-center justify-between">
                     <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Cloud</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Control Plane & Sync</span>
                   </div>
@@ -269,6 +285,20 @@
                   type="button"
                   onclick={() => (activeNav = 'developer')}
                   class="text-left group cursor-pointer transition"
+                  data-testid="core-multiagent"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    Multi-Agent Engine
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    Autonomous AI Agents
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
                   data-testid="core-auth"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
@@ -290,20 +320,6 @@
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Deterministic AI
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onclick={() => (activeNav = 'developer')}
-                  class="text-left group cursor-pointer transition"
-                  data-testid="core-analytics"
-                >
-                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    Analytics
-                  </span>
-                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    Real-Time Telemetry
                   </span>
                 </button>
 
