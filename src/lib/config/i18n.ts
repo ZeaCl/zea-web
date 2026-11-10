@@ -293,9 +293,9 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
       pillars: {
         edge: {
-          title: 'ZEA Industries',
-          label: 'Industrial',
-          desc: 'Operaciones de terreno y faenas'
+          title: 'ZEA Edge',
+          label: 'Operaciones en Terreno',
+          desc: 'Procesos industriales y faenas 100% offline'
         },
         sport: {
           title: 'ZEA Sport',
@@ -447,9 +447,9 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
       pillars: {
         edge: {
-          title: 'ZEA Industries',
-          label: 'Industrial',
-          desc: 'Field operations & worksites'
+          title: 'ZEA Edge',
+          label: 'Field Operations',
+          desc: 'Industrial processes & 100% offline field operations'
         },
         sport: {
           title: 'ZEA Sport',

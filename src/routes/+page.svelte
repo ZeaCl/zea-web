@@ -86,13 +86,13 @@
                 class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
               >
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-white tracking-tight">ZEA Industries</span>
-                  <span class="text-[10.5px] font-mono text-zinc-400">Industrial</span>
+                  <span class="text-sm font-bold text-white tracking-tight">ZEA Edge</span>
+                  <span class="text-[10.5px] font-mono text-zinc-400">Operaciones en Terreno</span>
                 </div>
                 <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                   {lang === 'es'
-                    ? 'Operaciones y certificaciones de faena 100% offline. Visión artificial y checklists por voz para terreno.'
-                    : '100% offline field operations and compliance. Computer vision and voice-driven field checklists.'}
+                    ? 'Procesos industriales y faenas 100% offline. Visión artificial y checklists por voz para terreno.'
+                    : 'Industrial processes and 100% offline field operations. Computer vision and voice-driven field checklists.'}
                 </p>
               </button>
 
