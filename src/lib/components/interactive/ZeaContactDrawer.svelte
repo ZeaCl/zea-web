@@ -5,10 +5,12 @@
   let {
     isOpen = false,
     lang = 'es',
+    initialFocus = 'industrial',
     onClose
   }: {
     isOpen: boolean;
     lang?: 'es' | 'en';
+    initialFocus?: 'industrial' | 'sport' | 'funds' | 'personal' | 'core';
     onClose: () => void;
   } = $props();
 
@@ -21,6 +23,12 @@
   let vertical = $state<IndustryVertical>('industrial');
   let selectedFocus = $state<'industrial' | 'sport' | 'funds' | 'personal' | 'core'>('industrial');
   let challenge = $state('');
+
+  $effect(() => {
+    if (initialFocus) {
+      selectVertical(initialFocus);
+    }
+  });
 
   // Honeypot anti-spam trap (invisible to human users)
   let honeypot = $state('');

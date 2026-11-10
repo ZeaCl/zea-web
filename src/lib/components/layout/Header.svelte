@@ -23,7 +23,6 @@
 
   function handleSelectPlatform(target: 'ios' | 'android') {
     platform = target;
-    activeNav = 'developer';
   }
 </script>
 
@@ -32,10 +31,6 @@
     <!-- Brand: Solo letras ZEA tal cual en glia-web -->
     <a
       href="/"
-      onclick={(e) => {
-        e.preventDefault();
-        activeNav = 'industries';
-      }}
       class="flex items-center gap-2.5 transition cursor-pointer"
       aria-label="ZEA"
     >
