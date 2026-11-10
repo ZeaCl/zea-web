@@ -24,7 +24,7 @@
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
     skills?: ActiveSkills;
-    activePillar?: 'none' | 'edge' | 'sport' | 'venture';
+    activePillar?: 'none' | 'edge' | 'sport' | 'venture' | 'default';
     activeNav?: string;
   } = $props();
 
@@ -1437,7 +1437,22 @@
               </button>
             </div>
           </div>
-        {:else if activeNav === 'developer' || skills.audio || skills.vision || skills.security || activePillar === 'venture'}
+        {:else if activePillar === 'edge'}
+          <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
+          <ZeaEdgeScreen {lang} {platform} />
+        {:else if activePillar === 'sport'}
+          <!-- ZEA Sport Native Gus Training Experience -->
+          <ZeaSportScreen {lang} {platform} />
+        {:else if activePillar === 'default' || (activePillar === 'none' && activeNav !== 'developer')}
+          <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->
+          <ZeaDefaultScreen
+            {lang}
+            {platform}
+            onNavigateToSport={() => {
+              activePillar = 'sport';
+            }}
+          />
+        {:else if activePillar === 'venture' || activeNav === 'developer' || skills.audio || skills.vision || skills.security}
           <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
           <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
             <div class="flex items-center gap-2.5">
@@ -1867,22 +1882,7 @@
             {/if}
           </form>
         {/if}
-        {:else if activePillar === 'edge'}
-          <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
-          <ZeaEdgeScreen {lang} {platform} />
-        {:else if activePillar === 'sport'}
-          <!-- ZEA Sport Native Gus Training Experience -->
-          <ZeaSportScreen {lang} {platform} />
-        {:else}
-          <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->
-          <ZeaDefaultScreen
-            {lang}
-            {platform}
-            onNavigateToSport={() => {
-              activePillar = 'sport';
-            }}
-          />
-        {/if}
+      {/if}
 
         <!-- Bottom Home Indicator: Apple Home Indicator vs Android Gesture Bar (Hidden on full screen menu) -->
         {#if !showDrawerMenu}

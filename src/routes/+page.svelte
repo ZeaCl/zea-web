@@ -191,6 +191,7 @@
           {platform}
           bind:skills={skills}
           bind:activePillar={activePillar}
+          activeNav="industries"
         />
       </div>
     </div>
