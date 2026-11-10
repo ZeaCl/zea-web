@@ -205,7 +205,7 @@
     role="dialog"
     aria-modal="true"
   >
-    <!-- Top Bar: Close Button + Breadcrumbs -->
+    <!-- Top Bar: Close Button + Navigation Title -->
     <div class="px-6 py-4.5 border-b border-[#1E1E26] flex items-center justify-between shrink-0 bg-[#0A0A0C]/95 backdrop-blur-md">
       <div class="flex items-center gap-3">
         <button
@@ -220,8 +220,8 @@
           </svg>
         </button>
 
-        <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-400 font-semibold">
-          {lang === 'es' ? 'CONTACTO / SOLICITUD DE DEMO OPERATIVA' : 'CONTACT / DEMO REQUEST & INQUIRY'}
+        <span class="text-[12px] font-medium text-zinc-400">
+          {lang === 'es' ? 'Contacto · Solicitud de demo operativa' : 'Contact · Operations demo request'}
         </span>
       </div>
     </div>
@@ -236,13 +236,13 @@
           </div>
 
           <div>
-            <span class="text-[10.5px] font-mono uppercase tracking-widest text-emerald-400 font-semibold block mb-1">
-              {lang === 'es' ? 'SOLICITUD RECIBIDA' : 'REQUEST SUBMITTED'}
+            <span class="text-xs font-semibold text-emerald-400 block mb-1">
+              {lang === 'es' ? 'Solicitud recibida' : 'Request submitted'}
             </span>
             <h3 class="text-2xl font-bold tracking-tight text-white leading-tight">
-              {lang === 'es' ? 'Diagnóstico y Demo en Proceso' : 'Operations Diagnostic In Review'}
+              {lang === 'es' ? 'Diagnóstico y demo en proceso' : 'Operations diagnostic in review'}
             </h3>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+            <p class="text-[13px] text-zinc-400 mt-2 leading-relaxed">
               {lang === 'es'
                 ? `Hemos registrado la solicitud de ${company || 'tu organización'}. Un director técnico de ZEA revisará tus antecedentes para coordinar una demo operativa de la arquitectura agéntica en menos de 24 horas hábiles.`
                 : `We received your inquiry for ${company || 'your organization'}. A ZEA technical director will review your workflows and schedule a mission-critical demo within 24 business hours.`}
@@ -251,12 +251,12 @@
 
           <div class="p-4 rounded-2xl bg-[#141418] border border-[#24242C] space-y-2">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-zinc-500 font-mono">Folio ID:</span>
+              <span class="text-zinc-400">Folio ID:</span>
               <span class="text-white font-mono font-semibold">{submittedLeadId}</span>
             </div>
             <div class="flex items-center justify-between text-xs">
-              <span class="text-zinc-500 font-mono">{lang === 'es' ? 'Foco Operativo:' : 'Operational Focus:'}</span>
-              <span class="text-white font-mono uppercase font-semibold">{selectedFocus}</span>
+              <span class="text-zinc-400">{lang === 'es' ? 'Foco operativo:' : 'Operational focus:'}</span>
+              <span class="text-white font-medium capitalize">{selectedFocus}</span>
             </div>
           </div>
 
@@ -264,28 +264,28 @@
             <button
               type="button"
               onclick={onClose}
-              class="flex-1 py-3 px-4 rounded-xl bg-white hover:bg-zinc-200 text-black font-bold text-xs transition cursor-pointer shadow-md"
+              class="flex-1 py-3 px-4 rounded-2xl bg-white hover:bg-zinc-200 text-black font-semibold text-[13px] transition cursor-pointer shadow-md"
             >
-              {lang === 'es' ? 'Volver a la Plataforma' : 'Return to Platform'}
+              {lang === 'es' ? 'Volver a la plataforma' : 'Return to platform'}
             </button>
             <button
               type="button"
               onclick={handleReset}
-              class="py-3 px-4 rounded-xl bg-[#141418] border border-white/15 text-zinc-300 hover:text-white font-medium text-xs transition cursor-pointer"
+              class="py-3 px-4 rounded-2xl bg-[#141418] border border-white/15 text-zinc-300 hover:text-white font-medium text-[13px] transition cursor-pointer"
             >
-              {lang === 'es' ? 'Nueva Consulta' : 'New Inquiry'}
+              {lang === 'es' ? 'Nueva consulta' : 'New inquiry'}
             </button>
           </div>
         </div>
       {:else}
-        <!-- Form Header estilo Palantir con tipografía nítida -->
-        <div class="space-y-2 text-left">
-          <h2 id="contact-drawer-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-[1.15]">
+        <!-- Form Header con tipografía nativa tipo mobile screen -->
+        <div class="space-y-1.5 text-left">
+          <h2 id="contact-drawer-title" class="text-2xl sm:text-[26px] font-bold tracking-tight text-white leading-snug">
             {lang === 'es'
               ? '¿Interesado en resolver tus operaciones críticas?'
               : 'Interested in solving your mission-critical operations?'}
           </h2>
-          <p class="text-xs text-zinc-400 font-sans leading-relaxed">
+          <p class="text-[13px] text-zinc-400 leading-relaxed font-normal">
             {lang === 'es'
               ? 'Cuéntanos sobre tus flujos de trabajo, faenas industriales o desafíos de gobernanza para evaluar viabilidad y arquitectura.'
               : 'Tell us about your workflows, field operations, or governance challenges to assess technical feasibility and target architecture.'}
@@ -317,8 +317,8 @@
           <!-- First & Last Name -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div class="space-y-1.5">
-              <label for="first-name-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {lang === 'es' ? 'NOMBRE *' : 'FIRST NAME *'}
+              <label for="first-name-input" class="block text-[12.5px] font-medium text-zinc-300">
+                {lang === 'es' ? 'Nombre' : 'First name'} <span class="text-zinc-500">*</span>
               </label>
               <input
                 id="first-name-input"
@@ -331,18 +331,18 @@
                 aria-describedby={firstNameError ? "first-name-error" : undefined}
                 required
                 placeholder={lang === 'es' ? 'Ej: Carlos' : 'e.g., Charles'}
-                class="w-full bg-[#141418] border {firstNameError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+                class="w-full bg-[#141418] border {firstNameError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
               />
               {#if firstNameError}
-                <p id="first-name-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+                <p id="first-name-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                   <span>⚠</span> {firstNameError}
                 </p>
               {/if}
             </div>
 
             <div class="space-y-1.5">
-              <label for="last-name-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {lang === 'es' ? 'APELLIDO *' : 'LAST NAME *'}
+              <label for="last-name-input" class="block text-[12.5px] font-medium text-zinc-300">
+                {lang === 'es' ? 'Apellido' : 'Last name'} <span class="text-zinc-500">*</span>
               </label>
               <input
                 id="last-name-input"
@@ -355,10 +355,10 @@
                 aria-describedby={lastNameError ? "last-name-error" : undefined}
                 required
                 placeholder={lang === 'es' ? 'Ej: Hinostroza' : 'e.g., Foster'}
-                class="w-full bg-[#141418] border {lastNameError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+                class="w-full bg-[#141418] border {lastNameError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
               />
               {#if lastNameError}
-                <p id="last-name-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+                <p id="last-name-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                   <span>⚠</span> {lastNameError}
                 </p>
               {/if}
@@ -367,8 +367,8 @@
 
           <!-- Business Email Address -->
           <div class="space-y-1.5">
-            <label for="email-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-              {lang === 'es' ? 'CORREO CORPORATIVO *' : 'BUSINESS EMAIL ADDRESS *'}
+            <label for="email-input" class="block text-[12.5px] font-medium text-zinc-300">
+              {lang === 'es' ? 'Correo corporativo' : 'Business email'} <span class="text-zinc-500">*</span>
             </label>
             <input
               id="email-input"
@@ -381,10 +381,10 @@
               aria-describedby={emailError ? "email-error" : undefined}
               required
               placeholder={lang === 'es' ? 'tu.nombre@empresa.com' : 'you@company.com'}
-              class="w-full bg-[#141418] border {emailError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+              class="w-full bg-[#141418] border {emailError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
             />
             {#if emailError}
-              <p id="email-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+              <p id="email-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                 <span>⚠</span> {emailError}
               </p>
             {/if}
@@ -393,8 +393,8 @@
           <!-- Phone Number & Job Title -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div class="space-y-1.5">
-              <label for="phone-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {lang === 'es' ? 'TELÉFONO' : 'PHONE NUMBER'}
+              <label for="phone-input" class="block text-[12.5px] font-medium text-zinc-300">
+                {lang === 'es' ? 'Teléfono' : 'Phone number'} <span class="text-zinc-500 text-[11px]">({lang === 'es' ? 'opcional' : 'optional'})</span>
               </label>
               <input
                 id="phone-input"
@@ -406,18 +406,18 @@
                 aria-invalid={!!phoneError}
                 aria-describedby={phoneError ? "phone-error" : undefined}
                 placeholder="+56 9 1234 5678"
-                class="w-full bg-[#141418] border {phoneError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+                class="w-full bg-[#141418] border {phoneError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
               />
               {#if phoneError}
-                <p id="phone-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+                <p id="phone-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                   <span>⚠</span> {phoneError}
                 </p>
               {/if}
             </div>
 
             <div class="space-y-1.5">
-              <label for="job-title-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {lang === 'es' ? 'CARGO / ROL' : 'JOB TITLE'}
+              <label for="job-title-input" class="block text-[12.5px] font-medium text-zinc-300">
+                {lang === 'es' ? 'Cargo o rol' : 'Job title'}
               </label>
               <input
                 id="job-title-input"
@@ -426,15 +426,15 @@
                 maxlength="100"
                 bind:value={jobTitle}
                 placeholder={lang === 'es' ? 'Ej: Gerente de Operaciones / CTO' : 'e.g., VP of Operations / CTO'}
-                class="w-full bg-[#141418] border border-[#26262E] focus:border-white focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+                class="w-full bg-[#141418] border border-[#26262E] focus:border-white focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
               />
             </div>
           </div>
 
           <!-- Company / Institution -->
           <div class="space-y-1.5">
-            <label for="company-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-              {lang === 'es' ? 'EMPRESA / INSTITUCIÓN *' : 'COMPANY / INSTITUTION *'}
+            <label for="company-input" class="block text-[12.5px] font-medium text-zinc-300">
+              {lang === 'es' ? 'Empresa u organización' : 'Company or organization'} <span class="text-zinc-500">*</span>
             </label>
             <input
               id="company-input"
@@ -447,10 +447,10 @@
               aria-describedby={companyError ? "company-error" : undefined}
               required
               placeholder={lang === 'es' ? 'Ej: Minera X, Aqua Y, Constructora Z' : 'e.g., Enterprise Corp'}
-              class="w-full bg-[#141418] border {companyError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition"
+              class="w-full bg-[#141418] border {companyError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition"
             />
             {#if companyError}
-              <p id="company-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+              <p id="company-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                 <span>⚠</span> {companyError}
               </p>
             {/if}
@@ -458,14 +458,14 @@
 
           <!-- Vertical Selection Pills (estilo GliaBar chips) -->
           <div class="space-y-2 pt-1">
-            <span class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-              {lang === 'es' ? 'ÁREA / FOCO OPERACIONAL' : 'OPERATIONAL FOCUS'}
+            <span class="block text-[12.5px] font-medium text-zinc-300">
+              {lang === 'es' ? 'Área o foco operacional' : 'Operational focus'}
             </span>
             <div class="flex flex-wrap gap-2">
               <button
                 type="button"
                 onclick={() => selectVertical('industrial')}
-                class="px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer {selectedFocus === 'industrial' ? 'bg-white text-black font-bold' : 'bg-[#141418] border border-[#26262E] text-zinc-400 hover:text-white'}"
+                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'industrial' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
                 Industrial
               </button>
@@ -473,7 +473,7 @@
               <button
                 type="button"
                 onclick={() => selectVertical('sport')}
-                class="px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer {selectedFocus === 'sport' ? 'bg-white text-black font-bold' : 'bg-[#141418] border border-[#26262E] text-zinc-400 hover:text-white'}"
+                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'sport' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
                 Sport
               </button>
@@ -481,7 +481,7 @@
               <button
                 type="button"
                 onclick={() => selectVertical('funds')}
-                class="px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer {selectedFocus === 'funds' ? 'bg-white text-black font-bold' : 'bg-[#141418] border border-[#26262E] text-zinc-400 hover:text-white'}"
+                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'funds' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
                 Funds
               </button>
@@ -489,7 +489,7 @@
               <button
                 type="button"
                 onclick={() => selectVertical('personal')}
-                class="px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer {selectedFocus === 'personal' ? 'bg-white text-black font-bold' : 'bg-[#141418] border border-[#26262E] text-zinc-400 hover:text-white'}"
+                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'personal' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
                 Personal
               </button>
@@ -497,7 +497,7 @@
               <button
                 type="button"
                 onclick={() => selectVertical('core')}
-                class="px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer {selectedFocus === 'core' ? 'bg-white text-black font-bold' : 'bg-[#141418] border border-[#26262E] text-zinc-400 hover:text-white'}"
+                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'core' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
                 Platform Core
               </button>
@@ -507,10 +507,10 @@
           <!-- Operational Challenge / Requirements -->
           <div class="space-y-1.5 pt-1">
             <div class="flex items-center justify-between">
-              <label for="challenge-input" class="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {lang === 'es' ? 'DESAFÍO OPERACIONAL / DESCRIPCIÓN *' : 'OPERATIONAL CHALLENGE / SCOPE *'}
+              <label for="challenge-input" class="block text-[12.5px] font-medium text-zinc-300">
+                {lang === 'es' ? 'Desafío operacional o requerimiento' : 'Operational challenge or scope'} <span class="text-zinc-500">*</span>
               </label>
-              <span class="text-[9px] font-mono text-zinc-500">
+              <span class="text-[11px] font-mono text-zinc-500">
                 {challenge.length}/1500
               </span>
             </div>
@@ -524,10 +524,10 @@
               required
               rows="3"
               placeholder={lang === 'es' ? 'Describe brevemente tus procesos, faenas o flujos críticos a digitalizar...' : 'Describe your operational bottleneck, field challenges, or target workflow...'}
-              class="w-full bg-[#141418] border {challengeError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 transition resize-none leading-relaxed"
+              class="w-full bg-[#141418] border {challengeError ? 'border-red-500/80 bg-red-950/20 text-red-100 focus:border-red-400' : 'border-[#26262E] focus:border-white'} focus:outline-none rounded-xl px-3.5 py-2.5 text-[13px] text-white placeholder-zinc-500 transition resize-none leading-relaxed"
             ></textarea>
             {#if challengeError}
-              <p id="challenge-error" role="alert" class="text-[10px] text-red-400 font-mono flex items-center gap-1">
+              <p id="challenge-error" role="alert" class="text-[11px] text-red-400 mt-1 flex items-center gap-1">
                 <span>⚠</span> {challengeError}
               </p>
             {/if}
@@ -539,14 +539,14 @@
               type="submit"
               disabled={isSubmitting}
               data-testid="contact-submit-btn"
-              class="w-full py-3.5 px-5 rounded-xl bg-white hover:bg-zinc-200 text-black font-bold text-xs tracking-tight transition cursor-pointer shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 disabled:bg-zinc-700 disabled:text-zinc-400"
+              class="w-full py-3.5 px-5 rounded-2xl bg-white hover:bg-zinc-200 text-black font-semibold text-[13.5px] tracking-tight transition cursor-pointer shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 disabled:bg-zinc-700 disabled:text-zinc-400"
             >
               {#if isSubmitting}
                 <span class="w-3.5 h-3.5 rounded-full border-2 border-black border-t-transparent animate-spin"></span>
-                <span>{lang === 'es' ? 'Enviando Solicitud...' : 'Submitting Request...'}</span>
+                <span>{lang === 'es' ? 'Enviando solicitud...' : 'Submitting request...'}</span>
               {:else}
-                <span>{lang === 'es' ? 'Enviar Solicitud de Operaciones' : 'Submit Operations Request'}</span>
-                <span>→</span>
+                <span>{lang === 'es' ? 'Enviar solicitud de operaciones' : 'Submit operations request'}</span>
+                <span class="text-sm">→</span>
               {/if}
             </button>
           </div>
