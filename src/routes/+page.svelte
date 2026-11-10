@@ -258,6 +258,70 @@
                 </button>
               </div>
             </div>
+
+            <!-- Platform Core Section (Mismo componente exacto repetido abajo) -->
+            <div class="pt-4">
+              <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
+                {lang === 'es' ? 'Plataforma Core' : 'Platform Core'}
+              </span>
+              <div class="grid grid-cols-4 gap-2.5 border-t border-white/[0.08] pt-3">
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="core-auth"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    Auth & IAM
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    Secure Enclave
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="core-workflows"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    Workflows
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    Deterministic AI
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="core-analytics"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    Analytics
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    Real-Time Telemetry
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="core-vision"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    Image AI
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                    On-Device Vision
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
         {/if}
       </div>
