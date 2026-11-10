@@ -6,7 +6,7 @@
 
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
-  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default'>('default');
+  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('default');
   let isContactDrawerOpen = $state(false);
   let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'personal' | 'core'>('industrial');
   const t = $derived(content[lang]);
@@ -126,11 +126,11 @@
             <div class="grid grid-cols-4 gap-2.5 border-t border-white/[0.08] pt-3">
               <button
                 type="button"
-                onclick={() => openContact('core')}
+                onclick={() => { activePillar = 'glia'; skills.vision = false; }}
                 class="text-left group cursor-pointer transition"
                 data-testid="core-glia"
               >
-                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                <span class="text-xs font-semibold block transition {activePillar === 'glia' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
                   Glia
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
@@ -140,11 +140,11 @@
 
               <button
                 type="button"
-                onclick={() => openContact('core')}
+                onclick={() => { activePillar = 'glia'; skills.security = !skills.security; skills.vision = false; }}
                 class="text-left group cursor-pointer transition"
                 data-testid="core-thalamus"
               >
-                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                <span class="text-xs font-semibold block transition {skills.security ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
                   Thalamus
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
@@ -154,11 +154,11 @@
 
               <button
                 type="button"
-                onclick={() => openContact('core')}
+                onclick={() => { activePillar = 'default'; skills.vision = false; }}
                 class="text-left group cursor-pointer transition"
                 data-testid="core-cerebelum"
               >
-                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white">
                   Cerebelum
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
@@ -168,11 +168,11 @@
 
               <button
                 type="button"
-                onclick={() => openContact('core')}
+                onclick={() => { skills.vision = !skills.vision; }}
                 class="text-left group cursor-pointer transition"
                 data-testid="core-occipital"
               >
-                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                <span class="text-xs font-semibold block transition {skills.vision ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
                   Occipital
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">

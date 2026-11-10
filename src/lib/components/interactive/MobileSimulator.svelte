@@ -24,7 +24,7 @@
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
     skills?: ActiveSkills;
-    activePillar?: 'none' | 'edge' | 'sport' | 'venture' | 'default';
+    activePillar?: 'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia';
     activeNav?: string;
   } = $props();
 
@@ -1452,7 +1452,7 @@
               activePillar = 'sport';
             }}
           />
-        {:else if activePillar === 'venture' || activeNav === 'developer' || skills.audio || skills.vision || skills.security}
+        {:else if activePillar === 'glia' || activePillar === 'venture' || activeNav === 'developer' || skills.audio || skills.vision || skills.security}
           <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
           <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
             <div class="flex items-center gap-2.5">
@@ -1480,7 +1480,7 @@
                   <AndroidLogo class="h-4 w-auto text-emerald-400" />
                 {/if}
                 <span class="text-[13px] font-semibold text-white tracking-tight font-sans">
-                  {platform === 'ios' ? 'iOS Client' : 'Android Client'}
+                  {activePillar === 'glia' ? 'Glia Multi-Agent Engine' : (platform === 'ios' ? 'iOS Client' : 'Android Client')}
                 </span>
               </div>
             </div>
