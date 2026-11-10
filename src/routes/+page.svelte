@@ -93,7 +93,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Glia</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Glia</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Multi-Agent Engine</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -109,7 +109,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Thalamus</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Thalamus</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Auth & Enclave Gateway</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -125,7 +125,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Cerebelum</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Cerebelum</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Deterministic Workflows</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -141,7 +141,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Occipital</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Occipital</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Vision & Image AI</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -176,7 +176,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight">ZEA Industrial</span>
+                    <span class="text-sm font-bold text-white tracking-tight">Industrial</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Procesos & Faenas</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -192,7 +192,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight">ZEA Sport</span>
+                    <span class="text-sm font-bold text-white tracking-tight">Sport</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Sport Operations</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -208,7 +208,7 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight">ZEA Funds</span>
+                    <span class="text-sm font-bold text-white tracking-tight">Funds</span>
                     <span class="text-[10.5px] font-mono text-zinc-400">Private Capital</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
@@ -240,7 +240,7 @@
                   data-testid="pillar-core"
                 >
                   <span class="text-xs font-semibold block transition {activePillar === 'default' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                    ZEA Personal
+                    Personal
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Personal AI
@@ -304,7 +304,7 @@
                   data-testid="core-glia"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    ZEA Glia
+                    Glia
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Multi-Agent Engine
@@ -318,7 +318,7 @@
                   data-testid="core-thalamus"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    ZEA Thalamus
+                    Thalamus
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Auth & Enclave
@@ -332,7 +332,7 @@
                   data-testid="core-cerebelum"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    ZEA Cerebelum
+                    Cerebelum
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Workflows Engine
@@ -346,7 +346,7 @@
                   data-testid="core-occipital"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    ZEA Occipital
+                    Occipital
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Vision & Image AI

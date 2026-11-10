@@ -293,17 +293,17 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
       pillars: {
         edge: {
-          title: 'ZEA Industrial',
+          title: 'Industrial',
           label: 'Procesos & Faenas',
           desc: 'Trazabilidad de faenas e inspección 100% offline'
         },
         sport: {
-          title: 'ZEA Sport',
+          title: 'Sport',
           label: 'Sport Operations',
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
-          title: 'ZEA Funds',
+          title: 'Funds',
           label: 'Private Capital',
           desc: 'Gobernanza y gestión de capital privado'
         }
@@ -447,17 +447,17 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
       pillars: {
         edge: {
-          title: 'ZEA Industrial',
+          title: 'Industrial',
           label: 'Industrial & Field Ops',
           desc: 'Field traceability & 100% offline inspections'
         },
         sport: {
-          title: 'ZEA Sport',
+          title: 'Sport',
           label: 'Sport Operations',
           desc: 'Coach management, venues & athletes'
         },
         venture: {
-          title: 'ZEA Funds',
+          title: 'Funds',
           label: 'Private Capital',
           desc: 'Private capital & governance'
         }
