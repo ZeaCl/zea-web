@@ -27,7 +27,7 @@ describe('ZeaContactDrawer component', () => {
     });
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText('¿Interesado en resolver tus operaciones críticas con software ZEA?')).toBeInTheDocument();
+    expect(screen.getByText('¿Interesado en resolver tus operaciones críticas?')).toBeInTheDocument();
     expect(screen.getByTestId('contact-submit-btn')).toBeInTheDocument();
   });
 

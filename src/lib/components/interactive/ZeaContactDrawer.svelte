@@ -214,8 +214,8 @@
         <div class="space-y-2 text-left">
           <h2 id="contact-drawer-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-[1.15]">
             {lang === 'es'
-              ? '¿Interesado en resolver tus operaciones críticas con software ZEA?'
-              : 'Interested in solving your mission-critical operations with ZEA?'}
+              ? '¿Interesado en resolver tus operaciones críticas?'
+              : 'Interested in solving your mission-critical operations?'}
           </h2>
           <p class="text-xs text-zinc-400 font-sans leading-relaxed">
             {lang === 'es'
