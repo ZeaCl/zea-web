@@ -44,23 +44,25 @@ describe('Header component', () => {
     expect(btnEs).toHaveClass('font-bold');
   });
 
-  it('debe renderizar los enlaces de navegación Products, Developer e Industries y permitir cambiar activeNav', async () => {
-    render(Header, { props: { lang: 'es', activeNav: 'industries' } });
+  it('debe renderizar el botón Get Started con fondo blanco y estilo de Zea Personal y permitir activarlo', async () => {
+    let getStartedTriggered = false;
+    render(Header, {
+      props: {
+        lang: 'es',
+        activeNav: 'industries',
+        onGetStarted: () => {
+          getStartedTriggered = true;
+        }
+      }
+    });
 
-    const navProducts = screen.getByTestId('nav-products');
-    const navDeveloper = screen.getByTestId('nav-developer');
-    const navIndustries = screen.getByTestId('nav-industries');
+    const btn = screen.getByTestId('get-started-btn');
+    expect(btn).toBeInTheDocument();
+    expect(btn).toHaveTextContent('Get Started');
+    expect(btn).toHaveClass('bg-white');
+    expect(btn).toHaveClass('rounded-xl');
 
-    expect(navProducts).toBeInTheDocument();
-    expect(navDeveloper).toBeInTheDocument();
-    expect(navIndustries).toBeInTheDocument();
-
-    expect(navIndustries).toHaveClass('text-white font-bold');
-
-    await fireEvent.click(navDeveloper);
-    expect(navDeveloper).toHaveClass('text-white font-bold');
-
-    await fireEvent.click(navProducts);
-    expect(navProducts).toHaveClass('text-white font-bold');
+    await fireEvent.click(btn);
+    expect(getStartedTriggered).toBe(true);
   });
 });
