@@ -93,13 +93,13 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Multi-Agent Engine</span>
-                    <span class="text-[10.5px] font-mono text-zinc-400">AI Agents</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Glia</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Multi-Agent Engine</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                     {lang === 'es'
-                      ? 'Servidor agéntico y runtime distribuido Glia para orquestar redes de agentes colaborativos con memoria y herramientas.'
-                      : 'Glia agentic server and distributed runtime to orchestrate collaborative agent networks with memory and tools.'}
+                      ? 'Runtime agéntico y servidor distribuido para orquestar redes de agentes autónomos colaborativos con memoria y herramientas.'
+                      : 'Agentic runtime and distributed server to orchestrate collaborative agent networks with memory and tools.'}
                   </p>
                 </button>
 
@@ -109,13 +109,13 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Cloud</span>
-                    <span class="text-[10.5px] font-mono text-zinc-400">Control Plane & Sync</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Thalamus</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Auth & Enclave Gateway</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                     {lang === 'es'
-                      ? 'Autenticación soberana (IAM), orquestación de workflows deterministas, telemetría de activos y sincronización multi-tenant.'
-                      : 'Sovereign IAM authentication, deterministic workflow orchestration, real-time asset telemetry, and multi-tenant synchronization.'}
+                      ? 'Autenticación soberana (IAM), hardware Secure Enclave, enrutamiento seguro de credenciales y tokens de acceso.'
+                      : 'Sovereign IAM authentication, hardware Secure Enclave, secure credential routing, and access token management.'}
                   </p>
                 </button>
 
@@ -125,13 +125,29 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Edge</span>
-                    <span class="text-[10.5px] font-mono text-zinc-400">On-Device Runtime</span>
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Cerebelum</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Deterministic Workflows</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                     {lang === 'es'
-                      ? 'Runtime en Swift y Kotlin 100% offline, visión computacional en el dispositivo, Secure Enclave y latencia menor a 20ms.'
-                      : 'Native Swift and Kotlin runtime running 100% offline, on-device vision AI, hardware Secure Enclave, and sub-20ms latency.'}
+                      ? 'Orquestación de workflows deterministas, máquinas de estado y aprobaciones de misión crítica human-in-the-loop.'
+                      : 'Deterministic workflow orchestration, state machines, and mission-critical human-in-the-loop approvals.'}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer group"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">ZEA Occipital</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Vision & Image AI</span>
+                  </div>
+                  <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
+                    {lang === 'es'
+                      ? 'Modelos de visión computacional en el dispositivo para escaneo multimodal, inspección de faenas y lectura visual.'
+                      : 'On-device computer vision models for multimodal scanning, field inspections, and visual perception.'}
                   </p>
                 </button>
               </div>
@@ -285,13 +301,27 @@
                   type="button"
                   onclick={() => (activeNav = 'developer')}
                   class="text-left group cursor-pointer transition"
-                  data-testid="core-multiagent"
+                  data-testid="core-glia"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    ZEA Glia
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                     Multi-Agent Engine
                   </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activeNav = 'developer')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="core-thalamus"
+                >
+                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
+                    ZEA Thalamus
+                  </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    AI Agents
+                    Auth & Enclave
                   </span>
                 </button>
 
@@ -299,13 +329,13 @@
                   type="button"
                   onclick={() => (activeNav = 'developer')}
                   class="text-left group cursor-pointer transition"
-                  data-testid="core-auth"
+                  data-testid="core-cerebelum"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    Auth & IAM
+                    ZEA Cerebelum
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    Secure Enclave
+                    Workflows Engine
                   </span>
                 </button>
 
@@ -313,27 +343,13 @@
                   type="button"
                   onclick={() => (activeNav = 'developer')}
                   class="text-left group cursor-pointer transition"
-                  data-testid="core-workflows"
+                  data-testid="core-occipital"
                 >
                   <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    Workflows
+                    ZEA Occipital
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    Deterministic AI
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onclick={() => (activeNav = 'developer')}
-                  class="text-left group cursor-pointer transition"
-                  data-testid="core-vision"
-                >
-                  <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white group-hover:underline underline-offset-4 decoration-white/40">
-                    Image AI
-                  </span>
-                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    On-Device Vision
+                    Vision & Image AI
                   </span>
                 </button>
               </div>
