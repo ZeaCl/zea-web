@@ -94,12 +94,12 @@
                 >
                   <div class="flex items-center justify-between">
                     <span class="text-sm font-bold text-white tracking-tight group-hover:text-emerald-400 transition">Multi-Agent Engine</span>
-                    <span class="text-[10.5px] font-mono text-zinc-400">Autonomous AI Agents</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">AI Agents</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                     {lang === 'es'
-                      ? 'Servidor agéntico y runtime distribuido Glia para orquestar redes de agentes autónomos colaborativos con memoria y herramientas.'
-                      : 'Glia agentic server and distributed runtime to orchestrate collaborative autonomous agent networks with memory and tools.'}
+                      ? 'Servidor agéntico y runtime distribuido Glia para orquestar redes de agentes colaborativos con memoria y herramientas.'
+                      : 'Glia agentic server and distributed runtime to orchestrate collaborative agent networks with memory and tools.'}
                   </p>
                 </button>
 
@@ -291,7 +291,7 @@
                     Multi-Agent Engine
                   </span>
                   <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                    Autonomous AI Agents
+                    AI Agents
                   </span>
                 </button>
 
