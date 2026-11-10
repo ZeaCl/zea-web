@@ -144,13 +144,13 @@
                   class="w-full text-left p-3.5 rounded-2xl bg-[#16161D]/80 border border-white/[0.06] hover:border-white/20 transition cursor-pointer"
                 >
                   <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-white tracking-tight">{lang === 'es' ? 'Maquinaria & Flota' : 'Machinery & Fleet'}</span>
-                    <span class="text-[10.5px] font-mono text-zinc-400">Heavy Equipment & Fleet</span>
+                    <span class="text-sm font-bold text-white tracking-tight">ZEA Industrial</span>
+                    <span class="text-[10.5px] font-mono text-zinc-400">Procesos & Faenas</span>
                   </div>
                   <p class="text-xs text-zinc-400 mt-1 font-sans leading-relaxed">
                     {lang === 'es'
-                      ? 'Checklists pre-operacionales diarios, control de tolvas en ruta, temperatura de mezcla y partes diarios en faena 100% offline.'
-                      : 'Daily pre-operational checklists, haul truck dispatch, thermal mix verification, and 100% offline field logs.'}
+                      ? 'Trazabilidad de faenas, control de calidad, partes diarios e inspección en terreno 100% offline para minería, acuicultura y obras civiles.'
+                      : 'Field traceability, quality control, shift logs, and 100% offline inspections for mining, aquaculture, and civil works.'}
                   </p>
                 </button>
 

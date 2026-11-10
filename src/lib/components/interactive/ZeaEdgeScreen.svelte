@@ -450,7 +450,7 @@
         <div>
           {#if viewMode === 'chat'}
             <h2 class="font-semibold text-[13.5px] tracking-tight text-white leading-tight">
-              ZEA Edge Agent
+              ZEA Industrial Agent
             </h2>
           {:else}
             <h2 class="font-semibold text-[13.5px] tracking-tight text-white leading-tight">
