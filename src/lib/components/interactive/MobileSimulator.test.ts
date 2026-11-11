@@ -151,7 +151,7 @@ describe('MobileSimulator component', () => {
 
     expect(screen.getByTestId('zea-funds-screen')).toBeInTheDocument();
     expect(screen.getByText('ZEA Funds agent')).toBeInTheDocument();
-    expect(screen.getByText('Südlich Private Capital')).toBeInTheDocument();
+    expect(screen.getByText('Altus Private Capital')).toBeInTheDocument();
     expect(document.getElementById('funds-bottom-tabbar')).toBeInTheDocument();
     expect(screen.getByText('Resumen')).toBeInTheDocument();
     expect(screen.getByText('Llamados')).toBeInTheDocument();
@@ -177,12 +177,12 @@ describe('MobileSimulator component', () => {
     const portafolioTab = screen.getByText('Portafolio');
     await fireEvent.click(portafolioTab);
     expect(screen.getByText(/Empresas en Portafolio Directo/)).toBeInTheDocument();
-    expect(screen.getByText('Frío Austral SpA')).toBeInTheDocument();
+    expect(screen.getByText('Logix Cold Chain SpA')).toBeInTheDocument();
 
     // Cambiar a pestaña Aportantes
     const aportantesTab = screen.getByText('Aportantes');
     await fireEvent.click(aportantesTab);
     expect(screen.getByPlaceholderText('Buscar aportante o RUT...')).toBeInTheDocument();
-    expect(screen.getByText('Family Office Los Alerces')).toBeInTheDocument();
+    expect(screen.getByText('Alpha Horizon Family Office')).toBeInTheDocument();
   });
 });

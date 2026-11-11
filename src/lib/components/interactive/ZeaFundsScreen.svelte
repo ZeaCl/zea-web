@@ -65,7 +65,7 @@
   }
 
   // =========================================================================
-  // 1. HARVEY EDITORIAL DATA MODELS (Südlich Capital Private Equity)
+  // 1. HARVEY EDITORIAL DATA MODELS (Altus Private Capital - Fictional)
   // =========================================================================
   // Exponential density curve bars (like Harvey's DAU/MAU chart)
   const densityBars = [
@@ -88,7 +88,7 @@
       id: '1',
       time: '09:30',
       title: lang === 'en' ? 'Custodian Bank Reconciliation' : 'Conciliación Banco Custodio',
-      subtitle: lang === 'en' ? '100% matched vs Banco de Chile' : '100% de abonos cuadraron vs Banco de Chile',
+      subtitle: lang === 'en' ? '100% matched vs Banco Custodio Central' : '100% de abonos cuadraron vs Banco Custodio Central',
       status: 'completed' as const
     },
     {
@@ -99,8 +99,8 @@
       status: 'active' as const,
       onClick: () =>
         openItemDetails({
-          avatarText: 'F2',
-          title: lang === 'en' ? 'Investment Committee: Fram II' : 'Comité de Inversiones: Fram II',
+          avatarText: 'H2',
+          title: lang === 'en' ? 'Investment Committee: Horizon II' : 'Comité de Inversiones: Horizon II',
           subtitle: lang === 'en' ? 'Fund II · Board Review' : 'Fondo II · Sesión de Directorio',
           progressLabel: lang === 'en' ? 'Capital deployed' : 'Capital desplegado',
           progressValueText: '$10.2M de $14.8M',
@@ -115,7 +115,7 @@
       id: '3',
       time: '14:30',
       title: lang === 'en' ? 'Capital Call #4 Window Close' : 'Cierre Ventana Llamada #4',
-      subtitle: lang === 'en' ? 'Fram II · $1,250,000 USD · 88% received' : 'Fram II · $1,250,000 USD · 88% recibido',
+      subtitle: lang === 'en' ? 'Horizon II · $1,250,000 USD · 88% received' : 'Horizon II · $1,250,000 USD · 88% recibido',
       status: 'active' as const,
       actionLabel: lang === 'en' ? 'Audit LPs' : 'Auditar LPs',
       onAction: () => {
@@ -134,61 +134,61 @@
     }
   ]);
 
-  // Capital calls list
+  // Capital calls list (fictional fund names)
   const capitalCallsList = $derived([
     {
       id: 'cc-4',
-      fund: 'Fondo Fram II',
+      fund: 'Fondo Horizon II',
       title: lang === 'en' ? 'Capital Call #4' : 'Llamada de Capital #4',
       amount: '$1,250,000 USD',
       status: 'active',
       badge: lang === 'en' ? 'Active · 88% received' : 'En curso · 88% recibido',
       dueDate: lang === 'en' ? 'Closes today at 14:30' : 'Cierra hoy a las 14:30',
       lpsReconciled: '30 / 32 LPs',
-      bankStatus: 'Banco de Chile · 100% match'
+      bankStatus: 'Banco Custodio Central · 100% match'
     },
     {
       id: 'cc-3',
-      fund: 'Fondo Fram II',
+      fund: 'Fondo Horizon II',
       title: lang === 'en' ? 'Capital Call #3' : 'Llamada de Capital #3',
       amount: '$2,500,000 USD',
       status: 'completed',
       badge: lang === 'en' ? 'Completed 100%' : 'Completado 100%',
       dueDate: '15 Ene 2026',
       lpsReconciled: '32 / 32 LPs',
-      bankStatus: 'Banco de Chile · Conciliado'
+      bankStatus: 'Banco Custodio Central · Conciliado'
     },
     {
       id: 'cc-2',
-      fund: 'Patagonia Infraestructura I',
+      fund: 'Terra Infraestructura I',
       title: lang === 'en' ? 'Capital Call #2' : 'Llamada de Capital #2',
       amount: '$3,800,000 USD',
       status: 'completed',
       badge: lang === 'en' ? 'Completed 100%' : 'Completado 100%',
       dueDate: '20 Oct 2025',
       lpsReconciled: '24 / 24 LPs',
-      bankStatus: 'Banco Santander · Conciliado'
+      bankStatus: 'Pacific Custody Bank · Conciliado'
     },
     {
       id: 'cc-1',
-      fund: 'Fram I (Vintage 2024)',
+      fund: 'Horizon I (Vintage 2024)',
       title: lang === 'en' ? 'Capital Call #1' : 'Llamada de Capital #1',
       amount: '$5,000,000 USD',
       status: 'completed',
       badge: lang === 'en' ? 'Closed' : 'Cerrado',
       dueDate: '12 May 2024',
       lpsReconciled: '20 / 20 LPs',
-      bankStatus: 'Banco de Chile · Conciliado'
+      bankStatus: 'Banco Custodio Central · Conciliado'
     }
   ]);
 
-  // Direct portfolio holdings
+  // Direct portfolio holdings (fictional company names)
   const portfolioHoldings = $derived([
     {
       id: 'p-1',
-      name: 'Frío Austral SpA',
-      sector: lang === 'en' ? 'Cold Chain & Logistics' : 'Logística Frío & Exportación',
-      location: 'Puerto Montt, Región de Los Lagos',
+      name: 'Logix Cold Chain SpA',
+      sector: lang === 'en' ? 'Smart Logistics & Cold Storage' : 'Logística Inteligente & Frío',
+      location: 'Hub Logístico Puerto Central',
       deployed: '$4.20M USD',
       irr: '21.2% TIR',
       status: lang === 'en' ? 'Optimal operations' : 'Operación óptima',
@@ -197,9 +197,9 @@
     },
     {
       id: 'p-2',
-      name: 'Datacenter Patagonia',
-      sector: lang === 'en' ? 'Sustainable Edge Infra' : 'Infraestructura Crítica Sostenible',
-      location: 'Valdivia, Región de Los Ríos',
+      name: 'AeroData Cloud Systems',
+      sector: lang === 'en' ? 'Sustainable Edge Infra Tier III' : 'Infraestructura Crítica Edge Tier III',
+      location: 'Zona Tecnológica Biobío',
       deployed: '$4.00M USD',
       irr: '16.8% TIR',
       status: lang === 'en' ? 'Phase II expansion' : 'Expansión Fase II',
@@ -208,9 +208,9 @@
     },
     {
       id: 'p-3',
-      name: 'AgTech Sur SpA',
-      sector: lang === 'en' ? 'Precision Aquaculture IoT' : 'Biometría & Sensores Salmón',
-      location: 'Castro, Chiloé',
+      name: 'BioSensor Dynamics',
+      sector: lang === 'en' ? 'Industrial Bio-Sensors & Telemetry' : 'Biometría & Sensores Industriales',
+      location: 'Parque de Innovación Austral',
       deployed: '$2.80M USD',
       irr: '19.5% TIR',
       status: lang === 'en' ? 'Commercial scaling' : 'Escalamiento comercial',
@@ -219,9 +219,9 @@
     },
     {
       id: 'p-4',
-      name: 'Energías Limpias Chiloé',
-      sector: lang === 'en' ? 'Renewable Energy Assets' : 'Generación Minihidro & Solar',
-      location: 'Ancud, Chiloé',
+      name: 'Solaria Clean Energy',
+      sector: lang === 'en' ? 'Renewable Generation & Storage' : 'Generación Renovable & BESS',
+      location: 'Distrito de Energía Renovable',
       deployed: '$1.70M USD',
       irr: '15.4% TIR',
       status: lang === 'en' ? 'Continuous generation' : 'Generación continua',
@@ -230,73 +230,73 @@
     }
   ]);
 
-  // Institutional LPs list (like Top power users)
+  // Institutional LPs list (fictional investor names)
   const institutionalLPs = $derived([
     {
       id: 'lp-1',
-      name: 'Family Office Los Alerces',
-      rut: '76.412.890-K',
+      name: 'Alpha Horizon Family Office',
+      rut: '76.890.123-K',
       commitment: '$2,500,000 USD',
       callShare: '$250,000 USD',
       daysOrPct: 92,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     },
     {
       id: 'lp-2',
-      name: 'Inversiones Antártica SpA',
-      rut: '77.892.114-3',
+      name: 'Inversiones Polaris SpA',
+      rut: '77.456.789-2',
       commitment: '$1,800,000 USD',
       callShare: '$180,000 USD',
       daysOrPct: 78,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     },
     {
       id: 'lp-3',
-      name: 'Larraín & Asociados Family Office',
-      rut: '76.321.009-8',
+      name: 'Kensington Family Office',
+      rut: '76.123.456-8',
       commitment: '$1,500,000 USD',
       callShare: '$150,000 USD',
       daysOrPct: 65,
       status: 'pending',
       statusLabel: lang === 'en' ? 'In clearing ⏳' : 'En clearing ⏳',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     },
     {
       id: 'lp-4',
-      name: 'Fundación Patagonia Sur',
-      rut: '65.109.823-1',
+      name: 'Fundación Solis Capital',
+      rut: '65.345.678-1',
       commitment: '$1,200,000 USD',
       callShare: '$120,000 USD',
       daysOrPct: 54,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     },
     {
       id: 'lp-5',
-      name: 'Inversiones Reloncaví Ltda.',
-      rut: '78.502.190-6',
+      name: 'Vanguardia Ventures Ltda.',
+      rut: '78.901.234-5',
       commitment: '$1,000,000 USD',
       callShare: '$100,000 USD',
       daysOrPct: 42,
       status: 'pending',
       statusLabel: lang === 'en' ? 'In clearing ⏳' : 'En clearing ⏳',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     },
     {
       id: 'lp-6',
-      name: 'Grupo Transoceánica Inversiones',
-      rut: '79.112.443-2',
+      name: 'Pacific Crest Holdings',
+      rut: '79.234.567-3',
       commitment: '$800,000 USD',
       callShare: '$80,000 USD',
       daysOrPct: 32,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile'
+      custodianBank: 'Banco Custodio Central'
     }
   ]);
 
@@ -396,8 +396,8 @@
       if (lower.includes('aportante') || lower.includes('lp') || lower.includes('concilia')) {
         reply =
           lang === 'en'
-            ? 'All 32 LPs have been verified against the custodian bank. 2 transfers ($150,000 USD total) are undergoing clearing with Banco de Chile.'
-            : 'Los 32 aportantes fueron verificados contra el banco custodio. 2 transferencias ($150.000 USD en total) están en proceso de compensación en Banco de Chile.';
+            ? 'All 32 LPs have been verified against the custodian bank. 2 transfers ($150,000 USD total) are undergoing clearing with Banco Custodio Central.'
+            : 'Los 32 aportantes fueron verificados contra el banco custodio. 2 transferencias ($150.000 USD en total) están en proceso de compensación en Banco Custodio Central.';
       } else if (lower.includes('aprobar') || lower.includes('llamada') || lower.includes('call')) {
         reply =
           lang === 'en'
@@ -406,8 +406,8 @@
       } else {
         reply =
           lang === 'en'
-            ? 'Operations verified for Südlich Private Capital. Portfolio companies are operating within targeted parameters.'
-            : 'Operaciones verificadas para Südlich Capital. Las empresas de portafolio operan dentro de los parámetros esperados.';
+            ? 'Operations verified for Altus Private Capital. Portfolio companies are operating within targeted parameters.'
+            : 'Operaciones verificadas para Altus Capital. Las empresas de portafolio operan dentro de los parámetros esperados.';
       }
 
       chatMessages.push({
@@ -461,7 +461,7 @@
           </span>
         </div>
         <p class="text-[10px] text-zinc-500 font-mono">
-          Südlich Private Capital
+          Altus Private Capital
         </p>
       </div>
     </div>
@@ -492,10 +492,10 @@
             <div class="pt-1 pb-1 flex items-center justify-between">
               <div>
                 <h1 class="font-serif text-[19px] font-normal tracking-tight text-zinc-900">
-                  Südlich's Command Center
+                  Altus's Command Center
                 </h1>
                 <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
-                  Glia Multi-Agent Intelligence · Fram II
+                  Glia Multi-Agent Intelligence · Horizon II
                 </p>
               </div>
             </div>
@@ -531,7 +531,7 @@
                       >
                         <div class="flex items-center justify-between">
                           <span class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-                            Fram II · Capital Call #4
+                            Horizon II · Capital Call #4
                           </span>
                           <span
                             class="text-[10px] font-medium text-zinc-700 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded-md font-mono"
@@ -638,7 +638,7 @@
             <div class="flex items-start justify-between gap-2">
               <div>
                 <h1 class="font-serif text-[22px] font-normal tracking-tight text-zinc-900 leading-tight">
-                  Südlich's Command Center
+                  Altus's Command Center
                 </h1>
                 <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
                   Portfolio intelligence & fund operations
@@ -733,7 +733,7 @@
               <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
                 <span class="flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
-                  Südlich Fram II
+                  Altus Horizon II
                 </span>
                 <span class="flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
@@ -811,7 +811,7 @@
                     </span>
                   </div>
                   <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-wider block mt-1">
-                    LLAMADA DE CAPITAL #4 · FRAM II
+                    LLAMADA DE CAPITAL #4 · HORIZON II
                   </span>
                 </div>
 
@@ -832,8 +832,8 @@
                   type="button"
                   onclick={() =>
                     openItemDetails({
-                      avatarText: 'F2',
-                      title: 'Fondo Fram II (Südlich)',
+                      avatarText: 'H2',
+                      title: 'Fondo Horizon II (Altus)',
                       subtitle: 'Private Equity · Vintage 2026',
                       progressLabel: 'AUM Objetivo alcanzado',
                       progressValueText: '$14.85M de $20M',
@@ -1248,9 +1248,9 @@
     theme="funds"
     variant="light"
     isOpen={sheetOpen}
-    avatarText={sheetData?.avatarText || 'SF'}
-    title={sheetData?.title || 'Fondo Fram II'}
-    subtitle={sheetData?.subtitle || 'Südlich Capital'}
+    avatarText={sheetData?.avatarText || 'H2'}
+    title={sheetData?.title || 'Fondo Horizon II'}
+    subtitle={sheetData?.subtitle || 'Altus Capital'}
     progressLabel={sheetData?.progressLabel || 'Avance de inversión'}
     progressValueText={sheetData?.progressValueText || '74%'}
     progressPct={sheetData?.progressPct || 74}
