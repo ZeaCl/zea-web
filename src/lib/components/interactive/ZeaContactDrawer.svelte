@@ -496,14 +496,6 @@
 
               <button
                 type="button"
-                onclick={() => selectVertical('personal')}
-                class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'personal' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
-              >
-                Personal
-              </button>
-
-              <button
-                type="button"
                 onclick={() => selectVertical('core')}
                 class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'core' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >

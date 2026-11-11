@@ -6,9 +6,9 @@
 
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
-  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('default');
+  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('edge');
   let isContactDrawerOpen = $state(false);
-  let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'personal' | 'core'>('industrial');
+  let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'core'>('industrial');
   const t = $derived(content[lang]);
 
   let skills = $state({
@@ -17,7 +17,7 @@
     security: false
   });
 
-  function openContact(focus: 'industrial' | 'sport' | 'funds' | 'personal' | 'core' = 'industrial') {
+  function openContact(focus: 'industrial' | 'sport' | 'funds' | 'core' = 'industrial') {
     selectedContactFocus = focus;
     isContactDrawerOpen = true;
   }
@@ -37,7 +37,7 @@
   <Header
     bind:lang
     bind:platform
-    onGetStarted={() => openContact(activePillar === 'edge' ? 'industrial' : (activePillar === 'sport' ? 'sport' : (activePillar === 'venture' ? 'funds' : 'personal')))}
+    onGetStarted={() => openContact(activePillar === 'edge' ? 'industrial' : (activePillar === 'sport' ? 'sport' : (activePillar === 'venture' ? 'funds' : 'core')))}
   />
 
   <!-- Center Experience: Contextual Stage + Mobile Simulator -->
@@ -54,26 +54,12 @@
             <span class="text-white">{t.mobilePlatform.titlePrefix}</span><span class="z-gradient-text">{t.mobilePlatform.titleHighlight}</span>
           </h1>
 
-          <!-- 1. Verticales Operativas (Personal, Industrial, Sport, Funds) -->
+          <!-- 1. Verticales Operativas (Industrial, Sport, Funds) -->
           <div class="pt-2">
             <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
               {t.mobilePlatform.industriesLabel}
             </span>
-            <div class="grid grid-cols-4 gap-2.5 border-t border-white/[0.08] pt-3">
-              <button
-                type="button"
-                onclick={() => activePillar = 'default'}
-                class="text-left group cursor-pointer transition"
-                data-testid="pillar-core"
-              >
-                <span class="text-xs font-semibold block transition {activePillar === 'default' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  Personal
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Personal AI
-                </span>
-              </button>
-
+            <div class="grid grid-cols-3 gap-2.5 border-t border-white/[0.08] pt-3">
               <button
                 type="button"
                 onclick={() => activePillar = 'edge'}
@@ -154,7 +140,7 @@
 
               <button
                 type="button"
-                onclick={() => { activePillar = 'default'; skills.vision = false; }}
+                onclick={() => { activePillar = 'glia'; skills.vision = false; }}
                 class="text-left group cursor-pointer transition"
                 data-testid="core-cerebelum"
               >
