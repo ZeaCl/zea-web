@@ -294,7 +294,7 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Allisbox',
-          label: 'Gemelo digital y faenas',
+          label: 'Multiagent System for\nArchitecture, Engineering & Construction',
           desc: 'Trazabilidad de faenas e inspección 100% offline'
         },
         sport: {
@@ -448,7 +448,7 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Allisbox',
-          label: 'Digital twin & field ops',
+          label: 'Multiagent System for\nArchitecture, Engineering & Construction',
           desc: 'Field traceability & 100% offline inspections'
         },
         sport: {

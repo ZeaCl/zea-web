@@ -79,7 +79,7 @@
                 <span class="text-xs font-semibold block transition {activePillar === 'venture' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
                   {t.mobilePlatform.pillars.venture.title}
                 </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                   {t.mobilePlatform.pillars.venture.label}
                 </span>
               </button>
@@ -93,7 +93,7 @@
                 <span class="text-xs font-semibold block transition {activePillar === 'edge' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
                   {t.mobilePlatform.pillars.edge.title}
                 </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight whitespace-pre-line">
                   {t.mobilePlatform.pillars.edge.label}
                 </span>
               </button>

@@ -71,7 +71,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 ### Selector de Productos (Columna izquierda)
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
 1. **Cooper** — *Capital privado*
-2. **Allisbox** — *Gemelo digital y faenas* (anteriormente Industrial)
+2. **Allisbox** — *Multiagent System for Architecture, Engineering & Construction* (anteriormente Industrial)
 3. **Gus** — *Plataforma de gestión deportiva*
 
 Al seleccionar cualquiera de los 3 productos, el simulador móvil de la derecha conmuta instantáneamente a su respectiva pantalla nativa interactiva. Inicia por defecto en **Cooper**.
