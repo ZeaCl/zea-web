@@ -293,8 +293,8 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empoderando a tomadores de decisiones del mundo real con IA multimodal, percepción en el dispositivo y gobernanza human-in-the-loop. Directo desde tu bolsillo.',
       pillars: {
         edge: {
-          title: 'Industrial',
-          label: 'Procesos y faenas',
+          title: 'Allisbox',
+          label: 'Gemelo digital y faenas',
           desc: 'Trazabilidad de faenas e inspección 100% offline'
         },
         sport: {
@@ -447,8 +447,8 @@ export const content: Record<Language, I18nContent> = {
       subtitle: 'Empowering real-world decision makers with multimodal AI, on-device perception, and human-in-the-loop governance. Directly from your pocket.',
       pillars: {
         edge: {
-          title: 'Industrial',
-          label: 'Industrial & field ops',
+          title: 'Allisbox',
+          label: 'Digital twin & field ops',
           desc: 'Field traceability & 100% offline inspections'
         },
         sport: {

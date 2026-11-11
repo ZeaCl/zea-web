@@ -195,7 +195,7 @@ describe('MobileSimulator component', () => {
     });
 
     expect(screen.getByTestId('zea-edge-screen')).toBeInTheDocument();
-    expect(screen.getAllByText('Industrial Agent').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Allisbox').length).toBeGreaterThanOrEqual(1);
     expect(document.getElementById('bottom-tabbar')).toBeInTheDocument();
     expect(screen.getByText(/Coordinación 3D · Lote #114/)).toBeInTheDocument();
 

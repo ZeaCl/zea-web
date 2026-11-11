@@ -661,9 +661,9 @@
   <header class="px-4 py-2.5 bg-[#F6F7F8] border-b border-[#DCDFE4] flex items-center justify-between z-20 shrink-0">
     <div class="flex items-center gap-2">
       <div class="w-6 h-6 rounded-[4px] bg-[#0696D7] text-white flex items-center justify-center font-semibold text-[12px] leading-none shrink-0">
-        G
+        A
       </div>
-      <h2 class="text-[14.5px] font-semibold text-[#111827] leading-none tracking-[-0.01em]">Industrial Agent</h2>
+      <h2 class="text-[14.5px] font-semibold text-[#111827] leading-none tracking-[-0.01em]">Allisbox</h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="industrial" variant="light" />
   </header>
@@ -826,7 +826,7 @@
               <input
                 type="text"
                 bind:value={chatInputText}
-                placeholder={es ? 'Pregunta a Industrial Agent' : 'Ask Industrial Agent'}
+                placeholder={es ? 'Pregunta a Allisbox' : 'Ask Allisbox'}
                 class="flex-1 bg-transparent text-[12px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none py-1"
               />
               <button type="submit" aria-label="Enviar prompt" class="w-7 h-7 rounded-[4px] bg-[#1E293B] text-white hover:bg-[#334155] flex items-center justify-center cursor-pointer shrink-0">
