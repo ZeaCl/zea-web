@@ -139,4 +139,18 @@ describe('MobileSimulator component', () => {
     await fireEvent.click(closeBtn);
     expect(screen.queryByTestId('menu-full-screen')).not.toBeInTheDocument();
   });
+
+  it('debe renderizar la pantalla nativa de ZeaFundsScreen cuando activePillar es venture', () => {
+    render(MobileSimulator, {
+      props: {
+        lang: 'es',
+        platform: 'ios',
+        activePillar: 'venture'
+      }
+    });
+
+    expect(screen.getByTestId('zea-funds-screen')).toBeInTheDocument();
+    expect(screen.getByText('ZEA Funds agent')).toBeInTheDocument();
+    expect(screen.getByText('Südlich Private Capital')).toBeInTheDocument();
+  });
 });

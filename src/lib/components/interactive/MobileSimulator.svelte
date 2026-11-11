@@ -7,6 +7,7 @@
   import ZeaSportScreen from './ZeaSportScreen.svelte';
   import ZeaEdgeScreen from './ZeaEdgeScreen.svelte';
   import ZeaDefaultScreen from './ZeaDefaultScreen.svelte';
+  import ZeaFundsScreen from './ZeaFundsScreen.svelte';
 
   export interface ActiveSkills {
     audio: boolean;
@@ -1443,6 +1444,9 @@
         {:else if activePillar === 'sport'}
           <!-- ZEA Sport Native Gus Training Experience -->
           <ZeaSportScreen {lang} {platform} />
+        {:else if activePillar === 'venture'}
+          <!-- ZEA Funds Südlich Private Capital Native Experience (Emerald Theme) -->
+          <ZeaFundsScreen {lang} {platform} />
         {:else if activePillar === 'default' || (activePillar === 'none' && activeNav !== 'developer')}
           <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->
           <ZeaDefaultScreen
@@ -1452,7 +1456,7 @@
               activePillar = 'sport';
             }}
           />
-        {:else if activePillar === 'glia' || activePillar === 'venture' || activeNav === 'developer' || skills.audio || skills.vision || skills.security}
+        {:else if activePillar === 'glia' || (activePillar === 'none' && activeNav === 'developer') || skills.audio || skills.vision || skills.security}
           <!-- Seamless Top Bar: Part of the dark background canvas (no border, generous breathing room) -->
           <div class="flex items-center justify-between z-20 bg-transparent {platform === 'android' ? 'px-6 pt-3 pb-3.5' : 'px-5 py-2.5'}">
             <div class="flex items-center gap-2.5">
