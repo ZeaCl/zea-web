@@ -75,20 +75,30 @@
               {lang === 'es' ? 'Productos' : 'Products'}
             </span>
             <div class="border-t border-white/[0.08] pt-3">
-              <button
-                type="button"
-                onclick={handleGliaClick}
-                class="text-left group cursor-pointer transition inline-flex flex-col"
-                data-testid="core-glia"
-              >
-                <span class="text-xs font-semibold flex items-center gap-1.5 transition {activePillar === 'glia' || showVerticals ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
-                  <span>Glia</span>
-                  <span class="text-[10px] text-zinc-500 font-sans transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  {lang === 'es' ? 'Infraestructura de agentes autónomos para operaciones complejas' : 'Autonomous agent infrastructure for complex operations'}
-                </span>
-              </button>
+              <div class="grid grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onclick={handleGliaClick}
+                  class="text-left group cursor-pointer transition flex flex-col"
+                  data-testid="core-glia"
+                >
+                  <span class="text-xs font-semibold flex items-center gap-1.5 transition {activePillar === 'glia' || showVerticals ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
+                    <span>Glia</span>
+                    <span class="text-[10px] text-zinc-500 font-sans transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-1 font-sans leading-snug">
+                    {#if lang === 'es'}
+                      Infraestructura de<br />
+                      agentes autónomos para<br />
+                      operaciones complejas
+                    {:else}
+                      Autonomous agent<br />
+                      infrastructure for<br />
+                      complex operations
+                    {/if}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
 
