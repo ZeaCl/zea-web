@@ -15,7 +15,7 @@
 
   // Navigation tabs: Resumen, Llamados, Portafolio, Aportantes
   let activeTab = $state<'summary' | 'calls' | 'portfolio' | 'lps'>('summary');
-  let viewMode = $state<'chat' | 'app'>('chat');
+  let viewMode = $state<'chat' | 'app'>('app');
 
   // Interactive state
   let toastMessage = $state<string | null>(null);
@@ -25,6 +25,10 @@
   let callApprovalDone = $state(false);
   let callApprovalRejected = $state(false);
   let faceIdSigned = $state(false);
+
+  // Time filters dropdown states
+  let selectedRange = $state('6 months');
+  let selectedYear = $state('2026');
 
   // Sheet modal state
   let sheetOpen = $state(false);
@@ -61,8 +65,24 @@
   }
 
   // =========================================================================
-  // 1. DATA MODELS (Südlich Capital Private Equity)
+  // 1. HARVEY EDITORIAL DATA MODELS (Südlich Capital Private Equity)
   // =========================================================================
+  // Exponential density curve bars (like Harvey's DAU/MAU chart)
+  const densityBars = [
+    8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 21, 24, 27, 31, 36, 42, 49, 57, 66, 76, 88, 100
+  ];
+
+  // Grouped usage/allocation bars (like Harvey's Product Usage chart)
+  const allocationGrouped = $derived([
+    { name: lang === 'en' ? 'Infra' : 'Infra', current: 55, target: 60 },
+    { name: lang === 'en' ? 'Real Assets' : 'Real Ast', current: 75, target: 80 },
+    { name: lang === 'en' ? 'Scaleups' : 'Scaleups', current: 60, target: 50 },
+    { name: lang === 'en' ? 'AgTech' : 'AgTech', current: 48, target: 65 },
+    { name: lang === 'en' ? 'Energy' : 'Energía', current: 35, target: 45 },
+    { name: lang === 'en' ? 'Dry Powder' : 'Liquidez', current: 25, target: 30 }
+  ]);
+
+  // Operational events
   const fundsTimeline = $derived([
     {
       id: '1',
@@ -113,32 +133,6 @@
       onAction: () => showToast(lang === 'en' ? 'SHA-256 seal verified' : 'Sello SHA-256 verificado')
     }
   ]);
-
-  // Asset allocation breakdown
-  const assetAllocation = $derived([
-    {
-      label: lang === 'en' ? 'Infrastructure & Real Assets' : 'Infraestructura & Real Assets',
-      value: '$8.20M USD',
-      percentage: 55,
-      color: 'bg-emerald-600'
-    },
-    {
-      label: lang === 'en' ? 'Private Equity & Scaleups' : 'Private Equity & Scaleups',
-      value: '$4.50M USD',
-      percentage: 30,
-      color: 'bg-zinc-800'
-    },
-    {
-      label: lang === 'en' ? 'Dry Powder (Liquid Cash)' : 'Dry Powder (Capital Disponible)',
-      value: '$2.15M USD',
-      percentage: 15,
-      color: 'bg-emerald-400'
-    }
-  ]);
-
-  // Quarterly Capital Call History
-  const callBars = [2.1, 3.4, 4.2, 5.0, 7.8, 9.6, 12.4, 14.85];
-  const callLabels = ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2', 'Q3', 'Hoy'];
 
   // Capital calls list
   const capitalCallsList = $derived([
@@ -236,7 +230,7 @@
     }
   ]);
 
-  // Institutional LPs list
+  // Institutional LPs list (like Top power users)
   const institutionalLPs = $derived([
     {
       id: 'lp-1',
@@ -244,10 +238,10 @@
       rut: '76.412.890-K',
       commitment: '$2,500,000 USD',
       callShare: '$250,000 USD',
+      daysOrPct: 92,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
+      custodianBank: 'Banco de Chile'
     },
     {
       id: 'lp-2',
@@ -255,54 +249,54 @@
       rut: '77.892.114-3',
       commitment: '$1,800,000 USD',
       callShare: '$180,000 USD',
+      daysOrPct: 78,
       status: 'reconciled',
       statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
+      custodianBank: 'Banco de Chile'
     },
     {
       id: 'lp-3',
-      name: 'Fundación Patagonia Sur',
-      rut: '65.109.823-1',
-      commitment: '$1,200,000 USD',
-      callShare: '$120,000 USD',
-      status: 'reconciled',
-      statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
-    },
-    {
-      id: 'lp-4',
       name: 'Larraín & Asociados Family Office',
       rut: '76.321.009-8',
       commitment: '$1,500,000 USD',
       callShare: '$150,000 USD',
+      daysOrPct: 65,
       status: 'pending',
       statusLabel: lang === 'en' ? 'In clearing ⏳' : 'En clearing ⏳',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
+      custodianBank: 'Banco de Chile'
+    },
+    {
+      id: 'lp-4',
+      name: 'Fundación Patagonia Sur',
+      rut: '65.109.823-1',
+      commitment: '$1,200,000 USD',
+      callShare: '$120,000 USD',
+      daysOrPct: 54,
+      status: 'reconciled',
+      statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
+      custodianBank: 'Banco de Chile'
     },
     {
       id: 'lp-5',
-      name: 'Grupo Transoceánica Inversiones',
-      rut: '79.112.443-2',
-      commitment: '$800,000 USD',
-      callShare: '$80,000 USD',
-      status: 'reconciled',
-      statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
-    },
-    {
-      id: 'lp-6',
       name: 'Inversiones Reloncaví Ltda.',
       rut: '78.502.190-6',
       commitment: '$1,000,000 USD',
       callShare: '$100,000 USD',
+      daysOrPct: 42,
       status: 'pending',
       statusLabel: lang === 'en' ? 'In clearing ⏳' : 'En clearing ⏳',
-      custodianBank: 'Banco de Chile',
-      apdpStatus: 'Validado Ley 21.719'
+      custodianBank: 'Banco de Chile'
+    },
+    {
+      id: 'lp-6',
+      name: 'Grupo Transoceánica Inversiones',
+      rut: '79.112.443-2',
+      commitment: '$800,000 USD',
+      callShare: '$80,000 USD',
+      daysOrPct: 32,
+      status: 'reconciled',
+      statusLabel: lang === 'en' ? 'Reconciled ✓' : 'Conciliado ✓',
+      custodianBank: 'Banco de Chile'
     }
   ]);
 
@@ -441,32 +435,32 @@
 
 <!-- Harvey AI Institutional Light Theme Screen Container -->
 <div
-  class="flex flex-col h-full w-full bg-[#F8F9FA] text-[#0F172A] relative font-sans overflow-hidden select-none"
+  class="flex flex-col h-full w-full bg-[#F4F4F6] text-[#0F172A] relative font-sans overflow-hidden select-none"
   data-testid="zea-funds-screen"
 >
   <!-- Institutional Editorial Top Header -->
   <header
-    class="px-4.5 pt-3 pb-2.5 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between z-20 shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+    class="px-4 pt-2.5 pb-2 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between z-20 shrink-0"
   >
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-2">
+      <!-- Harvey Square Monogram -->
       <div
-        class="w-8 h-8 rounded-lg bg-[#0F172A] text-white flex items-center justify-center font-bold text-xs font-mono shadow-sm"
+        class="w-7 h-7 rounded bg-[#111111] text-white flex items-center justify-center font-serif font-bold text-xs shadow-xs"
       >
-        SF
+        H
       </div>
       <div>
         <div class="flex items-center gap-1.5">
-          <h2 class="text-sm font-semibold tracking-tight text-zinc-900 leading-tight">
+          <h2 class="text-xs font-semibold tracking-tight text-zinc-900 leading-tight">
             ZEA Funds agent
           </h2>
           <span
-            class="hidden sm:inline-flex items-center gap-1 text-[9px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-md"
+            class="inline-flex items-center gap-1 text-[8.5px] font-mono text-zinc-600 bg-zinc-100 border border-zinc-200 px-1.5 py-0.2 rounded"
           >
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
             WORM
           </span>
         </div>
-        <p class="text-[10.5px] text-zinc-500 font-mono">
+        <p class="text-[10px] text-zinc-500 font-mono">
           Südlich Private Capital
         </p>
       </div>
@@ -484,7 +478,7 @@
   <!-- Scrollable Main Content across 4 Tabs -->
   <div class="flex-1 overflow-hidden relative">
     <!-- ========================================================= -->
-    <!-- TAB 1: RESUMEN (SUMMARY)                                  -->
+    <!-- TAB 1: RESUMEN (COMMAND CENTER DE HARVEY)                 -->
     <!-- ========================================================= -->
     {#if activeTab === 'summary'}
       <div class="h-full flex flex-col" in:fade={{ duration: 150 }}>
@@ -492,8 +486,20 @@
           <!-- Harvey AI Chat Stream -->
           <div
             bind:this={summaryScrollEl}
-            class="flex-1 overflow-y-auto px-4 py-3.5 space-y-3.5 text-xs text-left"
+            class="flex-1 overflow-y-auto px-4 py-3.5 space-y-3 text-xs text-left"
           >
+            <!-- Editorial Command Center Title in Chat -->
+            <div class="pt-1 pb-1 flex items-center justify-between">
+              <div>
+                <h1 class="font-serif text-[19px] font-normal tracking-tight text-zinc-900">
+                  Südlich's Command Center
+                </h1>
+                <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
+                  Glia Multi-Agent Intelligence · Fram II
+                </p>
+              </div>
+            </div>
+
             {#each chatMessages as msg (msg.id)}
               {#if msg.sender === 'user'}
                 <div class="flex justify-end">
@@ -510,61 +516,45 @@
                     <div
                       class="p-3.5 rounded-2xl rounded-tl-xs bg-white border border-[#E5E7EB] text-zinc-800 shadow-[0_1px_3px_rgba(0,0,0,0.03)] leading-relaxed space-y-2"
                     >
-                      <div class="flex items-center gap-1.5 text-[#065F46] text-[11px] font-semibold">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#065F46]"></span>
+                      <div class="flex items-center gap-1.5 text-zinc-900 text-[11px] font-semibold">
+                        <span class="w-4 h-4 rounded bg-[#111111] text-white flex items-center justify-center font-serif text-[9px] font-bold">H</span>
                         <span>{lang === 'en' ? 'Glia Funds Agent' : 'Glia Agente de Fondos'}</span>
                       </div>
-                      <p class="text-[12.5px] text-zinc-700 leading-normal">{msg.text}</p>
+                      <p class="text-[12px] text-zinc-700 leading-normal">{msg.text}</p>
                       <span class="text-[9.5px] text-zinc-400 block font-mono">{msg.time}</span>
                     </div>
 
                     {#if msg.isPrimarySummary}
-                      <!-- Harvey Style Interactive Priority Focus Card -->
+                      <!-- Embedded Harvey Priority Card -->
                       <div
-                        class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
+                        class="p-4 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
                       >
                         <div class="flex items-center justify-between">
-                          <span
-                            class="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full"
-                          >
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                            {lang === 'en' ? 'Capital Call #4 Active' : 'Llamada de Capital #4 en curso'}
+                          <span class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
+                            Fram II · Capital Call #4
                           </span>
                           <span
-                            class="text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-mono"
+                            class="text-[10px] font-medium text-zinc-700 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded-md font-mono"
                           >
-                            {lang === 'en' ? 'Closes in 48h' : 'Cierra en 48 hrs'}
+                            Cierra en 48 hrs
                           </span>
                         </div>
 
                         <div>
-                          <div class="text-[26px] font-semibold text-zinc-900 font-mono tracking-tight leading-none">
-                            $1,250,000<span class="text-zinc-500 text-[18px]"> USD</span>
+                          <div class="text-[28px] font-serif font-normal text-zinc-900 tracking-tight leading-none">
+                            $1,250,000<span class="text-zinc-500 text-[16px] font-sans"> USD</span>
+                            <span class="text-[12px] font-sans font-medium text-emerald-700 ml-1.5">↑ 88%</span>
                           </div>
-                          <p class="text-[12px] font-medium text-zinc-700 mt-1">
-                            Fondo Fram II · Private Equity
+                          <p class="text-[11px] text-zinc-500 font-sans mt-1">
+                            30 de 32 aportantes conciliados · $150K en clearing
                           </p>
-                          <p class="text-[11px] text-zinc-500">
-                            {lang === 'en' ? '30/32 LPs reconciled · 88% received' : '30/32 Aportantes conciliados · 88% recibido'}
-                          </p>
-                        </div>
-
-                        <!-- Progress Bar -->
-                        <div class="space-y-1">
-                          <div class="flex justify-between text-[10px] text-zinc-500 font-mono">
-                            <span>$1,100,000 USD recibido</span>
-                            <span class="font-semibold text-emerald-700">88%</span>
-                          </div>
-                          <div class="h-2 rounded-full bg-zinc-100 overflow-hidden">
-                            <div class="h-full rounded-full bg-[#065F46]" style="width: 88%;"></div>
-                          </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 pt-1">
                           <button
                             type="button"
                             onclick={() => (activeTab = 'lps')}
-                            class="px-3 py-2 rounded-xl text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
+                            class="px-3 py-2 rounded-lg text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
                           >
                             {lang === 'en' ? 'View LPs' : 'Ver aportantes'}
                           </button>
@@ -578,7 +568,7 @@
                                   : 'Llamada #4 firmada con FaceID'
                               );
                             }}
-                            class="px-3 py-2 rounded-xl text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-zinc-950 text-white hover:bg-zinc-800'}"
+                            class="px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-[#111111] text-white hover:bg-zinc-800'}"
                           >
                             {faceIdSigned ? (lang === 'en' ? '✓ Authorized' : '✓ Autorizado') : (lang === 'en' ? 'Sign with FaceID' : 'Firmar con FaceID')}
                           </button>
@@ -592,11 +582,11 @@
 
             {#if isAgentTyping}
               <div
-                class="flex items-center gap-1.5 p-3 rounded-2xl bg-white border border-[#E5E7EB] w-20 shadow-xs"
+                class="flex items-center gap-1.5 p-3 rounded-xl bg-white border border-[#E5E7EB] w-20 shadow-xs"
               >
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce [animation-delay:0.2s]"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-bounce [animation-delay:0.4s]"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-bounce"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-bounce [animation-delay:0.2s]"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-bounce [animation-delay:0.4s]"></span>
               </div>
             {/if}
           </div>
@@ -608,7 +598,7 @@
                 <button
                   type="button"
                   onclick={() => handleSendPrompt(chip)}
-                  class="shrink-0 px-3 py-1 rounded-full text-[11px] font-medium bg-[#F8F9FA] hover:bg-[#F1F5F9] border border-[#E5E7EB] text-zinc-700 transition cursor-pointer"
+                  class="shrink-0 px-2.5 py-1 rounded-full text-[10.5px] font-medium bg-[#F8F9FA] hover:bg-[#F1F5F9] border border-[#E5E7EB] text-zinc-700 transition cursor-pointer"
                 >
                   {chip}
                 </button>
@@ -625,13 +615,13 @@
               <input
                 type="text"
                 bind:value={chatInputText}
-                placeholder={lang === 'en' ? 'Ask about AUM, LPs, or Capital Calls...' : 'Pregunta sobre AUM, aportantes o llamadas...'}
-                class="flex-1 bg-[#F8F9FA] border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                placeholder={lang === 'en' ? 'Ask Harvey / Glia about AUM, LPs or Calls...' : 'Pregunta a Glia sobre AUM, LPs o llamadas...'}
+                class="flex-1 bg-[#F8F9FA] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-400"
               />
               <button
                 type="submit"
                 aria-label="Enviar prompt"
-                class="p-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800 transition cursor-pointer shrink-0"
+                class="p-2 rounded-lg bg-[#111111] text-white hover:bg-zinc-800 transition cursor-pointer shrink-0"
               >
                 <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
@@ -640,44 +630,204 @@
             </form>
           </div>
         {:else}
-          <!-- App Mode (Harvey Institutional Cards) -->
-          <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 text-left">
-            <!-- 1. PRIORITY FOCUS CARD: Capital Call #4 -->
-            <section
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-            >
-              <div class="flex items-center justify-between">
-                <span
-                  class="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full"
-                >
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                  {lang === 'en' ? 'Capital Call #4 in progress' : 'Llamada de Capital #4 en curso'}
-                </span>
-                <span
-                  class="text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-mono"
-                >
-                  {lang === 'en' ? 'Closes in 48h' : 'Cierra en 48 hrs'}
-                </span>
-              </div>
-
+          <!-- ========================================================= -->
+          <!-- HARVEY COMMAND CENTER DASHBOARD (REPLICATING SCREENSHOT)  -->
+          <!-- ========================================================= -->
+          <div class="flex-1 overflow-y-auto px-3.5 py-3.5 space-y-3.5 text-left">
+            <!-- 1. Editorial Header Row with Serif Title & "Ask Glia" Button -->
+            <div class="flex items-start justify-between gap-2">
               <div>
-                <div class="text-[28px] font-semibold text-zinc-900 font-mono tracking-tight leading-none">
-                  $1,250,000<span class="text-zinc-500 text-[18px]"> USD</span>
+                <h1 class="font-serif text-[22px] font-normal tracking-tight text-zinc-900 leading-tight">
+                  Südlich's Command Center
+                </h1>
+                <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
+                  Portfolio intelligence & fund operations
+                </p>
+              </div>
+
+              <!-- Harvey "H Ask Harvey" Style Pill Button -->
+              <button
+                type="button"
+                onclick={() => (viewMode = 'chat')}
+                class="px-2.5 py-1.5 rounded-full bg-[#111111] hover:bg-zinc-800 text-white text-[11px] font-medium flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer transition"
+              >
+                <span class="w-3.5 h-3.5 rounded bg-white/20 text-white flex items-center justify-center font-serif text-[8.5px] font-bold">H</span>
+                <span>Ask Glia</span>
+              </button>
+            </div>
+
+            <!-- 2. Harvey Recommendation Banner -->
+            <div
+              class="p-2.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-center justify-between gap-2.5"
+            >
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-[#111111] text-white flex items-center justify-center font-serif font-bold text-[10px] shrink-0">
+                  H
+                </span>
+                <p class="text-[11px] text-zinc-700 font-sans leading-tight">
+                  {lang === 'en'
+                    ? 'There are 2 recommended actions for Capital Call #4'
+                    : 'Hay 2 acciones recomendadas para la Llamada de Capital #4'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onclick={() => { activeTab = 'lps'; showToast('Auditando 32 LPs...'); }}
+                class="text-[10.5px] font-medium text-zinc-900 underline hover:text-black shrink-0 cursor-pointer"
+              >
+                {lang === 'en' ? 'Audit' : 'Auditar'}
+              </button>
+            </div>
+
+            <!-- 3. HARVEY CARD 1: 49.5% / AUM Consolidado with Density Exponential Bars -->
+            <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2">
+              <div class="flex items-baseline justify-between">
+                <div>
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-serif text-[26px] font-normal tracking-tight text-zinc-900 leading-none">
+                      $14.85M
+                    </span>
+                    <span class="text-[11.5px] text-zinc-500 font-sans font-medium">
+                      ↑ 18.4%
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-wider block mt-1">
+                    AUM CONSOLIDADO / NET IRR
+                  </span>
                 </div>
-                <p class="text-[13px] font-medium text-zinc-800 mt-1">
-                  Fondo Fram II · Private Equity
-                </p>
-                <p class="text-[11.5px] text-zinc-500">
-                  {lang === 'en' ? '30/32 LPs reconciled · $150K pending' : '30/32 Aportantes conciliados · $150K pendiente'}
-                </p>
+
+                <!-- Dropdown Selectors like Harvey screenshot -->
+                <div class="flex items-center gap-1 font-sans">
+                  <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    6 months <span class="text-[8px] text-zinc-400">▾</span>
+                  </span>
+                  <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                    2026 <span class="text-[8px] text-zinc-400">▾</span>
+                  </span>
+                </div>
               </div>
 
-              <div class="p-2.5 rounded-xl bg-[#F8F9FA] border border-[#E5E7EB] flex items-center justify-between text-xs">
-                <span class="text-zinc-600 font-medium">Banco Custodio</span>
-                <span class="font-mono text-emerald-700 font-semibold">Banco de Chile · 100% Conciliado</span>
+              <!-- Exponential Density Trend Chart (Harvey style) -->
+              <div class="pt-2">
+                <div class="flex items-end justify-between gap-[2px] h-18 pt-2 border-b border-zinc-100">
+                  {#each densityBars as pct, idx}
+                    <div class="flex-1 flex flex-col justify-end h-full">
+                      <div
+                        class="w-full rounded-t-xs transition-all {idx === densityBars.length - 1 ? 'bg-zinc-800' : 'bg-zinc-200 hover:bg-zinc-400'}"
+                        style="height: {pct}%;"
+                      ></div>
+                    </div>
+                  {/each}
+                </div>
+                <div class="flex justify-between text-[8.5px] text-zinc-400 font-sans pt-1">
+                  <span>Ene</span>
+                  <span>Feb</span>
+                  <span>Mar</span>
+                  <span>Abr</span>
+                  <span>May</span>
+                  <span>Jun</span>
+                </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 pt-1">
+              <!-- Micro Legend -->
+              <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
+                <span class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                  Südlich Fram II
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+                  Bench Peers (14.2%)
+                </span>
+              </div>
+            </div>
+
+            <!-- 4. HARVEY CARD 2: Product / Asset Allocation Grouped Vertical Bars -->
+            <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2">
+              <div class="flex items-baseline justify-between">
+                <div>
+                  <h4 class="font-serif text-[15px] font-normal text-zinc-900 leading-tight">
+                    Asset deployment
+                  </h4>
+                  <p class="text-[10.5px] text-zinc-500 font-sans">
+                    Based on target portfolio weight
+                  </p>
+                </div>
+                <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1 font-sans">
+                  This week <span class="text-[8px] text-zinc-400">▾</span>
+                </span>
+              </div>
+
+              <!-- Grouped Bars (like Harvey Product Usage) -->
+              <div class="pt-3">
+                <div class="flex items-end justify-around h-20 border-b border-zinc-100 px-1">
+                  {#each allocationGrouped as item}
+                    <div class="flex flex-col items-center gap-1">
+                      <div class="flex items-end gap-1 h-16">
+                        <!-- Primary bar (dark charcoal) -->
+                        <div
+                          class="w-2 rounded-t-xs bg-zinc-800"
+                          style="height: {item.current}%;"
+                        ></div>
+                        <!-- Secondary bar (light slate) -->
+                        <div
+                          class="w-2 rounded-t-xs bg-zinc-200"
+                          style="height: {item.target}%;"
+                        ></div>
+                      </div>
+                      <span class="text-[8.5px] text-zinc-400 font-sans">{item.name}</span>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+
+              <!-- Legend (Harvey 3 dots) -->
+              <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
+                <span class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
+                  Desplegado
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
+                  Meta 2026
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-700"></span>
+                  Atención (Clearing)
+                </span>
+              </div>
+            </div>
+
+            <!-- 5. HARVEY CARD 3: 305 / Active Capital Call #4 with FaceID -->
+            <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5">
+              <div class="flex items-baseline justify-between">
+                <div>
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-serif text-[26px] font-normal tracking-tight text-zinc-900 leading-none">
+                      $1,250,000
+                    </span>
+                    <span class="text-[11.5px] text-emerald-700 font-sans font-medium">
+                      ↑ 88%
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-wider block mt-1">
+                    LLAMADA DE CAPITAL #4 · FRAM II
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-1 font-sans">
+                  <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    Cierra hoy ▾
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200/80 flex items-center justify-between text-xs font-sans">
+                <span class="text-zinc-600">30 de 32 LPs conciliados</span>
+                <span class="font-mono text-zinc-900 font-semibold">$150,000 pendiente</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 pt-1 font-sans">
                 <button
                   type="button"
                   onclick={() =>
@@ -693,7 +843,7 @@
                         { label: 'Moneda', value: 'USD' }
                       ]
                     })}
-                  class="px-3.5 py-2 rounded-xl text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
+                  class="px-3 py-2 rounded-lg text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
                 >
                   {lang === 'en' ? 'Fund details' : 'Ver fondo'}
                 </button>
@@ -707,44 +857,78 @@
                         : 'Llamada de Capital #4 autorizada'
                     );
                   }}
-                  class="px-3.5 py-2 rounded-xl text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-zinc-950 text-white hover:bg-zinc-800'}"
+                  class="px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-[#111111] text-white hover:bg-zinc-800'}"
                 >
                   {faceIdSigned ? (lang === 'en' ? '✓ Authorized' : '✓ Autorizada') : (lang === 'en' ? 'Sign Call #4' : 'Aprobar llamada')}
                 </button>
               </div>
-            </section>
+            </div>
 
-            <!-- 2. OPERATIONAL TIMELINE: Hoy -->
-            <section
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-            >
+            <!-- 6. HARVEY CARD 4: Top power users -> Top Aportantes (LPs) Horizontal Rank Bars -->
+            <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5">
               <div class="flex items-baseline justify-between">
-                <h4 class="text-[14px] font-semibold text-zinc-900 tracking-tight">
-                  {lang === 'en' ? 'Today Operations' : 'Operaciones de Hoy'}
+                <div>
+                  <h4 class="font-serif text-[15px] font-normal text-zinc-900 leading-tight">
+                    Top power LPs
+                  </h4>
+                  <p class="text-[10.5px] text-zinc-500 font-sans">
+                    Based on capital commitment & reconciliation
+                  </p>
+                </div>
+                <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1 font-sans">
+                  Past month <span class="text-[8px] text-zinc-400">▾</span>
+                </span>
+              </div>
+
+              <!-- Horizontal Rank Bars (Exact replication of Harvey's Top power users) -->
+              <div class="space-y-2 pt-1 font-sans">
+                {#each institutionalLPs as lp}
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                      <span class="text-zinc-700 font-medium truncate max-w-[65%]">{lp.name}</span>
+                      <span class="font-mono text-[10.5px] text-zinc-500">{lp.callShare}</span>
+                    </div>
+                    <!-- Horizontal Bar -->
+                    <div class="h-2 rounded-full bg-zinc-100 overflow-hidden flex items-center">
+                      <div
+                        class="h-full rounded-full transition-all {lp.status === 'reconciled' ? 'bg-[#3b4252]' : 'bg-[#d08770]'}"
+                        style="width: {lp.daysOrPct}%;"
+                      ></div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
+            <!-- 7. Operational Agenda / Hoy -->
+            <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5 font-sans">
+              <div class="flex items-baseline justify-between">
+                <h4 class="font-serif text-[15px] font-normal text-zinc-900 tracking-tight">
+                  {lang === 'en' ? 'Today operations' : 'Operaciones de Hoy'}
                 </h4>
                 <button
                   type="button"
                   onclick={() => (activeTab = 'calls')}
-                  class="text-[11.5px] font-medium text-emerald-700 hover:text-emerald-800 transition cursor-pointer"
+                  class="text-[10.5px] font-medium text-zinc-600 hover:text-zinc-900 transition cursor-pointer"
                 >
                   {lang === 'en' ? 'All events' : 'Ver todo'}
                 </button>
               </div>
 
-              <div class="space-y-2.5">
+              <div class="space-y-2">
                 {#each fundsTimeline as item}
                   <div
-                    class="p-3 rounded-xl bg-[#F8F9FA] border border-[#E5E7EB] hover:border-zinc-300 transition flex items-start justify-between gap-3"
+                    class="p-2.5 rounded-lg bg-zinc-50 border border-zinc-200/70 hover:border-zinc-300 transition flex items-start justify-between gap-2.5"
                   >
-                    <div class="flex items-start gap-2.5">
-                      <span class="text-[11px] font-mono font-semibold text-zinc-500 pt-0.5">
+                    <div class="flex items-start gap-2">
+                      <span class="text-[10px] font-mono font-semibold text-zinc-500 pt-0.5">
                         {item.time}
                       </span>
                       <div>
-                        <p class="text-[12.5px] font-semibold text-zinc-900 leading-snug">
+                        <p class="text-[12px] font-medium text-zinc-900 leading-snug">
                           {item.title}
                         </p>
-                        <p class="text-[11px] text-zinc-500 leading-normal mt-0.5">
+                        <p class="text-[10.5px] text-zinc-500 leading-normal mt-0.5">
                           {item.subtitle}
                         </p>
                       </div>
@@ -754,7 +938,7 @@
                       <button
                         type="button"
                         onclick={() => item.onAction?.()}
-                        class="text-[10.5px] font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-lg shrink-0 cursor-pointer transition"
+                        class="text-[10px] font-medium text-zinc-800 bg-white hover:bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded shrink-0 cursor-pointer transition"
                       >
                         {item.actionLabel}
                       </button>
@@ -762,7 +946,7 @@
                       <button
                         type="button"
                         onclick={() => item.onClick?.()}
-                        class="text-[10.5px] font-medium text-zinc-700 bg-white hover:bg-zinc-50 border border-zinc-200 px-2 py-1 rounded-lg shrink-0 cursor-pointer transition"
+                        class="text-[10px] font-medium text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded shrink-0 cursor-pointer transition"
                       >
                         {lang === 'en' ? 'Details' : 'Ficha'}
                       </button>
@@ -770,129 +954,7 @@
                   </div>
                 {/each}
               </div>
-            </section>
-
-            <!-- 3. PENDING BOARD APPROVAL -->
-            {#if !callApprovalDone && !callApprovalRejected}
-              <section
-                class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    {lang === 'en' ? 'Pending Approval' : 'Por Aprobar'}
-                  </span>
-                  <span class="text-[10px] font-mono text-zinc-400">
-                    Fram II · Board
-                  </span>
-                </div>
-
-                <div>
-                  <h4 class="text-[14px] font-semibold text-zinc-900">
-                    {lang === 'en' ? 'Capital Call #4 Authorization' : 'Autorización Llamada de Capital #4'}
-                  </h4>
-                  <p class="text-[11.5px] text-zinc-600 mt-0.5">
-                    Fund Fram II · $1,250,000 USD
-                  </p>
-                  <p class="text-[11px] text-zinc-500 mt-2 bg-[#F8F9FA] p-2 rounded-lg border border-[#E5E7EB] leading-relaxed">
-                    {lang === 'en'
-                      ? 'SHA-256 integrity seal verified against custodian bank. Law 21.719 APDP audit seal created.'
-                      : 'Sello de integridad SHA-256 verificado contra banco custodio. Sello de auditoría Ley 21.719 generado.'}
-                  </p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                  <button
-                    type="button"
-                    onclick={() => {
-                      callApprovalRejected = true;
-                      showToast(lang === 'en' ? 'Approval postponed' : 'Aprobación postergada');
-                    }}
-                    class="px-3 py-2 rounded-xl text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-700 hover:bg-zinc-50 transition cursor-pointer"
-                  >
-                    {lang === 'en' ? 'Postpone' : 'Postergar'}
-                  </button>
-                  <button
-                    type="button"
-                    onclick={approveCapitalCall}
-                    class="px-3 py-2 rounded-xl text-xs font-medium bg-zinc-950 text-white hover:bg-zinc-800 transition cursor-pointer"
-                  >
-                    {lang === 'en' ? 'Approve' : 'Aprobar'}
-                  </button>
-                </div>
-              </section>
-            {/if}
-
-            <!-- 4. ASSET ALLOCATION BREAKDOWN -->
-            <section
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-            >
-              <div class="flex items-baseline justify-between">
-                <h4 class="text-[14px] font-semibold text-zinc-900 tracking-tight">
-                  {lang === 'en' ? 'Asset Allocation' : 'Distribución de Activos'}
-                </h4>
-                <span class="text-[11px] text-zinc-500 font-mono">$14.85M USD Total</span>
-              </div>
-
-              <div class="space-y-2.5">
-                {#each assetAllocation as item}
-                  <div>
-                    <div class="flex justify-between text-xs mb-1">
-                      <span class="text-zinc-700 font-medium">{item.label}</span>
-                      <span class="font-mono text-zinc-900 font-semibold">{item.value} ({item.percentage}%)</span>
-                    </div>
-                    <div class="h-2 rounded-full bg-zinc-100 overflow-hidden">
-                      <div class="h-full rounded-full {item.color}" style="width: {item.percentage}%;"></div>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </section>
-
-            <!-- 5. CONSOLIDATED AUM & TREND -->
-            <section
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-            >
-              <div class="flex items-baseline justify-between">
-                <div>
-                  <span class="text-[11px] text-zinc-500 uppercase tracking-wider block font-mono">
-                    {lang === 'en' ? 'Consolidated AUM' : 'AUM Consolidado'}
-                  </span>
-                  <div class="text-[26px] font-semibold text-zinc-900 font-mono tracking-tight leading-tight mt-0.5">
-                    $14.85M <span class="text-zinc-500 text-[16px]">USD</span>
-                  </div>
-                </div>
-                <span
-                  class="text-[11px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-mono"
-                >
-                  +18.4% TIR Neta
-                </span>
-              </div>
-
-              <p class="text-[11px] text-zinc-500">
-                {lang === 'en'
-                  ? '3 active funds · 48 institutional LPs & family offices'
-                  : '3 fondos activos · 48 LPs institucionales y family offices'}
-              </p>
-
-              <!-- Clean Light Bar Chart -->
-              <div class="pt-2">
-                <div class="flex items-end justify-between gap-1.5 h-20 pt-4 px-1 border-b border-[#E5E7EB]">
-                  {#each callBars as val, idx}
-                    <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                      <div
-                        class="w-full rounded-t-xs transition-all {idx === callBars.length - 1 ? 'bg-emerald-600' : 'bg-zinc-200 hover:bg-zinc-300'}"
-                        style="height: {(val / 15) * 100}%;"
-                      ></div>
-                    </div>
-                  {/each}
-                </div>
-                <div class="flex justify-between text-[9px] text-zinc-400 font-mono pt-1.5 px-1">
-                  {#each callLabels as label}
-                    <span>{label}</span>
-                  {/each}
-                </div>
-              </div>
-            </section>
+            </div>
           </div>
         {/if}
       </div>
@@ -901,50 +963,50 @@
     <!-- TAB 2: LLAMADOS (CAPITAL CALLS)                           -->
     <!-- ========================================================= -->
     {:else if activeTab === 'calls'}
-      <div class="h-full flex flex-col overflow-y-auto px-4 py-4 space-y-4 text-left" in:fade={{ duration: 150 }}>
+      <div class="h-full flex flex-col overflow-y-auto px-3.5 py-3.5 space-y-3.5 text-left font-sans" in:fade={{ duration: 150 }}>
         <!-- Summary Metric Card -->
-        <div class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-          <span class="text-[11px] text-zinc-500 font-mono uppercase tracking-wider block">
+        <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <span class="text-[10.5px] text-zinc-400 font-mono uppercase tracking-wider block">
             {lang === 'en' ? 'Capital Call Status · Active Funds' : 'Estado de Llamados · Fondos Activos'}
           </span>
-          <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-[#E5E7EB] text-center">
+          <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-zinc-100 text-center">
             <div>
-              <span class="text-[10px] text-zinc-500 block">Comprometido</span>
-              <span class="text-[14px] font-semibold text-zinc-900 font-mono">$20.0M</span>
+              <span class="text-[9.5px] text-zinc-400 block font-mono">Comprometido</span>
+              <span class="text-[15px] font-serif font-normal text-zinc-900">$20.0M</span>
             </div>
             <div>
-              <span class="text-[10px] text-zinc-500 block">Llamado</span>
-              <span class="text-[14px] font-semibold text-emerald-700 font-mono">$12.55M</span>
+              <span class="text-[9.5px] text-zinc-400 block font-mono">Llamado</span>
+              <span class="text-[15px] font-serif font-normal text-zinc-900">$12.55M</span>
             </div>
             <div>
-              <span class="text-[10px] text-zinc-500 block">Cumplimiento</span>
-              <span class="text-[14px] font-semibold text-zinc-900 font-mono">99.1%</span>
+              <span class="text-[9.5px] text-zinc-400 block font-mono">Cumplimiento</span>
+              <span class="text-[15px] font-serif font-normal text-emerald-700">99.1%</span>
             </div>
           </div>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-2.5">
           {#each capitalCallsList as call}
             <div
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5"
+              class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-medium text-zinc-500 font-mono">{call.fund}</span>
+                <span class="text-[10.5px] font-medium text-zinc-500 font-mono">{call.fund}</span>
                 <span
-                  class="text-[10px] font-mono px-2 py-0.5 rounded-full {call.status === 'active' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold' : 'bg-zinc-100 text-zinc-600'}"
+                  class="text-[9.5px] font-mono px-2 py-0.5 rounded-md {call.status === 'active' ? 'bg-zinc-100 text-zinc-800 border border-zinc-200 font-semibold' : 'bg-zinc-50 text-zinc-500'}"
                 >
                   {call.badge}
                 </span>
               </div>
 
               <div class="flex items-baseline justify-between">
-                <h4 class="text-[15px] font-semibold text-zinc-900">{call.title}</h4>
-                <span class="text-[16px] font-semibold text-zinc-900 font-mono">{call.amount}</span>
+                <h4 class="text-[14px] font-serif font-normal text-zinc-900">{call.title}</h4>
+                <span class="text-[15px] font-serif font-normal text-zinc-900">{call.amount}</span>
               </div>
 
-              <div class="pt-2 border-t border-[#E5E7EB] flex items-center justify-between text-xs text-zinc-600">
-                <span>{call.lpsReconciled}</span>
-                <span class="font-mono text-[11px] text-emerald-700">{call.bankStatus}</span>
+              <div class="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-600">
+                <span class="text-[11px]">{call.lpsReconciled}</span>
+                <span class="font-mono text-[10.5px] text-zinc-500">{call.bankStatus}</span>
               </div>
 
               {#if call.status === 'active'}
@@ -954,7 +1016,7 @@
                     activeTab = 'lps';
                     showToast('Abriendo nómina de LPs...');
                   }}
-                  class="w-full mt-1 py-1.5 rounded-xl text-xs font-medium bg-[#065F46] hover:bg-emerald-800 text-white transition cursor-pointer text-center"
+                  class="w-full mt-1 py-1.5 rounded-lg text-xs font-medium bg-[#111111] hover:bg-zinc-800 text-white transition cursor-pointer text-center"
                 >
                   {lang === 'en' ? 'Audit LPs' : 'Auditar Aportantes'}
                 </button>
@@ -968,43 +1030,43 @@
     <!-- TAB 3: PORTAFOLIO (PORTFOLIO COMPANIES)                   -->
     <!-- ========================================================= -->
     {:else if activeTab === 'portfolio'}
-      <div class="h-full flex flex-col overflow-y-auto px-4 py-4 space-y-4 text-left" in:fade={{ duration: 150 }}>
+      <div class="h-full flex flex-col overflow-y-auto px-3.5 py-3.5 space-y-3.5 text-left font-sans" in:fade={{ duration: 150 }}>
         <!-- Summary Banner -->
-        <div class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-          <span class="text-[11px] text-zinc-500 font-mono uppercase tracking-wider block">
+        <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+          <span class="text-[10.5px] text-zinc-400 font-mono uppercase tracking-wider block">
             {lang === 'en' ? 'Direct Portfolio Holdings' : 'Empresas en Portafolio Directo'}
           </span>
           <div class="flex items-baseline justify-between mt-1">
-            <span class="text-[22px] font-semibold text-zinc-900 font-mono">$12.70M USD</span>
+            <span class="text-[22px] font-serif font-normal text-zinc-900">$12.70M USD</span>
             <span class="text-xs text-zinc-500 font-medium">4 Activos Operativos</span>
           </div>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-2.5">
           {#each portfolioHoldings as holding}
             <div
-              class="p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5"
+              class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-mono text-zinc-500">{holding.sector}</span>
-                <span class="text-[10.5px] font-mono font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span class="text-[10px] font-mono text-zinc-400">{holding.sector}</span>
+                <span class="text-[10px] font-mono font-semibold text-zinc-800 bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded">
                   {holding.irr}
                 </span>
               </div>
 
               <div>
-                <h4 class="text-[15px] font-semibold text-zinc-900">{holding.name}</h4>
+                <h4 class="text-[15px] font-serif font-normal text-zinc-900">{holding.name}</h4>
                 <p class="text-[11px] text-zinc-500 mt-0.5">{holding.location}</p>
               </div>
 
-              <div class="pt-2 border-t border-[#E5E7EB] grid grid-cols-2 gap-2 text-xs">
+              <div class="pt-2 border-t border-zinc-100 grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span class="text-[10px] text-zinc-400 block font-mono">Capital Desplegado</span>
-                  <span class="font-semibold text-zinc-900 font-mono">{holding.deployed}</span>
+                  <span class="text-[9.5px] text-zinc-400 block font-mono">Capital Desplegado</span>
+                  <span class="font-serif text-[13px] text-zinc-900">{holding.deployed}</span>
                 </div>
                 <div>
-                  <span class="text-[10px] text-zinc-400 block font-mono">Participación</span>
-                  <span class="font-semibold text-zinc-900 font-mono">{holding.equityStake}</span>
+                  <span class="text-[9.5px] text-zinc-400 block font-mono">Participación</span>
+                  <span class="font-serif text-[13px] text-zinc-900">{holding.equityStake}</span>
                 </div>
               </div>
 
@@ -1023,7 +1085,7 @@
                       { label: 'TIR Proyectada', value: holding.irr }
                     ]
                   })}
-                class="w-full mt-1 py-1.5 rounded-xl text-xs font-medium bg-[#F8F9FA] hover:bg-zinc-100 border border-[#E5E7EB] text-zinc-800 transition cursor-pointer text-center"
+                class="w-full mt-1 py-1.5 rounded-lg text-xs font-medium bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-800 transition cursor-pointer text-center"
               >
                 {lang === 'en' ? 'View Details' : 'Ver Ficha Completa'}
               </button>
@@ -1036,24 +1098,24 @@
     <!-- TAB 4: APORTANTES (LPS / INVESTORS)                       -->
     <!-- ========================================================= -->
     {:else if activeTab === 'lps'}
-      <div class="h-full flex flex-col overflow-y-auto px-4 py-4 space-y-3.5 text-left" in:fade={{ duration: 150 }}>
+      <div class="h-full flex flex-col overflow-y-auto px-3.5 py-3.5 space-y-3 text-left font-sans" in:fade={{ duration: 150 }}>
         <!-- Search & Filter Bar -->
         <div class="relative">
           <input
             type="text"
             bind:value={lpSearchQuery}
             placeholder={lang === 'en' ? 'Search LP or tax ID...' : 'Buscar aportante o RUT...'}
-            class="w-full bg-white border border-[#E5E7EB] rounded-xl px-3.5 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
+            class="w-full bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 shadow-xs"
           />
         </div>
 
         <!-- Compliance & Regulatory Banner -->
-        <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-900 text-xs space-y-1">
-          <div class="flex items-center gap-1.5 font-semibold text-[11.5px]">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+        <div class="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs space-y-1">
+          <div class="flex items-center gap-1.5 font-semibold text-[11px]">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
             <span>{lang === 'en' ? 'Law 21.719 APDP & WORM Ledger' : 'Ley 21.719 APDP & Sellado WORM'}</span>
           </div>
-          <p class="text-[10.5px] text-emerald-800 leading-normal">
+          <p class="text-[10px] text-zinc-600 leading-normal">
             {lang === 'en'
               ? 'Investor records are protected under encrypted enclave with immutable audit log on GCP.'
               : 'Nómina protegida bajo enclave encriptado con log de auditoría inmutable en Google Cloud.'}
@@ -1061,7 +1123,7 @@
         </div>
 
         <!-- LPs List -->
-        <div class="space-y-2.5">
+        <div class="space-y-2">
           {#each filteredLPs as lp}
             <button
               type="button"
@@ -1078,25 +1140,25 @@
                     { label: 'Estado', value: lp.statusLabel }
                   ]
                 })}
-              class="w-full p-3.5 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-zinc-300 text-left transition flex items-center justify-between cursor-pointer"
+              class="w-full p-3 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-zinc-300 text-left transition flex items-center justify-between cursor-pointer"
             >
               <div>
                 <div class="flex items-center gap-2">
-                  <h4 class="text-[13px] font-semibold text-zinc-900">{lp.name}</h4>
+                  <h4 class="text-[13px] font-serif font-normal text-zinc-900">{lp.name}</h4>
                   <span
-                    class="text-[9.5px] font-mono px-1.5 py-0.2 rounded-md {lp.status === 'reconciled' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}"
+                    class="text-[9px] font-mono px-1.5 py-0.2 rounded-md {lp.status === 'reconciled' ? 'bg-zinc-100 text-zinc-700' : 'bg-amber-50 text-amber-800 border border-amber-200'}"
                   >
                     {lp.statusLabel}
                   </span>
                 </div>
-                <p class="text-[11px] text-zinc-500 font-mono mt-0.5">
+                <p class="text-[10.5px] text-zinc-400 font-mono mt-0.5">
                   RUT: {lp.rut} · {lp.custodianBank}
                 </p>
               </div>
 
               <div class="text-right shrink-0">
-                <span class="text-[13px] font-semibold text-zinc-900 font-mono block">{lp.callShare}</span>
-                <span class="text-[10px] text-zinc-400 font-mono">de {lp.commitment}</span>
+                <span class="text-[13px] font-serif font-normal text-zinc-900 block">{lp.callShare}</span>
+                <span class="text-[9.5px] text-zinc-400 font-mono">de {lp.commitment}</span>
               </div>
             </button>
           {/each}
@@ -1110,74 +1172,74 @@
   <!-- ========================================================= -->
   <div
     id="funds-bottom-tabbar"
-    class="shrink-0 h-14 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] flex items-center justify-around px-2 z-20 shadow-[0_-1px_3px_rgba(0,0,0,0.02)]"
+    class="shrink-0 h-13 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] flex items-center justify-around px-2 z-20 shadow-[0_-1px_3px_rgba(0,0,0,0.02)]"
   >
     <!-- TAB 1: RESUMEN -->
     <button
       type="button"
       onclick={() => (activeTab = 'summary')}
-      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'summary' ? 'text-[#065F46] font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
+      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'summary' ? 'text-zinc-950 font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
     >
       <div class="relative">
-        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+        <svg class="w-4.5 h-4.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
         {#if activeTab === 'summary'}
-          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#065F46]"></span>
+          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
         {/if}
       </div>
-      <span class="text-[10px] tracking-tight">{lang === 'en' ? 'Summary' : 'Resumen'}</span>
+      <span class="text-[9.5px] tracking-tight">{lang === 'en' ? 'Summary' : 'Resumen'}</span>
     </button>
 
     <!-- TAB 2: LLAMADOS -->
     <button
       type="button"
       onclick={() => (activeTab = 'calls')}
-      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'calls' ? 'text-[#065F46] font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
+      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'calls' ? 'text-zinc-950 font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
     >
       <div class="relative">
-        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+        <svg class="w-4.5 h-4.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         {#if activeTab === 'calls'}
-          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#065F46]"></span>
+          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
         {/if}
       </div>
-      <span class="text-[10px] tracking-tight">{lang === 'en' ? 'Calls' : 'Llamados'}</span>
+      <span class="text-[9.5px] tracking-tight">{lang === 'en' ? 'Calls' : 'Llamados'}</span>
     </button>
 
     <!-- TAB 3: PORTAFOLIO -->
     <button
       type="button"
       onclick={() => (activeTab = 'portfolio')}
-      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'portfolio' ? 'text-[#065F46] font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
+      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'portfolio' ? 'text-zinc-950 font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
     >
       <div class="relative">
-        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+        <svg class="w-4.5 h-4.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
         {#if activeTab === 'portfolio'}
-          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#065F46]"></span>
+          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
         {/if}
       </div>
-      <span class="text-[10px] tracking-tight">{lang === 'en' ? 'Portfolio' : 'Portafolio'}</span>
+      <span class="text-[9.5px] tracking-tight">{lang === 'en' ? 'Portfolio' : 'Portafolio'}</span>
     </button>
 
     <!-- TAB 4: APORTANTES -->
     <button
       type="button"
       onclick={() => (activeTab = 'lps')}
-      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'lps' ? 'text-[#065F46] font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
+      class="flex flex-col items-center gap-1 transition px-2 py-1 cursor-pointer {activeTab === 'lps' ? 'text-zinc-950 font-semibold' : 'text-zinc-400 hover:text-zinc-600'}"
     >
       <div class="relative">
-        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+        <svg class="w-4.5 h-4.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
         {#if activeTab === 'lps'}
-          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#065F46]"></span>
+          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-zinc-900"></span>
         {/if}
       </div>
-      <span class="text-[10px] tracking-tight">{lang === 'en' ? 'LPs' : 'Aportantes'}</span>
+      <span class="text-[9.5px] tracking-tight">{lang === 'en' ? 'LPs' : 'Aportantes'}</span>
     </button>
   </div>
 
