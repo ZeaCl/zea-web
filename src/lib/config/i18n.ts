@@ -299,7 +299,7 @@ export const content: Record<Language, I18nContent> = {
         },
         sport: {
           title: 'G.U.S.',
-          label: 'Operaciones deportivas',
+          label: 'Plataforma de gestión deportiva',
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
@@ -453,7 +453,7 @@ export const content: Record<Language, I18nContent> = {
         },
         sport: {
           title: 'G.U.S.',
-          label: 'Sport operations',
+          label: 'Sports management platform',
           desc: 'Coach management, venues & athletes'
         },
         venture: {
