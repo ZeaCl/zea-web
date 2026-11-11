@@ -15,7 +15,8 @@
 
   // Navigation tabs: Resumen, Llamados, Portafolio, Aportantes
   let activeTab = $state<'summary' | 'calls' | 'portfolio' | 'lps'>('summary');
-  let viewMode = $state<'chat' | 'app'>('app');
+  // Default mode is Chat
+  let viewMode = $state<'chat' | 'app'>('chat');
 
   // Interactive state
   let toastMessage = $state<string | null>(null);
@@ -65,14 +66,14 @@
   }
 
   // =========================================================================
-  // 1. HARVEY EDITORIAL DATA MODELS (Private Equity - Fictional)
+  // 1. DATA MODELS
   // =========================================================================
-  // Exponential density curve bars (like Harvey's DAU/MAU chart)
+  // Exponential density curve bars (Harvey style)
   const densityBars = [
     8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 21, 24, 27, 31, 36, 42, 49, 57, 66, 76, 88, 100
   ];
 
-  // Grouped usage/allocation bars (like Harvey's Product Usage chart)
+  // Grouped allocation bars
   const allocationGrouped = $derived([
     { name: lang === 'en' ? 'Infra' : 'Infra', current: 55, target: 60 },
     { name: lang === 'en' ? 'Real Assets' : 'Real Ast', current: 75, target: 80 },
@@ -134,7 +135,7 @@
     }
   ]);
 
-  // Capital calls list (fictional fund names)
+  // Capital calls list
   const capitalCallsList = $derived([
     {
       id: 'cc-4',
@@ -182,7 +183,7 @@
     }
   ]);
 
-  // Direct portfolio holdings (fictional company names)
+  // Direct portfolio holdings
   const portfolioHoldings = $derived([
     {
       id: 'p-1',
@@ -230,7 +231,7 @@
     }
   ]);
 
-  // Institutional LPs list (fictional investor names)
+  // Institutional LPs list
   const institutionalLPs = $derived([
     {
       id: 'lp-1',
@@ -311,14 +312,14 @@
   );
 
   // =========================================================================
-  // 2. CONVERSATIONAL STREAM (Glia Funds Agent)
+  // 2. CONVERSATIONAL STREAM (Briefing con Widgets Progresivos)
   // =========================================================================
   interface ChatMessage {
     id: string;
     sender: 'user' | 'agent';
     time: string;
     text: string;
-    isPrimarySummary?: boolean;
+    showFullBriefingWidgets?: boolean;
   }
 
   let chatMessages = $state<ChatMessage[]>([
@@ -326,14 +327,14 @@
       id: 'f-msg-0',
       sender: 'user',
       time: '09:30',
-      text: 'Glia, ¿cuál es el estado de la Llamada de Capital #4 y el AUM consolidado?'
+      text: '¿Qué tenemos para hoy?'
     },
     {
       id: 'f-msg-1',
       sender: 'agent',
       time: '09:30',
-      text: '¡Buenos días! El AUM consolidado es de $14.85M USD con una TIR anual neta de 18.4%. De la Llamada de Capital #4 hemos recibido $1,100,000 USD (88%) con 30 de 32 aportantes conciliados al 100% contra el banco custodio. Quedan $150,000 USD pendientes que cierran hoy a las 14:30.',
-      isPrimarySummary: true
+      text: '¡Buenos días! El foco prioritario de esta mañana es cerrar la Llamada de Capital #4 antes de las 14:30. A continuación tienes el reporte consolidado con los horizontes de ejecución:',
+      showFullBriefingWidgets: true
     }
   ]);
 
@@ -343,10 +344,7 @@
         id: 'f-msg-0',
         sender: 'user',
         time: '09:30',
-        text:
-          lang === 'en'
-            ? 'Glia, what is the status of Capital Call #4 and our consolidated AUM?'
-            : 'Glia, ¿cuál es el estado de la Llamada de Capital #4 y el AUM consolidado?'
+        text: lang === 'en' ? 'What do we have for today?' : '¿Qué tenemos para hoy?'
       },
       {
         id: 'f-msg-1',
@@ -354,9 +352,9 @@
         time: '09:30',
         text:
           lang === 'en'
-            ? 'Good morning! Consolidated AUM stands at $14.85M USD with an 18.4% net annualized IRR. On Capital Call #4 we have received $1,100,000 USD (88%) with 30 of 32 LPs fully reconciled against the custodian bank. $150,000 USD remains queued for close today at 14:30.'
-            : '¡Buenos días! El AUM consolidado es de $14.85M USD con una TIR anual neta de 18.4%. De la Llamada de Capital #4 hemos recibido $1,100,000 USD (88%) con 30 de 32 aportantes conciliados al 100% contra el banco custodio. Quedan $150,000 USD pendientes que cierran hoy a las 14:30.',
-        isPrimarySummary: true
+            ? 'Good morning! The top priority this morning is closing Capital Call #4 before 14:30. Below is your consolidated briefing across chronological execution horizons:'
+            : '¡Buenos días! El foco prioritario de esta mañana es cerrar la Llamada de Capital #4 antes de las 14:30. A continuación tienes el reporte consolidado con los horizontes de ejecución:',
+        showFullBriefingWidgets: true
       }
     ];
   });
@@ -376,7 +374,7 @@
     if (!promptText.trim()) return;
     const text = promptText.trim();
     chatInputText = '';
-    const now = '09:45';
+    const now = '09:34';
     const uid = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 
     chatMessages.push({
@@ -392,8 +390,15 @@
       isAgentTyping = false;
       const lower = text.toLowerCase();
       let reply = '';
+      let isBriefing = false;
 
-      if (lower.includes('aportante') || lower.includes('lp') || lower.includes('concilia')) {
+      if (lower.includes('hoy') || lower.includes('tenemos') || lower.includes('today')) {
+        reply =
+          lang === 'en'
+            ? 'Here is today’s active fund operations report across all horizons:'
+            : 'Aquí tienes el reporte operativo de fondos para hoy en todos los horizontes:';
+        isBriefing = true;
+      } else if (lower.includes('aportante') || lower.includes('lp') || lower.includes('concilia')) {
         reply =
           lang === 'en'
             ? 'All 32 LPs have been verified against the custodian bank. 2 transfers ($150,000 USD total) are undergoing clearing with Banco Custodio Central.'
@@ -413,8 +418,9 @@
       chatMessages.push({
         id: `agent-${uid}`,
         sender: 'agent',
-        time: '09:46',
-        text: reply
+        time: '09:35',
+        text: reply,
+        showFullBriefingWidgets: isBriefing
       });
       scrollToBottom(summaryScrollEl);
     }, 700);
@@ -438,11 +444,11 @@
   class="flex flex-col h-full w-full bg-[#F4F4F6] text-[#0F172A] relative font-sans overflow-hidden select-none"
   data-testid="zea-funds-screen"
 >
-  <!-- Institutional Editorial Top Header -->
+  <!-- Minimal Clean Top Header -->
   <header
-    class="px-4 pt-2.5 pb-2 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between z-20 shrink-0"
+    class="px-4 py-2.5 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between z-20 shrink-0"
   >
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2.5">
       <!-- Glia Square Monogram (G) -->
       <div
         class="w-7 h-7 rounded bg-[#111111] text-white flex items-center justify-center font-serif font-bold text-xs shadow-xs"
@@ -468,85 +474,88 @@
   <!-- Scrollable Main Content across 4 Tabs -->
   <div class="flex-1 overflow-hidden relative">
     <!-- ========================================================= -->
-    <!-- TAB 1: RESUMEN (COMMAND CENTER DE HARVEY)                 -->
+    <!-- TAB 1: RESUMEN (CHAT CONVERSACIONAL CON WIDGETS PROGRESIVOS) -->
     <!-- ========================================================= -->
     {#if activeTab === 'summary'}
       <div class="h-full flex flex-col" in:fade={{ duration: 150 }}>
         {#if viewMode === 'chat'}
-          <!-- Harvey AI Chat Stream -->
+          <!-- Harvey AI Chat Stream con WhatsApp Timestamps y Widgets -->
           <div
             bind:this={summaryScrollEl}
-            class="flex-1 overflow-y-auto px-4 py-3.5 space-y-3 text-xs text-left"
+            class="flex-1 overflow-y-auto px-3.5 py-3 space-y-3.5 text-xs text-left"
           >
-            <!-- Editorial Command Center Title in Chat -->
-            <div class="pt-1 pb-1 flex items-center justify-between">
-              <div>
-                <h1 class="font-serif text-[19px] font-normal tracking-tight text-zinc-900">
-                  Funds Command Center
-                </h1>
-                <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
-                  Glia Multi-Agent Intelligence · Horizon II
-                </p>
-              </div>
-            </div>
-
             {#each chatMessages as msg (msg.id)}
               {#if msg.sender === 'user'}
+                <!-- WhatsApp Style User Bubble -->
                 <div class="flex justify-end">
                   <div
-                    class="max-w-[85%] px-3.5 py-2.5 rounded-2xl rounded-tr-xs bg-[#F1F5F9] border border-[#E2E8F0] text-zinc-900 shadow-xs leading-relaxed"
+                    class="max-w-[85%] px-3 py-2 rounded-2xl rounded-tr-xs bg-[#F1F5F9] border border-[#E2E8F0] text-zinc-900 shadow-xs leading-relaxed"
                   >
-                    <p>{msg.text}</p>
-                    <span class="text-[9.5px] text-zinc-400 block text-right mt-1 font-mono">{msg.time}</span>
+                    <p class="text-[13px]">{msg.text}</p>
+                    <span class="text-[9.5px] text-zinc-400 font-mono float-right mt-1 ml-2 flex items-center gap-0.5">
+                      {msg.time}
+                      <svg class="w-3.5 h-3.5 text-emerald-600 inline ml-0.5" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                        <path d="M10.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                      </svg>
+                    </span>
                   </div>
                 </div>
               {:else}
+                <!-- Agent Message Bubble + Structured Horizon Widgets -->
                 <div class="flex justify-start">
-                  <div class="max-w-[92%] space-y-2">
+                  <div class="w-full max-w-[96%] space-y-2.5">
+                    <!-- Text Introduction Bubble with WhatsApp timestamp -->
                     <div
-                      class="p-3.5 rounded-2xl rounded-tl-xs bg-white border border-[#E5E7EB] text-zinc-800 shadow-[0_1px_3px_rgba(0,0,0,0.03)] leading-relaxed space-y-2"
+                      class="p-3 rounded-2xl rounded-tl-xs bg-white border border-[#E5E7EB] text-zinc-800 shadow-[0_1px_3px_rgba(0,0,0,0.03)] leading-relaxed space-y-1.5"
                     >
                       <div class="flex items-center gap-1.5 text-zinc-900 text-[11px] font-semibold">
                         <span class="w-4 h-4 rounded bg-[#111111] text-white flex items-center justify-center font-serif text-[9px] font-bold">G</span>
                         <span>Funds Agent</span>
                       </div>
                       <p class="text-[12px] text-zinc-700 leading-normal">{msg.text}</p>
-                      <span class="text-[9.5px] text-zinc-400 block font-mono">{msg.time}</span>
+                      <span class="text-[9.5px] text-zinc-400 font-mono block text-right mt-0.5">{msg.time}</span>
                     </div>
 
-                    {#if msg.isPrimarySummary}
-                      <!-- Embedded Harvey Priority Card -->
-                      <div
-                        class="p-4 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-3"
-                      >
+                    {#if msg.showFullBriefingWidgets}
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <!-- WIDGET 1: EL AHORA (PRIORIDAD INMEDIATA · LLAMADA #4) -->
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-2.5">
                         <div class="flex items-center justify-between">
-                          <span class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-                            Horizon II · Capital Call #4
+                          <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                            EL AHORA · PRIORIDAD INMEDIATA
                           </span>
-                          <span
-                            class="text-[10px] font-medium text-zinc-700 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded-md font-mono"
-                          >
-                            Cierra en 48 hrs
+                          <span class="text-[9.5px] font-mono text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded">
+                            Cierra en 4 hrs
                           </span>
                         </div>
 
                         <div>
-                          <div class="text-[28px] font-serif font-normal text-zinc-900 tracking-tight leading-none">
-                            $1,250,000<span class="text-zinc-500 text-[16px] font-sans"> USD</span>
-                            <span class="text-[12px] font-sans font-medium text-emerald-700 ml-1.5">↑ 88%</span>
+                          <div class="text-[26px] font-serif font-normal text-zinc-900 tracking-tight leading-none">
+                            $1,250,000<span class="text-zinc-500 text-[15px] font-sans"> USD</span>
+                            <span class="text-[11.5px] font-sans font-medium text-emerald-700 ml-1.5">↑ 88%</span>
                           </div>
                           <p class="text-[11px] text-zinc-500 font-sans mt-1">
-                            30 de 32 aportantes conciliados · $150K en clearing
+                            Llamada #4 (Horizon II) · 30 de 32 LPs conciliados · $150K pendiente
                           </p>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-2 pt-1">
+                        <!-- Progress Bar -->
+                        <div class="space-y-1">
+                          <div class="h-2 rounded-full bg-zinc-100 overflow-hidden">
+                            <div class="h-full rounded-full bg-zinc-900 transition-all" style="width: 88%;"></div>
+                          </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-0.5">
                           <button
                             type="button"
                             onclick={() => (activeTab = 'lps')}
-                            class="px-3 py-2 rounded-lg text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
+                            class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white border border-[#E5E7EB] text-zinc-800 hover:bg-zinc-50 transition cursor-pointer text-center"
                           >
-                            {lang === 'en' ? 'View LPs' : 'Ver aportantes'}
+                            Ver 2 pendientes
                           </button>
                           <button
                             type="button"
@@ -558,10 +567,182 @@
                                   : 'Llamada #4 firmada con FaceID'
                               );
                             }}
-                            class="px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-[#111111] text-white hover:bg-zinc-800'}"
+                            class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer text-center {faceIdSigned ? 'bg-emerald-700 text-white font-semibold' : 'bg-[#111111] text-white hover:bg-zinc-800'}"
                           >
-                            {faceIdSigned ? (lang === 'en' ? '✓ Authorized' : '✓ Autorizado') : (lang === 'en' ? 'Sign with FaceID' : 'Firmar con FaceID')}
+                            {faceIdSigned ? (lang === 'en' ? '✓ Authorized' : '✓ Autorizado') : (lang === 'en' ? 'Firmar con FaceID' : 'Firmar con FaceID')}
                           </button>
+                        </div>
+                      </div>
+
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <!-- WIDGET 2: EL HOY (AGENDA OPERATIVA DEL DÍA)           -->
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-2.5 font-sans">
+                        <div class="flex items-baseline justify-between">
+                          <span class="text-[10px] font-mono font-semibold text-zinc-500 uppercase tracking-wider">
+                            📅 EL HOY · HITOS OPERATIVOS
+                          </span>
+                          <span class="text-[10px] text-zinc-400 font-mono">4 eventos</span>
+                        </div>
+
+                        <div class="space-y-1.5">
+                          {#each fundsTimeline as item}
+                            <div class="p-2 rounded-lg bg-zinc-50 border border-zinc-200/70 flex items-start justify-between gap-2">
+                              <div class="flex items-start gap-2">
+                                <span class="text-[9.5px] font-mono font-semibold text-zinc-500 pt-0.5 shrink-0">
+                                  {item.time}
+                                </span>
+                                <div>
+                                  <p class="text-[11.5px] font-medium text-zinc-900 leading-snug">{item.title}</p>
+                                  <p class="text-[10px] text-zinc-500 leading-tight mt-0.5">{item.subtitle}</p>
+                                </div>
+                              </div>
+                              {#if item.actionLabel}
+                                <button
+                                  type="button"
+                                  onclick={() => item.onAction?.()}
+                                  class="text-[9.5px] font-medium text-zinc-800 bg-white hover:bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded shrink-0 cursor-pointer"
+                                >
+                                  {item.actionLabel}
+                                </button>
+                              {:else if item.onClick}
+                                <button
+                                  type="button"
+                                  onclick={() => item.onClick?.()}
+                                  class="text-[9.5px] font-medium text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded shrink-0 cursor-pointer"
+                                >
+                                  Ficha
+                                </button>
+                              {/if}
+                            </div>
+                          {/each}
+                        </div>
+                      </div>
+
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <!-- WIDGET 3: LA SEMANA (ASSET DEPLOYMENT GROUPED BARS)    -->
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-2">
+                        <div class="flex items-baseline justify-between">
+                          <div>
+                            <span class="text-[10px] font-mono font-semibold text-zinc-500 uppercase tracking-wider block">
+                              📊 LA SEMANA · ASSET DEPLOYMENT
+                            </span>
+                            <p class="text-[10.5px] text-zinc-500 font-sans mt-0.5">
+                              Capital desplegado vs target
+                            </p>
+                          </div>
+                          <span class="text-[9.5px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-sans">
+                            This week ▾
+                          </span>
+                        </div>
+
+                        <!-- Grouped Bars -->
+                        <div class="pt-2">
+                          <div class="flex items-end justify-around h-18 border-b border-zinc-100 px-1">
+                            {#each allocationGrouped as item}
+                              <div class="flex flex-col items-center gap-1">
+                                <div class="flex items-end gap-1 h-14">
+                                  <div class="w-2 rounded-t-xs bg-zinc-800" style="height: {item.current}%;"></div>
+                                  <div class="w-2 rounded-t-xs bg-zinc-200" style="height: {item.target}%;"></div>
+                                </div>
+                                <span class="text-[8.5px] text-zinc-400 font-sans">{item.name}</span>
+                              </div>
+                            {/each}
+                          </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-1 text-[9px] text-zinc-500 font-sans">
+                          <span class="flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span> Desplegado
+                          </span>
+                          <span class="flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span> Meta 2026
+                          </span>
+                          <span class="flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-700"></span> Clearing
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <!-- WIDGET 4: EL MES (TOP POWER LPs RANKING)              -->
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-2">
+                        <div class="flex items-baseline justify-between">
+                          <div>
+                            <span class="text-[10px] font-mono font-semibold text-zinc-500 uppercase tracking-wider block">
+                              👥 EL MES · TOP POWER LPs
+                            </span>
+                            <p class="text-[10.5px] text-zinc-500 font-sans mt-0.5">
+                              Cumplimiento de compromisos
+                            </p>
+                          </div>
+                          <span class="text-[9.5px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-sans">
+                            Past month ▾
+                          </span>
+                        </div>
+
+                        <div class="space-y-1.5 pt-1 font-sans">
+                          {#each institutionalLPs.slice(0, 4) as lp}
+                            <div class="space-y-0.5">
+                              <div class="flex items-center justify-between text-[10.5px]">
+                                <span class="text-zinc-700 truncate max-w-[65%]">{lp.name}</span>
+                                <span class="font-mono text-[10px] text-zinc-500">{lp.callShare} {lp.status === 'reconciled' ? '✓' : '⏳'}</span>
+                              </div>
+                              <div class="h-1.5 rounded-full bg-zinc-100 overflow-hidden flex items-center">
+                                <div
+                                  class="h-full rounded-full transition-all {lp.status === 'reconciled' ? 'bg-[#3b4252]' : 'bg-[#d08770]'}"
+                                  style="width: {lp.daysOrPct}%;"
+                                ></div>
+                              </div>
+                            </div>
+                          {/each}
+                        </div>
+                      </div>
+
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <!-- WIDGET 5: EL PROYECTADO (AUM & TIR OBJETIVO CURVE)    -->
+                      <!-- ═════════════════════════════════════════════════════ -->
+                      <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_4px_rgba(0,0,0,0.04)] space-y-2">
+                        <div class="flex items-baseline justify-between">
+                          <div>
+                            <span class="text-[10px] font-mono font-semibold text-zinc-500 uppercase tracking-wider block">
+                              📈 EL PROYECTADO · AUM & TIR
+                            </span>
+                            <div class="flex items-baseline gap-1.5 mt-0.5">
+                              <span class="font-serif text-[24px] font-normal tracking-tight text-zinc-900 leading-none">
+                                $14.85M
+                              </span>
+                              <span class="text-[11px] text-emerald-700 font-sans font-medium">
+                                ↑ 18.4% TIR Neta
+                              </span>
+                            </div>
+                          </div>
+                          <span class="text-[9.5px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-1.5 py-0.5 rounded flex items-center gap-1 font-sans">
+                            2026 Target ▾
+                          </span>
+                        </div>
+
+                        <!-- Micro Density Exponential Chart -->
+                        <div class="pt-1">
+                          <div class="flex items-end justify-between gap-[2px] h-14 pt-2 border-b border-zinc-100">
+                            {#each densityBars as pct, idx}
+                              <div class="flex-1 flex flex-col justify-end h-full">
+                                <div
+                                  class="w-full rounded-t-xs transition-all {idx === densityBars.length - 1 ? 'bg-zinc-800' : 'bg-zinc-200'}"
+                                  style="height: {pct}%;"
+                                ></div>
+                              </div>
+                            {/each}
+                          </div>
+                          <div class="flex justify-between text-[8px] text-zinc-400 font-sans pt-1">
+                            <span>Q1</span>
+                            <span>Q2</span>
+                            <span>Q3</span>
+                            <span>Hoy</span>
+                            <span>$20M Cap</span>
+                          </div>
                         </div>
                       </div>
                     {/if}
@@ -572,7 +753,7 @@
 
             {#if isAgentTyping}
               <div
-                class="flex items-center gap-1.5 p-3 rounded-xl bg-white border border-[#E5E7EB] w-20 shadow-xs"
+                class="flex items-center gap-1.5 p-2.5 rounded-xl bg-white border border-[#E5E7EB] w-18 shadow-xs"
               >
                 <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-bounce"></span>
                 <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-bounce [animation-delay:0.2s]"></span>
@@ -581,10 +762,10 @@
             {/if}
           </div>
 
-          <!-- Light Harvey Prompt Bar -->
+          <!-- Prompt Input Bar -->
           <div class="shrink-0 bg-white border-t border-[#E5E7EB] p-2.5 space-y-2 z-20">
             <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              {#each (lang === 'en' ? ['Audit Custodian', 'Reconcile LPs', 'Call #4 Status'] : ['Conciliar custodio', 'Auditar LPs', 'Estado Llamada #4']) as chip}
+              {#each (lang === 'en' ? ['What do we have today?', 'Reconcile Custodian', 'Audit LPs', 'Call #4 Status'] : ['¿Qué tenemos para hoy?', 'Conciliar custodio', 'Auditar LPs', 'Estado Llamada #4']) as chip}
                 <button
                   type="button"
                   onclick={() => handleSendPrompt(chip)}
@@ -621,32 +802,10 @@
           </div>
         {:else}
           <!-- ========================================================= -->
-          <!-- HARVEY COMMAND CENTER DASHBOARD (REPLICATING SCREENSHOT)  -->
+          <!-- APP DASHBOARD (CLEAN ANALYTICAL CARDS, SIN TITULOS INNECESARIOS) -->
           <!-- ========================================================= -->
           <div class="flex-1 overflow-y-auto px-3.5 py-3.5 space-y-3.5 text-left">
-            <!-- 1. Editorial Header Row with Serif Title & "Ask Glia" Button -->
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <h1 class="font-serif text-[22px] font-normal tracking-tight text-zinc-900 leading-tight">
-                  Funds Command Center
-                </h1>
-                <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
-                  Portfolio intelligence & fund operations
-                </p>
-              </div>
-
-              <!-- Harvey "G Ask Glia" Style Pill Button -->
-              <button
-                type="button"
-                onclick={() => (viewMode = 'chat')}
-                class="px-2.5 py-1.5 rounded-full bg-[#111111] hover:bg-zinc-800 text-white text-[11px] font-medium flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer transition"
-              >
-                <span class="w-3.5 h-3.5 rounded bg-white/20 text-white flex items-center justify-center font-serif text-[8.5px] font-bold">G</span>
-                <span>Ask Glia</span>
-              </button>
-            </div>
-
-            <!-- 2. Harvey Recommendation Banner -->
+            <!-- 1. Recommendation Banner -->
             <div
               class="p-2.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-center justify-between gap-2.5"
             >
@@ -669,7 +828,7 @@
               </button>
             </div>
 
-            <!-- 3. HARVEY CARD 1: 49.5% / AUM Consolidado with Density Exponential Bars -->
+            <!-- 2. CARD 1: AUM Consolidado with Density Exponential Bars -->
             <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2">
               <div class="flex items-baseline justify-between">
                 <div>
@@ -686,7 +845,6 @@
                   </span>
                 </div>
 
-                <!-- Dropdown Selectors like Harvey screenshot -->
                 <div class="flex items-center gap-1 font-sans">
                   <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1">
                     6 months <span class="text-[8px] text-zinc-400">▾</span>
@@ -697,7 +855,7 @@
                 </div>
               </div>
 
-              <!-- Exponential Density Trend Chart (Harvey style) -->
+              <!-- Exponential Density Trend Chart -->
               <div class="pt-2">
                 <div class="flex items-end justify-between gap-[2px] h-18 pt-2 border-b border-zinc-100">
                   {#each densityBars as pct, idx}
@@ -719,7 +877,6 @@
                 </div>
               </div>
 
-              <!-- Micro Legend -->
               <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
                 <span class="flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
@@ -732,7 +889,7 @@
               </div>
             </div>
 
-            <!-- 4. HARVEY CARD 2: Product / Asset Allocation Grouped Vertical Bars -->
+            <!-- 3. CARD 2: Asset Allocation Grouped Vertical Bars -->
             <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2">
               <div class="flex items-baseline justify-between">
                 <div>
@@ -748,22 +905,13 @@
                 </span>
               </div>
 
-              <!-- Grouped Bars (like Harvey Product Usage) -->
               <div class="pt-3">
                 <div class="flex items-end justify-around h-20 border-b border-zinc-100 px-1">
                   {#each allocationGrouped as item}
                     <div class="flex flex-col items-center gap-1">
                       <div class="flex items-end gap-1 h-16">
-                        <!-- Primary bar (dark charcoal) -->
-                        <div
-                          class="w-2 rounded-t-xs bg-zinc-800"
-                          style="height: {item.current}%;"
-                        ></div>
-                        <!-- Secondary bar (light slate) -->
-                        <div
-                          class="w-2 rounded-t-xs bg-zinc-200"
-                          style="height: {item.target}%;"
-                        ></div>
+                        <div class="w-2 rounded-t-xs bg-zinc-800" style="height: {item.current}%;"></div>
+                        <div class="w-2 rounded-t-xs bg-zinc-200" style="height: {item.target}%;"></div>
                       </div>
                       <span class="text-[8.5px] text-zinc-400 font-sans">{item.name}</span>
                     </div>
@@ -771,24 +919,20 @@
                 </div>
               </div>
 
-              <!-- Legend (Harvey 3 dots) -->
               <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
                 <span class="flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
-                  Desplegado
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span> Desplegado
                 </span>
                 <span class="flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
-                  Meta 2026
+                  <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span> Meta 2026
                 </span>
                 <span class="flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-700"></span>
-                  Atención (Clearing)
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-700"></span> Atención
                 </span>
               </div>
             </div>
 
-            <!-- 5. HARVEY CARD 3: 305 / Active Capital Call #4 with FaceID -->
+            <!-- 4. CARD 3: Active Capital Call #4 with FaceID -->
             <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5">
               <div class="flex items-baseline justify-between">
                 <div>
@@ -854,7 +998,7 @@
               </div>
             </div>
 
-            <!-- 6. HARVEY CARD 4: Top power users -> Top Aportantes (LPs) Horizontal Rank Bars -->
+            <!-- 5. CARD 4: Top Aportantes (LPs) Horizontal Rank Bars -->
             <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5">
               <div class="flex items-baseline justify-between">
                 <div>
@@ -866,11 +1010,10 @@
                   </p>
                 </div>
                 <span class="text-[10px] text-zinc-600 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-md flex items-center gap-1 font-sans">
-                  Past month <span class="text-[8px] text-zinc-400">▾</span>
+                  Past month ▾
                 </span>
               </div>
 
-              <!-- Horizontal Rank Bars (Exact replication of Harvey's Top power users) -->
               <div class="space-y-2 pt-1 font-sans">
                 {#each institutionalLPs as lp}
                   <div class="space-y-1">
@@ -878,7 +1021,6 @@
                       <span class="text-zinc-700 font-medium truncate max-w-[65%]">{lp.name}</span>
                       <span class="font-mono text-[10.5px] text-zinc-500">{lp.callShare}</span>
                     </div>
-                    <!-- Horizontal Bar -->
                     <div class="h-2 rounded-full bg-zinc-100 overflow-hidden flex items-center">
                       <div
                         class="h-full rounded-full transition-all {lp.status === 'reconciled' ? 'bg-[#3b4252]' : 'bg-[#d08770]'}"
@@ -890,7 +1032,7 @@
               </div>
             </div>
 
-            <!-- 7. Operational Agenda / Hoy -->
+            <!-- 6. Operational Agenda / Hoy -->
             <div class="p-3.5 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-2.5 font-sans">
               <div class="flex items-baseline justify-between">
                 <h4 class="font-serif text-[15px] font-normal text-zinc-900 tracking-tight">
