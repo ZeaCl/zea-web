@@ -1445,7 +1445,7 @@
           <!-- ZEA Sport Native Gus Training Experience -->
           <ZeaSportScreen {lang} {platform} />
         {:else if activePillar === 'venture'}
-          <!-- ZEA Funds Altus Capital Native Experience (Harvey AI Theme) -->
+          <!-- ZEA Funds Native Experience (Harvey AI Theme) -->
           <ZeaFundsScreen {lang} {platform} />
         {:else if activePillar === 'default' || (activePillar === 'none' && activeNav !== 'developer')}
           <!-- ZEA Universal Personal OS Screen (Monochrome Titanium) -->

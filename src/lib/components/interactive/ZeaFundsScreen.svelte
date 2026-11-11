@@ -65,7 +65,7 @@
   }
 
   // =========================================================================
-  // 1. HARVEY EDITORIAL DATA MODELS (Altus Private Capital - Fictional)
+  // 1. HARVEY EDITORIAL DATA MODELS (Private Equity - Fictional)
   // =========================================================================
   // Exponential density curve bars (like Harvey's DAU/MAU chart)
   const densityBars = [
@@ -126,7 +126,7 @@
     {
       id: '4',
       time: '16:00',
-      title: lang === 'en' ? 'WORM & APDP Ledger Sealing' : 'Sellado WORM & Sello APDP',
+      title: lang === 'en' ? 'Ledger & APDP Sealing' : 'Sellado Ledger & Sello APDP',
       subtitle: lang === 'en' ? 'Law 21.719 immutable audit log on GCP' : 'Log inmutable Ley 21.719 en Google Cloud',
       status: 'available' as const,
       actionLabel: lang === 'en' ? 'Verify seal' : 'Verificar sello',
@@ -406,8 +406,8 @@
       } else {
         reply =
           lang === 'en'
-            ? 'Operations verified for Altus Private Capital. Portfolio companies are operating within targeted parameters.'
-            : 'Operaciones verificadas para Altus Capital. Las empresas de portafolio operan dentro de los parámetros esperados.';
+            ? 'Operations verified. Portfolio companies are operating within targeted parameters.'
+            : 'Operaciones verificadas. Las empresas de portafolio operan dentro de los parámetros esperados.';
       }
 
       chatMessages.push({
@@ -450,19 +450,9 @@
         G
       </div>
       <div>
-        <div class="flex items-center gap-1.5">
-          <h2 class="text-xs font-semibold tracking-tight text-zinc-900 leading-tight">
-            Funds Agent
-          </h2>
-          <span
-            class="inline-flex items-center gap-1 text-[8.5px] font-mono text-zinc-600 bg-zinc-100 border border-zinc-200 px-1.5 py-0.2 rounded"
-          >
-            WORM
-          </span>
-        </div>
-        <p class="text-[10px] text-zinc-500 font-mono">
-          Altus Private Capital
-        </p>
+        <h2 class="text-xs font-semibold tracking-tight text-zinc-900 leading-tight">
+          Funds Agent
+        </h2>
       </div>
     </div>
 
@@ -492,7 +482,7 @@
             <div class="pt-1 pb-1 flex items-center justify-between">
               <div>
                 <h1 class="font-serif text-[19px] font-normal tracking-tight text-zinc-900">
-                  Altus's Command Center
+                  Funds Command Center
                 </h1>
                 <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
                   Glia Multi-Agent Intelligence · Horizon II
@@ -638,7 +628,7 @@
             <div class="flex items-start justify-between gap-2">
               <div>
                 <h1 class="font-serif text-[22px] font-normal tracking-tight text-zinc-900 leading-tight">
-                  Altus's Command Center
+                  Funds Command Center
                 </h1>
                 <p class="text-[11px] text-zinc-500 font-sans mt-0.5">
                   Portfolio intelligence & fund operations
@@ -733,7 +723,7 @@
               <div class="flex items-center gap-3 pt-1 text-[9.5px] text-zinc-500 font-sans">
                 <span class="flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
-                  Altus Horizon II
+                  Horizon II
                 </span>
                 <span class="flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-zinc-300"></span>
@@ -833,7 +823,7 @@
                   onclick={() =>
                     openItemDetails({
                       avatarText: 'H2',
-                      title: 'Fondo Horizon II (Altus)',
+                      title: 'Fondo Horizon II',
                       subtitle: 'Private Equity · Vintage 2026',
                       progressLabel: 'AUM Objetivo alcanzado',
                       progressValueText: '$14.85M de $20M',
@@ -1113,7 +1103,7 @@
         <div class="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs space-y-1">
           <div class="flex items-center gap-1.5 font-semibold text-[11px]">
             <span class="w-1.5 h-1.5 rounded-full bg-zinc-800"></span>
-            <span>{lang === 'en' ? 'Law 21.719 APDP & WORM Ledger' : 'Ley 21.719 APDP & Sellado WORM'}</span>
+            <span>{lang === 'en' ? 'Law 21.719 APDP Audit Ledger' : 'Ley 21.719 APDP & Log de Auditoría'}</span>
           </div>
           <p class="text-[10px] text-zinc-600 leading-normal">
             {lang === 'en'
@@ -1250,7 +1240,7 @@
     isOpen={sheetOpen}
     avatarText={sheetData?.avatarText || 'H2'}
     title={sheetData?.title || 'Fondo Horizon II'}
-    subtitle={sheetData?.subtitle || 'Altus Capital'}
+    subtitle={sheetData?.subtitle || 'Fondos'}
     progressLabel={sheetData?.progressLabel || 'Avance de inversión'}
     progressValueText={sheetData?.progressValueText || '74%'}
     progressPct={sheetData?.progressPct || 74}
