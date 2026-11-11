@@ -657,13 +657,10 @@
   class="rv-sans flex flex-col h-full w-full bg-[#EFEFEF] text-[#1A1D21] relative overflow-hidden select-none"
   data-testid="zea-edge-screen"
 >
-  <!-- Minimalist Header (Homologated with Funds Agent) -->
+  <!-- Minimalist Header (Homologated with Funds Agent, pure typographic logo) -->
   <header class="px-4 py-2.5 bg-[#F6F7F8] border-b border-[#DCDFE4] flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded-[4px] bg-[#0696D7] text-white flex items-center justify-center font-semibold text-[12px] leading-none shrink-0">
-        A
-      </div>
-      <h2 class="text-[14.5px] font-semibold text-[#111827] leading-none tracking-[-0.01em]">Allisbox</h2>
+    <div class="flex items-center">
+      <h2 class="text-[13.5px] font-bold tracking-[0.15em] uppercase text-[#111827] leading-none select-none font-sans">Allisbox</h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="industrial" variant="light" />
   </header>
