@@ -294,8 +294,8 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Allisbox',
-          label: 'Multiagent System for\nArchitecture, Engineering & Construction',
-          desc: 'Trazabilidad de faenas e inspección 100% offline'
+          label: 'Infraestructura & Operaciones Industriales',
+          desc: 'Cálculo técnico, control de faenas y mantención de activos\npara minería, acuicultura y obras civiles complejas'
         },
         sport: {
           title: 'Gus',
@@ -448,8 +448,8 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Allisbox',
-          label: 'Multiagent System for\nArchitecture, Engineering & Construction',
-          desc: 'Field traceability & 100% offline inspections'
+          label: 'Infrastructure & Industrial Operations',
+          desc: 'Technical calculation, field operations & asset maintenance\nfor mining, aquaculture & complex civil works'
         },
         sport: {
           title: 'Gus',
