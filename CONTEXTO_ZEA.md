@@ -9,7 +9,7 @@
 ## 1. Identidad, Filosofía y Posicionamiento de ZEA
 
 ### Qué es ZEA
-ZEA es un **estudio de tecnología y productos** (*Technology & Product Studio*). No es una agencia digital tradicional de diseño web ni una consultora corporativa. Diseña, investiga y construye **productos propios de software** para industrias complejas del mundo real.
+ZEA es un **laboratorio de tecnología y productos** (*Technology & Product Lab*). No es una agencia digital tradicional de diseño web ni una consultora corporativa. Diseña, investiga y construye **productos propios de software** para industrias complejas del mundo real.
 
 ### El origen del nombre
 - **ZEA** proviene de **Odisea**: el espíritu de emprender una travesía técnica, explorar terrenos difíciles donde no hay manuales y construir tecnología propietaria que funcione donde las cosas no pueden fallar.
@@ -62,7 +62,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 ### Bloque Hero (`src/routes/+page.svelte`)
 - Bloque del manifiesto con línea izquierda punteada:
   1. Logo vectorial `ZEA`.
-  2. Subtítulo: `Estudio de tecnología y productos.` / `Technology & product studio.`
+  2. Subtítulo: `Laboratorio de tecnología y productos.` / `Technology & product lab.`
   3. Declaración de principios actual:
      - **ES:** *"Invertimos en explorar, para construir la tecnología que navega operaciones complejas y sistemas del mundo real."*
      - **ENG:** *"We invest in exploring, to build the technology that navigates complex operations and real-world systems."*

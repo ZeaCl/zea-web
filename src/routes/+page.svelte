@@ -55,7 +55,7 @@
           <div class="border-l border-dotted border-white/35 pl-4 sm:pl-5 py-0.5 space-y-1.5">
             <ZeaLogo class="h-4 sm:h-4.5 w-auto text-white" />
             <h1 class="font-sans text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-white leading-snug pt-0.5">
-              {lang === 'es' ? 'Estudio de tecnología y productos.' : 'Technology & product studio.'}
+              {lang === 'es' ? 'Laboratorio de tecnología y productos.' : 'Technology & product lab.'}
             </h1>
             <p class="font-sans text-[13.5px] sm:text-[14px] text-zinc-400 font-normal leading-relaxed max-w-lg pt-0.5">
               {lang === 'es'
