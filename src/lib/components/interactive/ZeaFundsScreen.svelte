@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
-  import ZeaLogo from '../atoms/ZeaLogo.svelte';
+  import ZeaIcon from '../atoms/ZeaIcon.svelte';
   import ZeaModeToggle from '../ds/ZeaModeToggle.svelte';
   import ZeaSheet from '../ds/ZeaSheet.svelte';
 
@@ -382,9 +382,9 @@
 >
   <!-- Header -->
   <header class="px-4 py-2.5 bg-[#F6F5F2] border-b border-[#E9E7E2] flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-baseline gap-1.5">
-      <ZeaLogo class="h-3 w-auto text-[#111111]" />
-      <h2 class="hv-serif text-[13.5px] font-normal text-[#111111] leading-none tracking-tight">Funds</h2>
+    <div class="flex items-center gap-1.5">
+      <ZeaIcon class="h-4 w-auto text-[#111111]" />
+      <h2 class="hv-serif text-[15px] font-normal text-[#111111] leading-none tracking-tight">Funds</h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="funds" variant="light" />
   </header>
