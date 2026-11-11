@@ -152,5 +152,37 @@ describe('MobileSimulator component', () => {
     expect(screen.getByTestId('zea-funds-screen')).toBeInTheDocument();
     expect(screen.getByText('ZEA Funds agent')).toBeInTheDocument();
     expect(screen.getByText('Südlich Private Capital')).toBeInTheDocument();
+    expect(document.getElementById('funds-bottom-tabbar')).toBeInTheDocument();
+    expect(screen.getByText('Resumen')).toBeInTheDocument();
+    expect(screen.getByText('Llamados')).toBeInTheDocument();
+    expect(screen.getByText('Portafolio')).toBeInTheDocument();
+    expect(screen.getByText('Aportantes')).toBeInTheDocument();
+  });
+
+  it('debe permitir navegar entre pestañas inferiores en ZeaFundsScreen', async () => {
+    render(MobileSimulator, {
+      props: {
+        lang: 'es',
+        platform: 'ios',
+        activePillar: 'venture'
+      }
+    });
+
+    // Cambiar a pestaña Llamados
+    const llamadosTab = screen.getByText('Llamados');
+    await fireEvent.click(llamadosTab);
+    expect(screen.getByText(/Estado de Llamados · Fondos Activos/)).toBeInTheDocument();
+
+    // Cambiar a pestaña Portafolio
+    const portafolioTab = screen.getByText('Portafolio');
+    await fireEvent.click(portafolioTab);
+    expect(screen.getByText(/Empresas en Portafolio Directo/)).toBeInTheDocument();
+    expect(screen.getByText('Frío Austral SpA')).toBeInTheDocument();
+
+    // Cambiar a pestaña Aportantes
+    const aportantesTab = screen.getByText('Aportantes');
+    await fireEvent.click(aportantesTab);
+    expect(screen.getByPlaceholderText('Buscar aportante o RUT...')).toBeInTheDocument();
+    expect(screen.getByText('Family Office Los Alerces')).toBeInTheDocument();
   });
 });
