@@ -379,27 +379,17 @@
     {#if viewMode === 'chat'}
       <!-- MODE A: CONVERSATIONAL AI CHAT -->
       <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-        <!-- Top Navigation Bar with Mode Switcher on Right -->
-        <div class="px-5 pt-2.5 pb-2 bg-black/90 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between border-b border-[#1C1C22]">
-          <div class="flex items-center gap-2.5">
-            <div class="relative">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FA7343] to-[#FDBA8C] flex items-center justify-center font-bold text-[12px] text-black">
-                Z
-              </div>
-              <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-black"></span>
-            </div>
-            <div>
-              <h2 class="font-semibold text-[13.5px] tracking-tight text-white leading-tight flex items-center gap-1.5">
-                ZEA Coach Agent
-                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded-md bg-[#FA7343]/15 text-[#FA7343] border border-[#FA7343]/30 font-bold">SPORT</span>
-              </h2>
-              <span class="text-[11px] text-zinc-400">En línea · Asistente autónomo</span>
-            </div>
+        <!-- Top Navigation Bar (Homologated with Cooper & Allisbox, pure typographic logo) -->
+        <header class="px-4 py-2.5 bg-black border-b border-[#1C1C22] flex items-center justify-between z-20 shrink-0">
+          <div class="flex items-center">
+            <h2 class="font-bold text-[18px] tracking-tight text-white leading-none select-none">
+              Gus
+            </h2>
           </div>
 
           <!-- Reusable Mode Switcher -->
           <ZeaModeToggle bind:viewMode theme="sport" onToggle={(m) => showToast(m === 'chat' ? 'Modo ZEA Chat AI activado' : 'Modo App clásica activado')} />
-        </div>
+        </header>
 
         <!-- Scrollable Chat Stream (Generative UI Cards inside Message Bubbles) -->
         <div
@@ -542,7 +532,7 @@
         <!-- Glia / Gemini Conversational Bar (Only in Chat Mode) -->
         <ZeaGliaBar
           theme="sport"
-          placeholder="Pregunta a ZEA Agent o pide un cambio..."
+          placeholder={lang === 'en' ? 'Ask Gus or request a change...' : 'Pregunta a Gus o pide un cambio...'}
           chips={['¿Cómo viene Felipe Soto?', 'Aprobar reserva de Matías', '¿Cuántos cupos quedan hoy?']}
           bind:inputText={chatInputText}
           onSendPrompt={handleSendPrompt}
@@ -551,16 +541,17 @@
     {:else}
       <!-- MODE B: APP CLÁSICA NATIVA (EXACT DASHBOARD VIEW) -->
       <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-        <!-- Top Navigation Bar with Mode Switcher on Right -->
-        <div class="px-5 pt-2.5 pb-2 bg-black/90 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between border-b border-[#1C1C22]">
-          <div>
-            <h2 class="font-semibold text-[22px] tracking-tight text-white leading-tight">Resumen</h2>
-            <span class="text-[11px] text-zinc-400 font-mono">Mar 27 oct</span>
+        <!-- Top Navigation Bar (Homologated with Cooper & Allisbox, pure typographic logo) -->
+        <header class="px-4 py-2.5 bg-black border-b border-[#1C1C22] flex items-center justify-between z-20 shrink-0">
+          <div class="flex items-center">
+            <h2 class="font-bold text-[18px] tracking-tight text-white leading-none select-none">
+              Gus
+            </h2>
           </div>
 
           <!-- Reusable Mode Switcher -->
           <ZeaModeToggle bind:viewMode theme="sport" onToggle={(m) => showToast(m === 'chat' ? 'Modo ZEA Chat AI activado' : 'Modo App clásica activado')} />
-        </div>
+        </header>
 
         <!-- Scrollable Pure App Feed -->
         <div
