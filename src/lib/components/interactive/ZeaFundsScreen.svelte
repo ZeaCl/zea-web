@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
+  import ZeaLogo from '../atoms/ZeaLogo.svelte';
   import ZeaModeToggle from '../ds/ZeaModeToggle.svelte';
   import ZeaSheet from '../ds/ZeaSheet.svelte';
 
@@ -381,8 +382,9 @@
 >
   <!-- Header -->
   <header class="px-4 py-2.5 bg-[#F6F5F2] border-b border-[#E9E7E2] flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-center gap-2">
-      <h2 class="hv-serif text-[17px] text-[#111111] leading-none tracking-[-0.01em]">ZEA Funds</h2>
+    <div class="flex items-center gap-1.5">
+      <ZeaLogo class="h-3.5 w-auto text-[#111111]" />
+      <h2 class="hv-serif text-[17px] text-[#111111] leading-none tracking-[-0.01em] translate-y-[1px]">Funds</h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="funds" variant="light" />
   </header>
@@ -413,6 +415,7 @@
                 <div class="space-y-2.5">
                   <!-- Agent reply: editorial plain text, no bubble -->
                   <div class="flex items-start gap-2">
+                    <div class="w-5 h-5 rounded-[4px] bg-[#111111] text-white flex items-center justify-center hv-serif text-[11px] leading-none shrink-0 mt-[1px]">G</div>
                     <p class="text-[12.5px] text-[#2A2A2A] leading-relaxed">
                       {msg.text}
                       <span class="text-[9px] text-[#A0A0A0] ml-1 tabular-nums whitespace-nowrap">{msg.time}</span>
@@ -420,7 +423,7 @@
                   </div>
 
                   {#if msg.briefing}
-                    <div class="space-y-2.5">
+                    <div class="space-y-2.5 pl-7">
                       <!-- AHORA -->
                       <div class="hv-card p-3.5 space-y-2.5">
                         <div class="flex items-center justify-between">
@@ -541,7 +544,7 @@
               <input
                 type="text"
                 bind:value={chatInputText}
-                placeholder={es ? 'Pregunta a ZEA Funds' : 'Ask ZEA Funds'}
+                placeholder={es ? 'Pregunta a Funds Agent' : 'Ask Funds Agent'}
                 class="flex-1 bg-transparent text-[12px] text-[#1A1A1A] placeholder:text-[#A6A6A6] focus:outline-none py-1"
               />
               <button type="submit" aria-label="Enviar prompt" class="w-7 h-7 rounded-md bg-[#111111] text-white hover:bg-[#2A2A2A] flex items-center justify-center cursor-pointer shrink-0">
@@ -559,6 +562,7 @@
             <!-- Recommendation banner -->
             <div class="hv-card px-3 py-2 flex items-center justify-between gap-2">
               <div class="flex items-center gap-2 min-w-0">
+                <span class="w-4 h-4 rounded-[3px] bg-[#111111] text-white flex items-center justify-center hv-serif text-[10px] leading-none shrink-0">G</span>
                 <p class="text-[10.5px] text-[#3A3A3A] truncate">
                   {es ? 'Hay 2 acciones recomendadas para la llamada #4' : 'There are 2 recommended actions for call #4'}
                 </p>
