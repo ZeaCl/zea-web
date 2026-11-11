@@ -366,74 +366,137 @@
 {/snippet}
 
 {#snippet mepViewport()}
-  <!-- Revit 3D / MEP Coordination Viewport with technical sky gradient & P&ID wireframe -->
-  <div class="relative h-[108px] border-b border-[#DCE0E6] overflow-hidden" style="background: linear-gradient(180deg, #E3EEF7 0%, #F3F7FA 62%, #FFFFFF 100%);">
-    <!-- Subtle CAD reference grid -->
-    <svg class="w-full h-full" viewBox="0 0 320 108" fill="none">
-      <defs>
-        <pattern id="rv-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#CBD5E1" stroke-width="0.4" stroke-opacity="0.55" />
-        </pattern>
-      </defs>
-      <rect width="320" height="108" fill="url(#rv-grid)" />
-
-      <!-- Isometric datum axes -->
-      <line x1="12" y1="96" x2="308" y2="96" stroke="#94A3B8" stroke-width="0.6" stroke-dasharray="2 2" />
-
-      <!-- NODE 1: Silo SL-01 (Wireframe Cylinder/Tower) -->
-      <g transform="translate(20, 18)">
-        <rect x="0" y="8" width="44" height="56" fill="#FFFFFF" fill-opacity="0.88" stroke="#334155" stroke-width="1.1" />
-        <polygon points="0,8 22,0 44,8" fill="#E2E8F0" stroke="#334155" stroke-width="1.1" />
-        <line x1="6" y1="24" x2="38" y2="24" stroke="#CBD5E1" stroke-width="0.7" />
-        <line x1="6" y1="40" x2="38" y2="40" stroke="#CBD5E1" stroke-width="0.7" />
-        <!-- Level fill bar -->
-        <rect x="4" y="26" width="5" height="34" fill="#D97706" fill-opacity="0.75" />
-        <text x="24" y="21" text-anchor="middle" fill="#1E293B" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">SL-01</text>
-        <text x="24" y="35" text-anchor="middle" fill="#D97706" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">170°C</text>
-        <text x="24" y="52" text-anchor="middle" fill="#475569" font-size="7" font-family="Geist Mono, monospace">145 t</text>
+  <!-- Revit 3D Axonometric Cutaway Viewport in Shaded Greys (Hidden Line / Shaded mode) -->
+  <div
+    class="relative h-[138px] border-b border-[#DCE0E6] overflow-hidden"
+    style="background: linear-gradient(180deg, #D5D9DF 0%, #E6E9ED 52%, #F4F5F7 100%);"
+  >
+    <svg class="w-full h-full" viewBox="0 0 320 138" fill="none">
+      <!-- Isometric Structural Grid Lines (Base Datum Plane) -->
+      <g stroke="#9CA3AF" stroke-width="0.55" stroke-dasharray="2.5 2">
+        <!-- Axis family 1 (down-right) -->
+        <line x1="48" y1="74" x2="188" y2="134" />
+        <line x1="84" y1="58" x2="224" y2="118" />
+        <line x1="120" y1="42" x2="260" y2="102" />
+        <!-- Axis family 2 (up-right) -->
+        <line x1="52" y1="124" x2="196" y2="58" />
+        <line x1="92" y1="134" x2="236" y2="68" />
+        <line x1="136" y1="136" x2="274" y2="74" />
       </g>
 
-      <!-- MEP Pipe 1: Thermal Binder Line (Orange/Amber) -->
-      <path d="M 64 46 L 116 46" stroke="#D97706" stroke-width="2" />
-      <polygon points="114,43.5 119,46 114,48.5" fill="#D97706" />
-      <text x="90" y="40" text-anchor="middle" fill="#B45309" font-size="6.8" font-family="Geist Mono, monospace">AC-20</text>
-
-      <!-- MEP Pipe 2: Moisture / Water Line from top (Cyan Blue) -->
-      <path d="M 152 6 L 152 24" stroke="#0284C7" stroke-width="1.8" />
-      <polygon points="149.5,22 152,27 154.5,22" fill="#0284C7" />
-      <rect x="115" y="2" width="74" height="12" rx="1.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="0.8" />
-      <text x="152" y="10.5" text-anchor="middle" fill="#0369A1" font-size="6.8" font-family="Geist Mono, monospace" font-weight="600">H2O: -18.0 L</text>
-
-      <!-- NODE 2: Pugmill Mixer / Batch #114 -->
-      <g transform="translate(120, 27)">
-        <rect x="0" y="0" width="64" height="44" fill="#FFFFFF" fill-opacity="0.92" stroke="#1E293B" stroke-width="1.2" />
-        <line x1="0" y1="13" x2="64" y2="13" stroke="#DCE0E6" stroke-width="0.8" />
-        <text x="32" y="9.5" text-anchor="middle" fill="#0F172A" font-size="7.2" font-family="Geist Mono, monospace" font-weight="600">LOTE #114</text>
-        <!-- Internal mixer schematic blades -->
-        <circle cx="20" cy="28" r="7" stroke="#64748B" stroke-width="0.9" fill="#F8FAFC" />
-        <circle cx="44" cy="28" r="7" stroke="#64748B" stroke-width="0.9" fill="#F8FAFC" />
-        <line x1="15" y1="28" x2="25" y2="28" stroke="#0696D7" stroke-width="1.1" />
-        <line x1="39" y1="28" x2="49" y2="28" stroke="#0696D7" stroke-width="1.1" />
-        <text x="32" y="41" text-anchor="middle" fill="#475569" font-size="6.5" font-family="Geist Mono, monospace">HY-204: 4.8%</text>
+      <!-- Grid Bubbles -->
+      <g font-family="Geist Mono, monospace" font-size="5.5" fill="#4B5563">
+        <circle cx="44" cy="72" r="4.5" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="0.6" />
+        <text x="44" y="74" text-anchor="middle">A</text>
+        <circle cx="80" cy="56" r="4.5" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="0.6" />
+        <text x="80" y="58" text-anchor="middle">B</text>
+        <circle cx="116" cy="40" r="4.5" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="0.6" />
+        <text x="116" y="42" text-anchor="middle">C</text>
       </g>
 
-      <!-- MEP Pipe 3: Discharge Line to Truck (Violet / Slate) -->
-      <path d="M 184 49 L 232 49" stroke="#7C3AED" stroke-width="2" />
-      <polygon points="230,46.5 235,49 230,51.5" fill="#7C3AED" />
-      <text x="208" y="43" text-anchor="middle" fill="#6D28D9" font-size="6.8" font-family="Geist Mono, monospace">28.0 t</text>
+      <!-- =============================================================== -->
+      <!-- ISOMETRIC 3D BUILDING / PLANT STRUCTURE (SHADED GREYS)          -->
+      <!-- =============================================================== -->
 
-      <!-- NODE 3: Dispatch Unit MX-42 -->
-      <g transform="translate(236, 26)">
-        <rect x="0" y="6" width="64" height="38" fill="#FFFFFF" fill-opacity="0.92" stroke="#334155" stroke-width="1.1" />
-        <rect x="0" y="6" width="64" height="11" fill="#F1F5F9" stroke="#334155" stroke-width="0.8" />
-        <text x="32" y="14" text-anchor="middle" fill="#0F172A" font-size="7.2" font-family="Geist Mono, monospace" font-weight="600">MX-42</text>
-        <text x="32" y="28" text-anchor="middle" fill="#15803D" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">165.4 °C</text>
-        <text x="32" y="39" text-anchor="middle" fill="#64748B" font-size="6.5" font-family="Geist Mono, monospace">GE-88412</text>
+      <!-- Ground Cast Shadow -->
+      <polygon points="78,96 164,132 256,90 170,54" fill="#B8BEC7" fill-opacity="0.45" />
+
+      <!-- LOWER PODIUM SLAB (Level 00) -->
+      <!-- Top surface -->
+      <polygon points="78,88 164,124 248,84 162,48" fill="#F3F4F6" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <!-- Left slab thickness -->
+      <polygon points="78,88 164,124 164,129 78,93" fill="#CBD5E1" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <!-- Right slab thickness -->
+      <polygon points="164,124 248,84 248,89 164,129" fill="#64748B" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+
+      <!-- CUTAWAY BASEMENT / LOWER ROOM WALLS (Left wing, section-cut poche) -->
+      <!-- Interior dark cavity floor -->
+      <polygon points="86,86 138,108 176,90 124,68" fill="#475569" stroke="#1F2937" stroke-width="0.7" />
+      <!-- Back-left shear wall (inner shaded face) -->
+      <polygon points="86,62 124,44 124,68 86,86" fill="#94A3B8" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <!-- Front-left exterior wall -->
+      <polygon points="86,62 138,84 138,108 86,86" fill="#E2E8F0" stroke="#1F2937" stroke-width="0.9" stroke-linejoin="round" />
+      <!-- Interior partition wall 1 -->
+      <polygon points="112,73 150,55 150,79 112,97" fill="#64748B" stroke="#1F2937" stroke-width="0.8" stroke-linejoin="round" />
+      <!-- Isometric stepped stairs in front bay -->
+      <g fill="#CBD5E1" stroke="#1F2937" stroke-width="0.65">
+        <polygon points="94,84 106,89 112,86 100,81" />
+        <polygon points="97,80 109,85 115,82 103,77" />
+        <polygon points="100,76 112,81 118,78 106,73" />
+        <polygon points="103,72 115,77 121,74 109,69" />
+      </g>
+      <!-- Black section-cut poche on top of cut walls (Revit signature detail) -->
+      <polygon points="86,62 138,84 141,82.5 91,61.5 124,46 122,44" fill="#111827" />
+      <polygon points="112,73 150,55 152,56 114,74" fill="#111827" />
+
+      <!-- CANTILEVERED MID SLABS (Right wing, multi-story structural bays) -->
+      <!-- Columns between Level 00 and Level 01 -->
+      <line x1="196" y1="81" x2="196" y2="103" stroke="#334155" stroke-width="2" />
+      <line x1="222" y1="69" x2="222" y2="91" stroke="#334155" stroke-width="2" />
+      <line x1="166" y1="95" x2="166" y2="117" stroke="#334155" stroke-width="2" />
+
+      <!-- Level 01 Floor Slab -->
+      <polygon points="134,68 186,90 242,63 190,41" fill="#F8FAFC" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <polygon points="134,68 186,90 186,94 134,72" fill="#CBD5E1" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <polygon points="186,90 242,63 242,67 186,94" fill="#64748B" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+
+      <!-- Columns between Level 01 and Level 02 -->
+      <line x1="196" y1="59" x2="196" y2="81" stroke="#334155" stroke-width="2" />
+      <line x1="222" y1="47" x2="222" y2="69" stroke="#334155" stroke-width="2" />
+
+      <!-- Level 02 Cantilevered Slab -->
+      <polygon points="142,46 192,67 242,43 192,22" fill="#FFFFFF" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <polygon points="142,46 192,67 192,71 142,50" fill="#CBD5E1" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+      <polygon points="192,67 242,43 242,47 192,71" fill="#64748B" stroke="#1F2937" stroke-width="0.85" stroke-linejoin="round" />
+
+      <!-- CENTRAL STRUCTURAL CORE / SILO TOWER (Rising through the slabs) -->
+      <!-- Left sunlit core wall -->
+      <polygon points="136,24 168,38 168,84 136,70" fill="#E5E7EB" stroke="#1F2937" stroke-width="0.9" stroke-linejoin="round" />
+      <!-- Right shaded core wall -->
+      <polygon points="168,38 196,25 196,71 168,84" fill="#9CA3AF" stroke="#1F2937" stroke-width="0.9" stroke-linejoin="round" />
+      <!-- Core inner shaft cavity (cutaway top) -->
+      <polygon points="136,24 168,38 196,25 164,11" fill="#374151" stroke="#1F2937" stroke-width="0.9" stroke-linejoin="round" />
+      <!-- Core internal divider wall -->
+      <polygon points="150,18 182,31 182,38 150,25" fill="#6B7280" stroke="#1F2937" stroke-width="0.75" />
+      <!-- Core thick wall rim (white/light grey top cap) -->
+      <polygon points="136,24 168,38 196,25 164,11 160,13 190,25.5 168,35.5 141,23.5" fill="#F9FAFB" stroke="#1F2937" stroke-width="0.7" />
+
+      <!-- Surface panel subdivisions on core wall -->
+      <line x1="136" y1="40" x2="168" y2="54" stroke="#9CA3AF" stroke-width="0.6" />
+      <line x1="136" y1="55" x2="168" y2="69" stroke="#9CA3AF" stroke-width="0.6" />
+      <line x1="168" y1="54" x2="196" y2="41" stroke="#6B7280" stroke-width="0.6" />
+      <line x1="168" y1="69" x2="196" y2="56" stroke="#6B7280" stroke-width="0.6" />
+
+      <!-- MONOCHROME CAD LEADER ANNOTATIONS -->
+      <g font-family="Geist Mono, monospace" font-size="6.5" fill="#1F2937">
+        <!-- Leader 1: Core / Silo -->
+        <polyline points="152,29 122,17 72,17" fill="none" stroke="#374151" stroke-width="0.65" />
+        <circle cx="152" cy="29" r="1.5" fill="#111827" />
+        <rect x="14" y="9" width="58" height="13" rx="1" fill="#FFFFFF" fill-opacity="0.9" stroke="#9CA3AF" stroke-width="0.65" />
+        <text x="43" y="17.5" text-anchor="middle" font-weight="600">SL-01 · 170°C</text>
+
+        <!-- Leader 2: Batch Mixer Core -->
+        <polyline points="182,54 232,32 252,32" fill="none" stroke="#374151" stroke-width="0.65" />
+        <circle cx="182" cy="54" r="1.5" fill="#111827" />
+        <rect x="252" y="24" width="56" height="13" rx="1" fill="#FFFFFF" fill-opacity="0.9" stroke="#9CA3AF" stroke-width="0.65" />
+        <text x="280" y="32.5" text-anchor="middle" font-weight="600">LOTE #114</text>
+
+        <!-- Leader 3: Dispatch Bay -->
+        <polyline points="198,92 236,108 252,108" fill="none" stroke="#374151" stroke-width="0.65" />
+        <circle cx="198" cy="92" r="1.5" fill="#111827" />
+        <rect x="252" y="100" width="56" height="13" rx="1" fill="#FFFFFF" fill-opacity="0.9" stroke="#9CA3AF" stroke-width="0.65" />
+        <text x="280" y="108.5" text-anchor="middle" font-weight="600">MX-42 · 28t</text>
       </g>
 
-      <!-- Dimension callout line at bottom -->
-      <text x="16" y="104" fill="#64748B" font-size="6.5" font-family="Geist Mono, monospace">REF: PLANTA-CENTRAL-MEP-2026</text>
-      <text x="304" y="104" text-anchor="end" fill="#0284C7" font-size="6.5" font-family="Geist Mono, monospace">TOLERANCIA ±2.5°C</text>
+      <!-- Revit 3D ViewCube (Top-Right Corner) -->
+      <g transform="translate(284, 4)">
+        <polygon points="12,1 22,5.5 12,10 2,5.5" fill="#F9FAFC" stroke="#4B5563" stroke-width="0.65" />
+        <polygon points="2,5.5 12,10 12,20 2,15.5" fill="#D1D5DB" stroke="#4B5563" stroke-width="0.65" />
+        <polygon points="12,10 22,5.5 22,15.5 12,20" fill="#9CA3AF" stroke="#4B5563" stroke-width="0.65" />
+      </g>
+
+      <!-- Bottom Viewport Status Bar Metadata -->
+      <text x="10" y="132" fill="#4B5563" font-size="6.2" font-family="Geist Mono, monospace">VISUAL STYLE: SHADED · HIDDEN LINE</text>
     </svg>
   </div>
 {/snippet}
