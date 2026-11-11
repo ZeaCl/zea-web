@@ -184,4 +184,25 @@ describe('MobileSimulator component', () => {
     expect(screen.getByPlaceholderText('Buscar aportante o RUT...')).toBeInTheDocument();
     expect(screen.getByText('Alpha Horizon Family Office')).toBeInTheDocument();
   });
+
+  it('debe renderizar la pantalla nativa estilo Revit de ZeaEdgeScreen cuando activePillar es edge', async () => {
+    render(MobileSimulator, {
+      props: {
+        lang: 'es',
+        platform: 'ios',
+        activePillar: 'edge'
+      }
+    });
+
+    expect(screen.getByTestId('zea-edge-screen')).toBeInTheDocument();
+    expect(screen.getAllByText('Industrial Agent').length).toBeGreaterThanOrEqual(1);
+    expect(document.getElementById('bottom-tabbar')).toBeInTheDocument();
+    expect(screen.getByText(/3D - Coordination Mech/)).toBeInTheDocument();
+
+    // Cambiar a pestaña Seguimiento
+    const seguimientoTab = screen.getByText('Seguimiento');
+    await fireEvent.click(seguimientoTab);
+    expect(screen.getByText(/Schedule · Balance de masa del turno/)).toBeInTheDocument();
+    expect(screen.getByText(/Unidades de transporte en ruta/)).toBeInTheDocument();
+  });
 });

@@ -1,17 +1,8 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { tick } from 'svelte';
-  import { dragScroll } from '../ds/dragScroll';
   import ZeaModeToggle from '../ds/ZeaModeToggle.svelte';
-  import ZeaFocusCard from '../ds/ZeaFocusCard.svelte';
-  import ZeaConcentricRings from '../ds/ZeaConcentricRings.svelte';
-  import ZeaTimeline from '../ds/ZeaTimeline.svelte';
-  import ZeaApprovalCard from '../ds/ZeaApprovalCard.svelte';
-  import ZeaMetricTrend from '../ds/ZeaMetricTrend.svelte';
-  import ZeaGliaBar from '../ds/ZeaGliaBar.svelte';
   import ZeaSheet from '../ds/ZeaSheet.svelte';
-  import ZeaChecklistCard, { type ZeaChecklistItem } from '../ds/ZeaChecklistCard.svelte';
-  import ZeaRetinaCaptureCard, { type ZeaCaptureFeedItem } from '../ds/ZeaRetinaCaptureCard.svelte';
 
   let {
     lang = 'es',
@@ -21,342 +12,292 @@
     platform?: 'ios' | 'android';
   } = $props();
 
-  // Bottom Navigation Tabs: Resumen, Seguimiento, Sensores, Perfil (Jefe de Planta)
+  const es = $derived(lang !== 'en');
+
+  // Bottom Navigation Tabs: Resumen, Seguimiento, Sensores, Perfil
   let activeTab = $state<'summary' | 'tracking' | 'sensors' | 'profile'>('summary');
+  // Default mode is Chat
   let viewMode = $state<'chat' | 'app'>('chat');
 
-  // Interactive toast state
   let toastMessage = $state<string | null>(null);
   let toastTimeout: any = null;
-  let dischargeDone = $state(false);
-  let approvalDone = $state(false);
-  let approvalRejected = $state(false);
-  let batchApprovalDone = $state(false);
-  let batchApprovalRejected = $state(false);
-  let rcaApprovalDone = $state(false);
-  let rcaApprovalRejected = $state(false);
-  let roadApprovalDone = $state(false);
-  let roadApprovalRejected = $state(false);
+  let batchDispatched = $state(false);
 
-  // Sheet Modal state
   let sheetOpen = $state(false);
   let sheetData = $state<any>(null);
-
-  // Focus Card priority / Checklist expansion state
-  let checklistExpanded = $state(false);
-  let urgentBatchCompleted = $state(false);
 
   function showToast(msg: string) {
     if (toastTimeout) clearTimeout(toastTimeout);
     toastMessage = msg;
-    toastTimeout = setTimeout(() => {
-      toastMessage = null;
-    }, 2400);
+    toastTimeout = setTimeout(() => (toastMessage = null), 2400);
   }
 
-  function openTruckDetails(truck: any) {
-    sheetData = truck;
+  function openUnitSheet(unit: any) {
+    sheetData = unit;
     sheetOpen = true;
   }
 
-  function closeSheet() {
-    sheetOpen = false;
+  function applyAndDispatch() {
+    batchDispatched = true;
+    showToast(
+      es
+        ? 'Compensación (-18 L) aplicada · Lote #114 en carga'
+        : 'Compensation (-18 L) applied · Batch #114 loading'
+    );
   }
 
   // =========================================================================
-  // 1. PARTE DIARIO CHECKLIST DATA (Planta & Despacho)
+  // 1. REVIT BIM / MEP DATA MODELS (Fictional & Neutral)
   // =========================================================================
-  let parteDiarioItems = $state<ZeaChecklistItem[]>([
+  interface PropertyRow {
+    id: string;
+    group: 'equipment' | 'dispatch';
+    parameter: string;
+    value: string;
+    unit: string;
+    verified: boolean;
+  }
+
+  let dailyProperties = $state<PropertyRow[]>([
     {
       id: 'pd-1',
-      label: 'Lectura Horómetros iniciales de planta (Secador & Mezclador)',
-      checked: true,
-      requiresInput: true,
-      inputValue: '4,812.5 hrs',
-      inputPlaceholder: 'Ej: 4812.5 hrs',
-      presetValues: ['4,812.5 hrs', '4,850.0 hrs']
+      group: 'equipment',
+      parameter: 'Horómetro secador y mezclador',
+      value: '4,812.5',
+      unit: 'h',
+      verified: true
     },
     {
       id: 'pd-2',
-      label: 'Medición de Estanques de Combustible (GLP / Petróleo / R20)',
-      checked: true,
-      requiresInput: true,
-      inputValue: '84% (145 t)',
-      inputPlaceholder: 'Ej: 84% o 145 t',
-      presetValues: ['84% (145 t)', '90% (160 t)']
+      group: 'equipment',
+      parameter: 'Estanque GLP / combustible',
+      value: '145.0 / 200',
+      unit: 't (84%)',
+      verified: true
     },
     {
       id: 'pd-3',
-      label: 'Dosificación de Áridos y Filler por Fórmula (Lote #114)',
-      checked: false,
-      requiresInput: true,
-      inputValue: '',
-      inputPlaceholder: 'Ingresar compensación (ej: -18 L)',
-      presetValues: ['-18 L agua (28t)', 'Fórmula standard']
+      group: 'dispatch',
+      parameter: 'Compensación humedad Lote #114',
+      value: '-18.0',
+      unit: 'L H2O',
+      verified: false
     },
     {
       id: 'pd-4',
-      label: 'Despacho & Guías Mixer #42 / Tolva #08',
-      checked: false,
-      requiresInput: true,
-      inputValue: '',
-      inputPlaceholder: 'Número de guía (ej: Guía #88412)',
-      presetValues: ['Guía #88412', 'Guía #88413']
+      group: 'dispatch',
+      parameter: 'Guía electrónica unidad MX-42',
+      value: 'GE-88412',
+      unit: '28.0 t',
+      verified: false
     },
     {
       id: 'pd-5',
-      label: 'Cierre de Producción del Día',
-      checked: false,
-      requiresInput: true,
-      inputValue: '',
-      inputPlaceholder: 'Tonelaje total (ej: 420 t)',
-      presetValues: ['420 t en norma', '450 t']
+      group: 'dispatch',
+      parameter: 'Cierre de suministro diario',
+      value: '420.0',
+      unit: 't norma',
+      verified: false
     }
   ]);
 
-  function toggleParteDiarioItem(id: string) {
-    parteDiarioItems = parteDiarioItems.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
+  function togglePropertyRow(id: string) {
+    dailyProperties = dailyProperties.map((r) =>
+      r.id === id ? { ...r, verified: !r.verified } : r
     );
-    showToast('Parte Diario actualizado');
+    const target = dailyProperties.find((r) => r.id === id);
+    if (target) {
+      showToast(
+        target.verified
+          ? `${target.parameter}: ${es ? 'validado' : 'verified'}`
+          : `${target.parameter}: ${es ? 'pendiente' : 'pending'}`
+      );
+    }
   }
 
-  function handleParteDiarioInput(id: string, value: string) {
-    parteDiarioItems = parteDiarioItems.map((item) =>
-      item.id === id ? { ...item, checked: true, inputValue: value } : item
-    );
-    showToast(`Dato validado: ${value}`);
-  }
+  // S-Curve hairline density bars (Cumulative monthly tonnage toward 12,000 t)
+  const sCurveLines = Array.from({ length: 60 }, (_, i) => {
+    const t = i / 59;
+    const v = 8 + 87 / (1 + Math.exp(-7.5 * (t - 0.48))) + Math.sin(i * 1.4) * 1.5;
+    return Math.max(6, Math.min(100, v));
+  });
 
-  function compensateAndRelease() {
-    if (urgentBatchCompleted) return;
-    urgentBatchCompleted = true;
-    batchApprovalDone = true;
-    parteDiarioItems[2].checked = true;
-    parteDiarioItems[2].inputValue = '-18 L agua (28t)';
-    parteDiarioItems[3].checked = true;
-    parteDiarioItems[3].inputValue = 'Guía #88412';
-    showToast('Compensación de -18L aplicada y Lote #114 liberado');
+  // Programmed baseline path for S-Curve
+  const plannedPath = Array.from({ length: 24 }, (_, i) => {
+    const t = i / 23;
+    const y = 100 - (10 + 82 / (1 + Math.exp(-6.5 * (t - 0.5))));
+    return `${i === 0 ? 'M' : 'L'}${(t * 100).toFixed(2)},${y.toFixed(2)}`;
+  }).join(' ');
 
-    const now = '08:02';
-    checklistChat = [
-      ...checklistChat,
-      {
-        id: `usr-comp-${Date.now()}`,
-        sender: 'user',
-        time: now,
-        text: 'Compensar agua y liberar Lote #114'
-      }
-    ];
+  // Weekly production grouped bars (Dispatched vs Scheduled)
+  const weeklyProduction = $derived([
+    { day: es ? 'Lun' : 'Mon', actual: 78, planned: 80, attention: false },
+    { day: es ? 'Mar' : 'Tue', actual: 84, planned: 80, attention: false },
+    { day: es ? 'Mié' : 'Wed', actual: 72, planned: 80, attention: false },
+    { day: es ? 'Jue' : 'Thu', actual: 88, planned: 82, attention: false },
+    { day: es ? 'Vie' : 'Fri', actual: 64, planned: 80, attention: true },
+    { day: es ? 'Hoy' : 'Today', actual: 84, planned: 80, attention: false }
+  ]);
 
-    setTimeout(() => {
-      checklistChat = [
-        ...checklistChat,
-        {
-          id: `agt-comp-${Date.now()}`,
-          sender: 'agent',
-          time: now,
-          text: 'Compensación de agua aplicada (-18 L). Lote #114 cargado en Mixer #42. Tambor a 165°C en ruta por Autopista Central. Parte Diario al 100% con firma digital.'
-        }
-      ];
-      scrollToBottom(summaryScrollEl);
-    }, 250);
-  }
-
-  // =========================================================================
-  // 2. SEGUIMIENTO DATA (Workflows, Cola O(1), SLA & Anillos)
-  // =========================================================================
-  const timelineEntries = $derived([
+  // Project Browser Tree: Silos & Fleet Units
+  const plantSilos = $derived([
     {
-      id: '1',
-      time: '07:30',
-      title: 'Parte Diario de Planta',
-      subtitle: checklistExpanded
-        ? 'Ocultar checklist del turno'
-        : `${parteDiarioItems.filter((i) => i.checked).length} de ${parteDiarioItems.length} verificaciones`,
-      actionLabel: checklistExpanded ? 'Ocultar' : 'Ver parte diario',
-      status: 'active' as const,
-      onClick: () => {
-        checklistExpanded = !checklistExpanded;
-        showToast(checklistExpanded ? 'Parte Diario desplegado' : 'Parte Diario minimizado');
-      }
+      code: 'SL-01',
+      name: es ? 'Silo ligante AC-20' : 'Binder silo AC-20',
+      level: '145.0 / 200 t',
+      temp: '170.2 °C',
+      pct: 73,
+      ok: true
     },
     {
-      id: '2',
-      time: '08:42',
-      title: 'Workflow Despacho · Mixer #42 (Rodrigo Baeza)',
-      subtitle: 'Flota · Asfalto AC-20 a 165°C · Frente Autopista',
-      status: 'active' as const,
-      onClick: () => openTruckDetails(fleetList[0])
+      code: 'SL-02',
+      name: es ? 'Silo filler mineral' : 'Mineral filler silo',
+      level: '82.0 / 100 t',
+      temp: '42.0 °C',
+      pct: 82,
+      ok: true
     },
     {
-      id: '3',
-      time: '11:30',
-      title: 'Validación Cita Técnica & Orden Silo 2',
-      subtitle: 'Planta · Esperando firma de Jefe de Planta',
-      status: 'available' as const,
-      actionLabel: 'Autorizar',
-      onAction: () => showToast('Orden de Silo 2 autorizada')
-    },
-    {
-      id: '4',
-      time: '13:00',
-      title: 'Cierre Guía DTE & Auditoría Terreno',
-      subtitle: 'Flota · Despacho con guía electrónica firmada',
-      status: 'scheduled' as const
+      code: 'AG-03',
+      name: es ? 'Tolva árido 3/4"' : 'Aggregate hopper 3/4"',
+      level: '64.0 / 120 t',
+      temp: 'Humedad 4.8%',
+      pct: 53,
+      ok: false
     }
   ]);
 
-  const industrialRings = [
-    { label: 'Tonelaje Despachado', value: '420 / 500 t', delta: '+35 t vs ayer', pct: 420 / 500, color: '#FFCD00' },
-    { label: 'Checklists Terreno', value: '34 / 35 sitios', delta: '97% SHA-256 OK', pct: 34 / 35, color: '#F59E0B' },
-    { label: 'Compliance & Norma', value: '98.6%', delta: 'Citas verificadas', pct: 0.986, color: '#38BDF8' }
-  ];
-
-  // =========================================================================
-  // 3. SENSORES DATA (Capturas QR/OCR/Visión + Telemetría IoT Planta/Flota)
-  // =========================================================================
-  const sensorCaptures: ZeaCaptureFeedItem[] = [
+  const fleetUnits = $derived([
     {
-      id: 'cap-1',
-      source: 'ESCANEO QR',
-      domain: 'Flota',
-      title: 'Escaneo QR Cabina · Mixer #42',
-      detail: 'Patente y Guía #88412 vinculadas al Parte Diario sin tipeo',
-      metric: '99.9% Match',
-      status: 'ok'
+      code: 'MX-42',
+      operator: 'R. Valdivia',
+      mix: 'AC-20 · Lote #114',
+      route: es ? 'Tramo Sur Km 14' : 'South Sector Km 14',
+      loadTon: 28.0,
+      maxTon: 30,
+      temp: '165.4 °C',
+      status: es ? 'En carga' : 'Loading',
+      eta: '14 min',
+      ok: true
     },
     {
-      id: 'cap-2',
-      source: 'SENSOR IOT',
-      domain: 'Planta',
-      title: 'Telemetría Silo #1 & Tambor Secador',
-      detail: 'Asfalto AC-20 en norma · Humedad áridos Tolva 3 (+1.4%)',
-      metric: '165.2°C',
-      status: 'warning'
+      code: 'MX-19',
+      operator: 'M. Contreras',
+      mix: 'H-30 Estructural',
+      route: es ? 'Viaducto Central' : 'Central Viaduct',
+      loadTon: 27.5,
+      maxTon: 30,
+      temp: '162.8 °C',
+      status: es ? 'En tránsito' : 'In transit',
+      eta: '22 min',
+      ok: true
     },
     {
-      id: 'cap-3',
-      source: 'LECTURA OCR',
-      domain: 'Planta',
-      title: 'Lectura Óptica Horómetro & Flujómetro GLP',
-      detail: 'Captura directa desde tablero de planta · Cero error humano',
-      metric: '4,812.5 hrs',
-      status: 'ok'
+      code: 'TL-08',
+      operator: 'P. Arriagada',
+      mix: 'Base Granular CBR',
+      route: es ? 'Acceso Norte' : 'North Access',
+      loadTon: 29.0,
+      maxTon: 30,
+      temp: '158.1 °C',
+      status: es ? 'Desviación térmica' : 'Thermal drift',
+      eta: '08 min',
+      ok: false
     },
     {
-      id: 'cap-4',
-      source: 'VISIÓN IA',
-      domain: 'Flota',
-      title: 'Evidencia Georreferenciada Frente / Instalación',
-      detail: 'Foto con hash SHA-256 vinculada a requisito RCA / MOP',
-      metric: 'GPS + Hash',
-      status: 'ok'
+      code: 'MX-07',
+      operator: 'C. Morales',
+      mix: 'AC-20 · Lote #113',
+      route: es ? 'Retorno a planta' : 'Returning to plant',
+      loadTon: 0.0,
+      maxTon: 30,
+      temp: '94.0 °C',
+      status: es ? 'Descargado' : 'Unloaded',
+      eta: '05 min',
+      ok: true
     }
-  ];
+  ]);
 
-  const fleetList = [
-    { id: 'm42', code: 'M-42', type: 'Mixer Asfáltico', driver: 'Rodrigo Baeza', mixType: 'Asfalto AC-20', temp: '165°C', status: 'En ruta', eta: '18 min', loadTon: 28, maxTon: 30, plant: 'Planta Maipú', destination: 'Autopista Central Tramo 4', domain: 'Flota' as const },
-    { id: 't08', code: 'T-08', type: 'Tolva Térmica', driver: 'Manuel Soto', mixType: 'SMA-12 Antiruido', temp: '162°C', status: 'Descarga finalizada', eta: 'En obra', loadTon: 32, maxTon: 32, plant: 'Planta Maipú', destination: 'Autopista Central Tramo 2', domain: 'Flota' as const },
-    { id: 'm19', code: 'M-19', type: 'Mixer Pesado', driver: 'Cristián Vega', mixType: 'Binder Gravas-Asfalto', temp: '158°C', status: 'Carga en planta', eta: 'Salida 13:00', loadTon: 26, maxTon: 28, plant: 'Planta Quilicura', destination: 'Av. Américo Vespucio', domain: 'Flota' as const }
-  ];
-
-  const productionBars = [310, 340, 390, 420, 380, 450, 410, 420];
-  const productionLabels = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'Hoy'];
-  const asphaltDistribution = [
-    { label: 'Asfalto AC-20', percentage: 58, color: '#FFCD00' },
-    { label: 'SMA-12 Antiruido', percentage: 42, color: '#71717A' }
-  ];
+  const sensorNodes = $derived([
+    {
+      id: 'TH-101',
+      system: 'MEP · Thermal',
+      location: es ? 'Tambor secador rotatorio' : 'Rotary dryer drum',
+      reading: '170.2 °C',
+      tolerance: '160–175 °C',
+      color: '#D97706',
+      ok: true
+    },
+    {
+      id: 'HY-204',
+      system: 'MEP · Moisture',
+      location: es ? 'Banda pesadora de áridos' : 'Aggregate weigh belt',
+      reading: '4.8 %',
+      tolerance: '< 3.5 %',
+      color: '#0284C7',
+      ok: false
+    },
+    {
+      id: 'FL-309',
+      system: 'MEP · Flow',
+      location: es ? 'Bomba dosificadora ligante' : 'Binder dosing pump',
+      reading: '5.4 %',
+      tolerance: '5.3–5.5 %',
+      color: '#7C3AED',
+      ok: true
+    },
+    {
+      id: 'LD-412',
+      system: 'STR · Load Cell',
+      location: es ? 'Puente báscula despacho' : 'Dispatch weighbridge',
+      reading: '28.02 t',
+      tolerance: '± 0.05 t',
+      color: '#475569',
+      ok: true
+    }
+  ]);
 
   // =========================================================================
-  // CHAT STREAMS PER SECTION
+  // 2. CONVERSATION STREAM
   // =========================================================================
   interface ChatMessage {
     id: string;
     sender: 'user' | 'agent';
     time: string;
     text: string;
-    isPrimarySummary?: boolean;
-    quickCard?: 'mixer42' | 'checklist' | 'tracking' | 'sensors' | 'notifications' | null;
+    briefing?: boolean;
   }
 
-  function scrollToParteDiario() {
-    const el = document.getElementById('parte-diario-task-card');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    showToast('Enfocando Tarea Asignada: Parte Diario');
-  }
+  let chatMessages = $state<ChatMessage[]>([]);
 
-  let checklistChat = $state<ChatMessage[]>([
-    {
-      id: 'chk-msg-0',
-      sender: 'user',
-      time: '08:00',
-      text: '¿Qué tenemos para hoy?'
-    },
-    {
-      id: 'chk-msg-1',
-      sender: 'agent',
-      time: '08:00',
-      text: '¡Buenos días, Carlos! Tienes 4 despachos programados hoy (420 de 500 t completadas). El Mixer #42 va en ruta hacia Autopista Central (165°C) y en la Tolva 3 detectamos +1.4% de humedad para el Lote #114. ¿Compensamos agua automáticamente para liberar la bachada?',
-      isPrimarySummary: true
-    }
-  ]);
-
-  let trackingChat = $state<ChatMessage[]>([
-    {
-      id: 'trk-msg-1',
-      sender: 'user',
-      time: '08:40',
-      text: '¿En qué etapa van los workflows de despacho y cumplimiento hoy?'
-    },
-    {
-      id: 'trk-msg-2',
-      sender: 'agent',
-      time: '08:40',
-      text: '34 de 35 sitios están al día (98.6% en norma) y se han despachado 420 toneladas. Aquí tienes el seguimiento en tiempo real de Planta y Flota:',
-      isPrimarySummary: true
-    }
-  ]);
-
-  let sensorsChat = $state<ChatMessage[]>([
-    {
-      id: 'sen-msg-1',
-      sender: 'user',
-      time: '08:38',
-      text: 'Muéstrame las capturas de visión, QR y sensores IoT del turno.'
-    },
-    {
-      id: 'sen-msg-2',
-      sender: 'agent',
-      time: '08:38',
-      text: 'Las cámaras validaron el QR del Mixer #42 y la lectura óptica del horómetro sin tipeo manual. Silo #1 opera a 170°C nominal:',
-      isPrimarySummary: true
-    }
-  ]);
-
-  let profileChat = $state<ChatMessage[]>([
-    {
-      id: 'prf-msg-1',
-      sender: 'agent',
-      time: '08:00',
-      text: 'Ficha operativa de Jefatura de Planta Maipú activa. Registros de firma y certificaciones al día.'
-    }
-  ]);
+  $effect(() => {
+    chatMessages = [
+      {
+        id: 'e-0',
+        sender: 'user',
+        time: '08:15',
+        text: es ? '¿Qué tenemos para hoy?' : 'What do we have for today?'
+      },
+      {
+        id: 'e-1',
+        sender: 'agent',
+        time: '08:15',
+        text: es
+          ? 'Buenos días. El sensor HY-204 detectó 4.8% de humedad en el árido del Lote #114 antes de cargar la unidad MX-42. A continuación tienes el esquema MEP para ahora, el parte diario de hoy, la semana, el mes y la curva S proyectada.'
+          : 'Good morning. Sensor HY-204 detected 4.8% moisture in Batch #114 aggregate prior to loading unit MX-42. Below is the MEP schematic for now, today’s plant log, this week, this month and the projected S-curve.',
+        briefing: true
+      }
+    ];
+  });
 
   let chatInputText = $state('');
   let isAgentTyping = $state(false);
+  let scrollEl = $state<HTMLDivElement | null>(null);
 
-  let summaryScrollEl = $state<HTMLDivElement | null>(null);
-  let trackingScrollEl = $state<HTMLDivElement | null>(null);
-  let sensorsScrollEl = $state<HTMLDivElement | null>(null);
-  let profileScrollEl = $state<HTMLDivElement | null>(null);
-
-  async function scrollToBottom(el: HTMLDivElement | null) {
+  async function scrollToBottom() {
     await tick();
-    if (el) {
-      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    if (scrollEl && typeof scrollEl.scrollTo === 'function') {
+      scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
     }
   }
 
@@ -364,765 +305,723 @@
     if (!promptText.trim()) return;
     const text = promptText.trim();
     chatInputText = '';
-    const now = '08:45';
     const uid = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-
-    const targetList =
-      activeTab === 'summary'
-        ? checklistChat
-        : activeTab === 'tracking'
-          ? trackingChat
-          : activeTab === 'sensors'
-            ? sensorsChat
-            : profileChat;
-
-    const targetScroll =
-      activeTab === 'summary'
-        ? summaryScrollEl
-        : activeTab === 'tracking'
-          ? trackingScrollEl
-          : activeTab === 'sensors'
-            ? sensorsScrollEl
-            : profileScrollEl;
-
-    targetList.push({
-      id: `usr-${uid}`,
-      sender: 'user',
-      time: now,
-      text
-    });
-    scrollToBottom(targetScroll);
+    chatMessages.push({ id: `u-${uid}`, sender: 'user', time: '08:19', text });
+    scrollToBottom();
 
     isAgentTyping = true;
     setTimeout(() => {
       isAgentTyping = false;
       const lower = text.toLowerCase();
       let reply = '';
-      let quickCard: ChatMessage['quickCard'] = null;
-
-      if (lower.includes('compensar') || lower.includes('liberar') || lower.includes('114')) {
-        urgentBatchCompleted = true;
-        parteDiarioItems[2].checked = true;
-        parteDiarioItems[3].checked = true;
-        reply = 'Compensación de agua aplicada (-18 L). Lote #114 cargado en Mixer #42. Tambor a 165°C en ruta por Autopista Central. Parte Diario al 100% con firma digital.';
-        showToast('Lote #114 liberado');
-      } else if (lower.includes('mixer') || lower.includes('42')) {
-        reply = 'Mixer #42 en ruta por Autopista Central km 14. Sensores térmicos reportan tambor a 165.2°C y QR de guía validado.';
-        quickCard = 'mixer42';
-      } else if (lower.includes('aprobar') || lower.includes('hitl') || lower.includes('firma')) {
-        approvalDone = true;
-        reply = '✓ Compensación térmica del Lote #114 aprobada y firmada digitalmente.';
-        showToast('Aprobación registrada con éxito');
-      } else if (lower.includes('checklist') || lower.includes('parte diario')) {
-        reply = 'Las 80 columnas del Parte Diario y las inspecciones con firma SHA-256 + GPS están sincronizadas en la cola O(1).';
-        quickCard = 'checklist';
+      let briefing = false;
+      if (lower.includes('hoy') || lower.includes('today')) {
+        reply = es
+          ? 'Reporte actualizado de planta en los 5 horizontes operativos.'
+          : 'Updated plant report across all 5 operational horizons.';
+        briefing = true;
+      } else if (lower.includes('silo') || lower.includes('temp') || lower.includes('sensor')) {
+        reply = es
+          ? 'Silo SL-01 opera a 170.2 °C con 145.0 t disponibles. El sensor HY-204 requiere compensación de -18 L de agua en el mezclador.'
+          : 'Silo SL-01 is running at 170.2 °C with 145.0 t available. Sensor HY-204 requires -18 L water compensation in the mixer.';
+      } else if (lower.includes('flota') || lower.includes('mixer') || lower.includes('mx')) {
+        reply = es
+          ? '18 unidades activas en ruta. La unidad MX-42 está en báscula con 28.0 t a 165.4 °C lista para despacho.'
+          : '18 active units on route. Unit MX-42 is on the weighbridge with 28.0 t at 165.4 °C ready for dispatch.';
       } else {
-        reply = `Instrucción procesada: "${text}". Sincronizado con los módulos de Planta y Flota.`;
+        reply = es
+          ? 'Parámetros de planta verificados. Producción acumulada del turno: 420.0 t dentro de norma.'
+          : 'Plant parameters verified. Cumulative shift production: 420.0 t within spec.';
       }
-
-      targetList.push({
-        id: `agt-${uid}`,
-        sender: 'agent',
-        time: now,
-        text: reply,
-        quickCard
-      });
-      scrollToBottom(targetScroll);
-    }, 450);
+      chatMessages.push({ id: `a-${uid}`, sender: 'agent', time: '08:20', text: reply, briefing });
+      scrollToBottom();
+    }, 650);
   }
 </script>
 
-<!-- Outer Screen Container (Flex Column with min-h-0 for proper scroll containment) -->
-<div class="relative flex-1 min-h-0 bg-black flex flex-col justify-between overflow-hidden select-none text-white font-sans text-left" data-testid="zea-edge-screen">
+<!-- ===================================================================== -->
+<!-- REVIT CAD / BIM SNIPPETS                                              -->
+<!-- ===================================================================== -->
 
-  <!-- ========================================================= -->
-  <!-- STICKY TOP HEADER: TITLE + MODE SWITCHER                  -->
-  <!-- ========================================================= -->
-  <div class="px-4 pt-2.5 pb-2 bg-black/95 backdrop-blur-md sticky top-0 z-20 border-b border-[#242114] shrink-0">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="relative">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FFCD00] to-[#FFE066] flex items-center justify-center font-black text-[13px] text-black shadow-md">
-            Z
+{#snippet chevron()}
+  <svg class="w-2.5 h-2.5 text-[#7A7F87]" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M3 4.5l3 3 3-3" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+{/snippet}
+
+{#snippet select(label: string)}
+  <span class="rv-sans inline-flex items-center gap-1 text-[10px] text-[#2D3139] bg-white border border-[#D4D8DF] px-1.5 py-[2px] rounded-[4px]">
+    {label}{@render chevron()}
+  </span>
+{/snippet}
+
+{#snippet panelBar(viewTitle: string, scaleOrMeta: string)}
+  <div class="px-3 py-1.5 bg-[#F3F4F6] border-b border-[#DCE0E6] flex items-center justify-between">
+    <div class="flex items-center gap-1.5 min-w-0">
+      <span class="w-1.5 h-1.5 rounded-[1px] bg-[#0696D7] shrink-0"></span>
+      <span class="rv-sans text-[10px] font-medium text-[#2D3139] truncate">{viewTitle}</span>
+    </div>
+    <span class="rv-mono text-[9.5px] text-[#7A7F87] shrink-0">{scaleOrMeta}</span>
+  </div>
+{/snippet}
+
+{#snippet mepViewport()}
+  <!-- Revit 3D / MEP Coordination Viewport with technical sky gradient & P&ID wireframe -->
+  <div class="relative h-[108px] border-b border-[#DCE0E6] overflow-hidden" style="background: linear-gradient(180deg, #E3EEF7 0%, #F3F7FA 62%, #FFFFFF 100%);">
+    <!-- Subtle CAD reference grid -->
+    <svg class="w-full h-full" viewBox="0 0 320 108" fill="none">
+      <defs>
+        <pattern id="rv-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#CBD5E1" stroke-width="0.4" stroke-opacity="0.55" />
+        </pattern>
+      </defs>
+      <rect width="320" height="108" fill="url(#rv-grid)" />
+
+      <!-- Isometric datum axes -->
+      <line x1="12" y1="96" x2="308" y2="96" stroke="#94A3B8" stroke-width="0.6" stroke-dasharray="2 2" />
+
+      <!-- NODE 1: Silo SL-01 (Wireframe Cylinder/Tower) -->
+      <g transform="translate(20, 18)">
+        <rect x="0" y="8" width="44" height="56" fill="#FFFFFF" fill-opacity="0.88" stroke="#334155" stroke-width="1.1" />
+        <polygon points="0,8 22,0 44,8" fill="#E2E8F0" stroke="#334155" stroke-width="1.1" />
+        <line x1="6" y1="24" x2="38" y2="24" stroke="#CBD5E1" stroke-width="0.7" />
+        <line x1="6" y1="40" x2="38" y2="40" stroke="#CBD5E1" stroke-width="0.7" />
+        <!-- Level fill bar -->
+        <rect x="4" y="26" width="5" height="34" fill="#D97706" fill-opacity="0.75" />
+        <text x="24" y="21" text-anchor="middle" fill="#1E293B" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">SL-01</text>
+        <text x="24" y="35" text-anchor="middle" fill="#D97706" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">170°C</text>
+        <text x="24" y="52" text-anchor="middle" fill="#475569" font-size="7" font-family="Geist Mono, monospace">145 t</text>
+      </g>
+
+      <!-- MEP Pipe 1: Thermal Binder Line (Orange/Amber) -->
+      <path d="M 64 46 L 116 46" stroke="#D97706" stroke-width="2" />
+      <polygon points="114,43.5 119,46 114,48.5" fill="#D97706" />
+      <text x="90" y="40" text-anchor="middle" fill="#B45309" font-size="6.8" font-family="Geist Mono, monospace">AC-20</text>
+
+      <!-- MEP Pipe 2: Moisture / Water Line from top (Cyan Blue) -->
+      <path d="M 152 6 L 152 24" stroke="#0284C7" stroke-width="1.8" />
+      <polygon points="149.5,22 152,27 154.5,22" fill="#0284C7" />
+      <rect x="115" y="2" width="74" height="12" rx="1.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="0.8" />
+      <text x="152" y="10.5" text-anchor="middle" fill="#0369A1" font-size="6.8" font-family="Geist Mono, monospace" font-weight="600">H2O: -18.0 L</text>
+
+      <!-- NODE 2: Pugmill Mixer / Batch #114 -->
+      <g transform="translate(120, 27)">
+        <rect x="0" y="0" width="64" height="44" fill="#FFFFFF" fill-opacity="0.92" stroke="#1E293B" stroke-width="1.2" />
+        <line x1="0" y1="13" x2="64" y2="13" stroke="#DCE0E6" stroke-width="0.8" />
+        <text x="32" y="9.5" text-anchor="middle" fill="#0F172A" font-size="7.2" font-family="Geist Mono, monospace" font-weight="600">LOTE #114</text>
+        <!-- Internal mixer schematic blades -->
+        <circle cx="20" cy="28" r="7" stroke="#64748B" stroke-width="0.9" fill="#F8FAFC" />
+        <circle cx="44" cy="28" r="7" stroke="#64748B" stroke-width="0.9" fill="#F8FAFC" />
+        <line x1="15" y1="28" x2="25" y2="28" stroke="#0696D7" stroke-width="1.1" />
+        <line x1="39" y1="28" x2="49" y2="28" stroke="#0696D7" stroke-width="1.1" />
+        <text x="32" y="41" text-anchor="middle" fill="#475569" font-size="6.5" font-family="Geist Mono, monospace">HY-204: 4.8%</text>
+      </g>
+
+      <!-- MEP Pipe 3: Discharge Line to Truck (Violet / Slate) -->
+      <path d="M 184 49 L 232 49" stroke="#7C3AED" stroke-width="2" />
+      <polygon points="230,46.5 235,49 230,51.5" fill="#7C3AED" />
+      <text x="208" y="43" text-anchor="middle" fill="#6D28D9" font-size="6.8" font-family="Geist Mono, monospace">28.0 t</text>
+
+      <!-- NODE 3: Dispatch Unit MX-42 -->
+      <g transform="translate(236, 26)">
+        <rect x="0" y="6" width="64" height="38" fill="#FFFFFF" fill-opacity="0.92" stroke="#334155" stroke-width="1.1" />
+        <rect x="0" y="6" width="64" height="11" fill="#F1F5F9" stroke="#334155" stroke-width="0.8" />
+        <text x="32" y="14" text-anchor="middle" fill="#0F172A" font-size="7.2" font-family="Geist Mono, monospace" font-weight="600">MX-42</text>
+        <text x="32" y="28" text-anchor="middle" fill="#15803D" font-size="7.5" font-family="Geist Mono, monospace" font-weight="600">165.4 °C</text>
+        <text x="32" y="39" text-anchor="middle" fill="#64748B" font-size="6.5" font-family="Geist Mono, monospace">GE-88412</text>
+      </g>
+
+      <!-- Dimension callout line at bottom -->
+      <text x="16" y="104" fill="#64748B" font-size="6.5" font-family="Geist Mono, monospace">REF: PLANTA-CENTRAL-MEP-2026</text>
+      <text x="304" y="104" text-anchor="end" fill="#0284C7" font-size="6.5" font-family="Geist Mono, monospace">TOLERANCIA ±2.5°C</text>
+    </svg>
+  </div>
+{/snippet}
+
+{#snippet propertiesTable(rows: PropertyRow[])}
+  <div class="divide-y divide-[#EAECEF] text-[11px]">
+    <!-- Category Header 1 -->
+    <div class="px-3 py-1 bg-[#F7F8FA] flex items-center justify-between text-[9.5px] font-medium text-[#5A6069]">
+      <span class="flex items-center gap-1">{@render chevron()} {es ? 'Lecturas iniciales de planta' : 'Initial plant readings'}</span>
+      <span class="rv-mono text-[9px] text-[#8A9099]">01–02</span>
+    </div>
+    {#each rows.filter((r) => r.group === 'equipment') as row}
+      <button
+        type="button"
+        onclick={() => togglePropertyRow(row.id)}
+        class="w-full grid grid-cols-[1fr_auto] items-center px-3 py-1.5 text-left hover:bg-[#F9FAFB] transition cursor-pointer"
+      >
+        <span class="text-[#374151] truncate pr-2 border-r border-[#EAECEF]">{row.parameter}</span>
+        <span class="rv-mono pl-2.5 flex items-center gap-1.5 text-[10.5px] text-[#111827]">
+          <span>{row.value} <span class="text-[#6B7280]">{row.unit}</span></span>
+          <span class="w-2 h-2 rounded-[1px] {row.verified ? 'bg-[#15803D]' : 'border border-[#9CA3AF] bg-white'}"></span>
+        </span>
+      </button>
+    {/each}
+
+    <!-- Category Header 2 -->
+    <div class="px-3 py-1 bg-[#F7F8FA] flex items-center justify-between text-[9.5px] font-medium text-[#5A6069]">
+      <span class="flex items-center gap-1">{@render chevron()} {es ? 'Control de dosificación y despacho' : 'Dosing & dispatch control'}</span>
+      <span class="rv-mono text-[9px] text-[#8A9099]">03–05</span>
+    </div>
+    {#each rows.filter((r) => r.group === 'dispatch') as row}
+      <button
+        type="button"
+        onclick={() => togglePropertyRow(row.id)}
+        class="w-full grid grid-cols-[1fr_auto] items-center px-3 py-1.5 text-left hover:bg-[#F9FAFB] transition cursor-pointer"
+      >
+        <span class="text-[#374151] truncate pr-2 border-r border-[#EAECEF]">{row.parameter}</span>
+        <span class="rv-mono pl-2.5 flex items-center gap-1.5 text-[10.5px] text-[#111827]">
+          <span>{row.value} <span class="text-[#6B7280]">{row.unit}</span></span>
+          <span class="w-2 h-2 rounded-[1px] {row.verified ? 'bg-[#15803D]' : 'border border-[#D97706] bg-[#FEF3C7]'}"></span>
+        </span>
+      </button>
+    {/each}
+  </div>
+{/snippet}
+
+{#snippet weeklyChart()}
+  <div class="flex gap-2 pt-1">
+    <div class="rv-mono flex flex-col justify-between text-[8px] text-[#8A9099] h-22 pb-0.5 text-right w-7 shrink-0">
+      <span>500t</span><span>375t</span><span>250t</span><span>125t</span><span>0t</span>
+    </div>
+    <div class="flex-1 relative h-22 border-b border-[#DCE0E6]">
+      {#each [0, 25, 50, 75] as g}
+        <div class="absolute left-0 right-0 border-t border-dashed border-[#ECEEF2]" style="top: {g}%;"></div>
+      {/each}
+      <div class="absolute inset-0 flex items-end justify-around">
+        {#each weeklyProduction as item}
+          <div class="flex items-end gap-[3px] h-full">
+            <div class="w-[7px] rounded-t-[1px] {item.attention ? 'bg-[#D97706]' : 'bg-[#334155]'}" style="height: {item.actual}%;"></div>
+            <div class="w-[7px] rounded-t-[1px] bg-[#CBD5E1]" style="height: {item.planned}%;"></div>
           </div>
-          <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-black"></span>
-        </div>
-        <div>
-          {#if viewMode === 'chat'}
-            <h2 class="font-semibold text-[13.5px] tracking-tight text-white leading-tight">
-              ZEA Industrial Agent
-            </h2>
-          {:else}
-            <h2 class="font-semibold text-[13.5px] tracking-tight text-white leading-tight">
-              {#if activeTab === 'summary'}
-                Resumen Operativo
-              {:else if activeTab === 'tracking'}
-                Seguimiento Workflows
-              {:else if activeTab === 'sensors'}
-                Sensores & Capturas
-              {:else}
-                Perfil Jefe de Planta
-              {/if}
-            </h2>
-          {/if}
-        </div>
+        {/each}
       </div>
-
-      <!-- Top-Right Mode Toggle (Chat AI vs Classic App) -->
-      <ZeaModeToggle bind:viewMode theme="industrial" onToggle={(m) => showToast(m === 'chat' ? 'Modo ZEA Chat AI activado' : 'Modo App Industrial activado')} />
     </div>
   </div>
+  <div class="rv-sans flex justify-around text-[8.5px] text-[#7A7F87] pt-1 pl-9">
+    {#each weeklyProduction as item}<span>{item.day}</span>{/each}
+  </div>
+{/snippet}
 
-  <!-- ========================================================= -->
-  <!-- TAB 1: RESUMEN (PARTE DIARIO & PRIORIDAD DE TURNO)        -->
-  <!-- ========================================================= -->
-  {#if activeTab === 'summary'}
-    <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-      <div
-        class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 pt-3 pb-4 space-y-4 overscroll-contain touch-pan-y"
-        bind:this={summaryScrollEl}
-        use:dragScroll
-        role="region"
-        aria-label="Sección Resumen"
-      >
+{#snippet projectBrowserTree(limitFleet: number)}
+  <div class="p-3 space-y-2 text-[11px]">
+    <!-- Root node -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-1.5 font-medium text-[#111827]">
+        <span class="rv-mono text-[9px] w-3.5 h-3.5 border border-[#9CA3AF] flex items-center justify-center leading-none text-[#4B5563]">-</span>
+        <span>{es ? 'Planta Central · Sistemas MEP' : 'Central Plant · MEP Systems'}</span>
+      </div>
+      <span class="rv-mono text-[9.5px] text-[#15803D]">98.6% OK</span>
+    </div>
+
+    <!-- Branch 1: Silos -->
+    <div class="pl-3 border-l border-[#D4D8DF] space-y-1">
+      {#each plantSilos as silo}
+        <div class="flex items-center justify-between py-0.5 text-[10.5px]">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="w-1.5 h-1.5 rounded-full {silo.ok ? 'bg-[#15803D]' : 'bg-[#D97706]'} shrink-0"></span>
+            <span class="rv-mono text-[9.5px] text-[#6B7280]">{silo.code}</span>
+            <span class="text-[#374151] truncate">{silo.name}</span>
+          </div>
+          <span class="rv-mono text-[10px] {silo.ok ? 'text-[#111827]' : 'text-[#B45309] font-medium'} shrink-0 ml-2">{silo.temp}</span>
+        </div>
+      {/each}
+    </div>
+
+    <!-- Branch 2: Active Fleet -->
+    <div class="pt-1">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 font-medium text-[#111827]">
+          <span class="rv-mono text-[9px] w-3.5 h-3.5 border border-[#9CA3AF] flex items-center justify-center leading-none text-[#4B5563]">-</span>
+          <span>{es ? 'Unidades en ruta' : 'Units on route'}</span>
+        </div>
+        <span class="rv-mono text-[9.5px] text-[#6B7280]">18 {es ? 'activas' : 'active'}</span>
+      </div>
+
+      <div class="pl-3 mt-1 border-l border-[#D4D8DF] space-y-1">
+        {#each fleetUnits.slice(0, limitFleet) as unit}
+          <button
+            type="button"
+            onclick={() => openUnitSheet(unit)}
+            class="w-full flex items-center justify-between py-1 px-1.5 rounded-[3px] hover:bg-[#F3F4F6] text-left transition cursor-pointer"
+          >
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="w-1.5 h-1.5 rounded-full {unit.ok ? 'bg-[#0284C7]' : 'bg-[#D97706]'} shrink-0"></span>
+              <span class="rv-mono text-[10px] font-medium text-[#111827]">{unit.code}</span>
+              <span class="text-[10.5px] text-[#4B5563] truncate">{unit.route}</span>
+            </div>
+            <span class="rv-mono text-[10px] text-[#374151] shrink-0 ml-2">{unit.loadTon.toFixed(1)}t · {unit.temp}</span>
+          </button>
+        {/each}
+      </div>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet sCurveChart(heightClass: string)}
+  <div class="relative {heightClass} border-b border-[#DCE0E6]">
+    <div class="absolute inset-0 flex items-end justify-between">
+      {#each sCurveLines as h, i}
+        <div
+          class="w-px bg-[#334155]"
+          style="height: {h}%; opacity: {0.25 + 0.75 * (i / (sCurveLines.length - 1))};"
+        ></div>
+      {/each}
+    </div>
+    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path d={plannedPath} fill="none" stroke="#0696D7" stroke-width="1.1" stroke-dasharray="2.5 2" vector-effect="non-scaling-stroke" />
+    </svg>
+  </div>
+  <div class="rv-mono flex justify-between text-[8.5px] text-[#8A9099] pt-1">
+    <span>S1</span><span>S2</span><span>S3</span><span>{es ? 'Hoy' : 'Now'}</span><span>12,000 t</span>
+  </div>
+{/snippet}
+
+<!-- Toast -->
+{#if toastMessage}
+  <div
+    class="rv-sans absolute top-14 left-1/2 -translate-x-1/2 z-50 px-3.5 py-1.5 rounded-[4px] bg-[#1E293B] text-white text-[11px] shadow-lg flex items-center gap-2 pointer-events-none whitespace-nowrap"
+    in:fade={{ duration: 150 }}
+    out:fade={{ duration: 150 }}
+  >
+    <span class="w-1.5 h-1.5 rounded-full bg-[#0696D7]"></span>
+    <span>{toastMessage}</span>
+  </div>
+{/if}
+
+<div
+  class="rv-sans flex flex-col h-full w-full bg-[#EFEFEF] text-[#1A1D21] relative overflow-hidden select-none"
+  data-testid="zea-edge-screen"
+>
+  <!-- Minimalist Header (Homologated with Funds Agent) -->
+  <header class="px-4 py-2.5 bg-[#F6F7F8] border-b border-[#DCDFE4] flex items-center justify-between z-20 shrink-0">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-[4px] bg-[#0696D7] text-white flex items-center justify-center font-semibold text-[12px] leading-none shrink-0">
+        G
+      </div>
+      <h2 class="text-[14.5px] font-semibold text-[#111827] leading-none tracking-[-0.01em]">Industrial Agent</h2>
+    </div>
+    <ZeaModeToggle bind:viewMode theme="industrial" variant="light" />
+  </header>
+
+  <div class="flex-1 overflow-hidden relative">
+    <!-- =============================================================== -->
+    <!-- TAB 1: RESUMEN                                                  -->
+    <!-- =============================================================== -->
+    {#if activeTab === 'summary'}
+      <div class="h-full flex flex-col" in:fade={{ duration: 150 }}>
         {#if viewMode === 'chat'}
-          {#each checklistChat as msg (msg.id)}
-            {#if msg.sender === 'user'}
-              <div class="flex flex-col items-end gap-1 pl-12" in:fade={{ duration: 120 }}>
-                <div class="bg-[#24211A] border border-[#FFCD00]/20 text-white rounded-[20px] rounded-br-xs px-4 py-2.5 shadow-md">
-                  <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
+          <div bind:this={scrollEl} class="flex-1 overflow-y-auto px-3.5 py-3 space-y-3 text-left">
+            {#each chatMessages as msg (msg.id)}
+              {#if msg.sender === 'user'}
+                <div class="flex justify-end">
+                  <div class="max-w-[82%] pl-3 pr-2 pt-1.5 pb-1 rounded-[6px] rounded-tr-[2px] bg-[#E2E5EA] text-[#111827]">
+                    <span class="text-[12.5px] leading-snug">{msg.text}</span>
+                    <span class="inline-flex items-center gap-0.5 float-right ml-2 mt-[5px] text-[9px] text-[#6B7280] tabular-nums">
+                      {msg.time}
+                      <svg class="w-3 h-3 text-[#0284C7]" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                        <path d="M10.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 6.646-6.647a.5.5 0 0 1 .708 0z" />
+                      </svg>
+                    </span>
+                  </div>
                 </div>
-                <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} <span class="text-[#FFCD00]">✓✓</span></span>
-              </div>
-            {:else}
-              <div class="flex flex-col items-start gap-1.5 pr-1 w-full" in:fade={{ duration: 120 }}>
-                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[22px] rounded-tl-xs px-4 py-3 max-w-[96%] space-y-3 shadow-lg">
-                  <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
+              {:else}
+                <div class="space-y-2.5">
+                  <!-- Agent reply: plain technical text, no bubble -->
+                  <div class="flex items-start gap-2">
+                    <div class="w-5 h-5 rounded-[3px] bg-[#0696D7] text-white flex items-center justify-center font-semibold text-[10.5px] leading-none shrink-0 mt-[1px]">G</div>
+                    <p class="text-[12px] text-[#2D3139] leading-relaxed">
+                      {msg.text}
+                      <span class="text-[9px] text-[#8A9099] ml-1 tabular-nums whitespace-nowrap">{msg.time}</span>
+                    </p>
+                  </div>
 
-                  <!-- Botones de Acción Inmediata (porque el mensaje termina en pregunta de alerta) -->
-                  {#if msg.id === 'chk-msg-1'}
-                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-[#262418]">
-                      <button
-                        type="button"
-                        onclick={compensateAndRelease}
-                        disabled={urgentBatchCompleted}
-                        class="px-3.5 py-2 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md {urgentBatchCompleted ? 'bg-[#27272A] text-zinc-400' : 'bg-[#FFCD00] hover:bg-[#FFE066] text-black font-bold'}"
-                      >
-                        {#if urgentBatchCompleted}
-                          <span>✓ Lote Liberado</span>
-                        {:else}
-                          <span>Compensar agua y liberar</span>
-                        {/if}
-                      </button>
+                  {#if msg.briefing}
+                    <div class="space-y-2.5 pl-7">
+                      <!-- 1. AHORA: MEP Coordination Viewport + Properties -->
+                      <div class="rv-panel overflow-hidden">
+                        {@render panelBar(es ? 'Ahora · 3D - Coordination Mech · Lote #114' : 'Now · 3D - Coordination Mech · Batch #114', '1:50')}
+                        {@render mepViewport()}
+                        <div class="divide-y divide-[#EAECEF] text-[11px]">
+                          <div class="grid grid-cols-[1fr_auto] px-3 py-1.5">
+                            <span class="text-[#6B7280]">{es ? 'Desviación detectada' : 'Detected drift'}</span>
+                            <span class="rv-mono text-[#B45309] font-medium">+4.8% {es ? 'humedad árido' : 'aggregate moisture'}</span>
+                          </div>
+                          <div class="grid grid-cols-[1fr_auto] px-3 py-1.5">
+                            <span class="text-[#6B7280]">{es ? 'Ajuste de fórmula' : 'Formula adjustment'}</span>
+                            <span class="rv-mono text-[#111827] font-medium">-18.0 L H2O · 165.4 °C</span>
+                          </div>
+                        </div>
+                        <div class="p-2.5 bg-[#F9FAFB] border-t border-[#EAECEF] grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onclick={() => openUnitSheet(fleetUnits[0])}
+                            class="rv-btn-secondary"
+                          >
+                            {es ? 'Inspeccionar MX-42' : 'Inspect MX-42'}
+                          </button>
+                          <button
+                            type="button"
+                            onclick={applyAndDispatch}
+                            class="rv-btn-primary"
+                          >
+                            {batchDispatched ? (es ? 'Compensado' : 'Compensated') : (es ? 'Aplicar y despachar' : 'Apply & dispatch')}
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- 2. HOY: Properties Table (Parte Diario) -->
+                      <div class="rv-panel overflow-hidden">
+                        {@render panelBar(es ? 'Hoy · Properties · Parte diario de planta' : 'Today · Properties · Plant daily log', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
+                        {@render propertiesTable(dailyProperties)}
+                      </div>
+
+                      <!-- 3. SEMANA: Weekly Production Chart -->
+                      <div class="rv-panel overflow-hidden">
+                        {@render panelBar(es ? 'Esta semana · Producción diaria (t)' : 'This week · Daily production (t)', 'Meta 400 t')}
+                        <div class="p-3 space-y-2">
+                          <div class="flex items-baseline justify-between">
+                            <div class="flex items-baseline gap-1.5">
+                              <span class="rv-mono text-[24px] font-semibold text-[#111827] leading-none tracking-tight">420.0 t</span>
+                              <span class="text-[10.5px] text-[#15803D] font-medium">↑ 8.4%</span>
+                            </div>
+                            {@render select(es ? 'Esta semana' : 'This week')}
+                          </div>
+                          {@render weeklyChart()}
+                          <div class="flex items-center gap-3 text-[9.5px] text-[#6B7280] pt-0.5">
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#334155]"></span>{es ? 'Despachado' : 'Dispatched'}</span>
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#CBD5E1]"></span>{es ? 'Programado' : 'Scheduled'}</span>
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#D97706]"></span>{es ? 'Ajuste humedad' : 'Moisture adj.'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 4. MES: Project Browser Tree -->
+                      <div class="rv-panel overflow-hidden">
+                        {@render panelBar(es ? 'Este mes · Project Browser · Activos y flota' : 'This month · Project Browser · Assets & fleet', 'MEP / STR')}
+                        {@render projectBrowserTree(3)}
+                      </div>
+
+                      <!-- 5. PROYECTADO: Cumulative S-Curve -->
+                      <div class="rv-panel overflow-hidden">
+                        {@render panelBar(es ? 'Proyectado · Curva S de suministro' : 'Projected · Supply S-curve', '2026')}
+                        <div class="p-3 space-y-2">
+                          <div class="flex items-baseline justify-between">
+                            <div>
+                              <div class="flex items-baseline gap-1.5">
+                                <span class="rv-mono text-[24px] font-semibold text-[#111827] leading-none tracking-tight">11,420 t</span>
+                                <span class="text-[10.5px] text-[#15803D] font-medium">↑ 95.2%</span>
+                              </div>
+                              <p class="text-[10px] text-[#6B7280] mt-0.5">{es ? 'Avance físico acumulado · meta 12,000 t' : 'Cumulative physical progress · 12,000 t target'}</p>
+                            </div>
+                            {@render select(es ? 'Mensual' : 'Monthly')}
+                          </div>
+                          {@render sCurveChart('h-18')}
+                          <div class="flex items-center gap-3 text-[9.5px] text-[#6B7280]">
+                            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#334155]"></span>{es ? 'Real acumulado' : 'Actual cumulative'}</span>
+                            <span class="flex items-center gap-1"><span class="w-2.5 h-[1.5px] bg-[#0696D7]"></span>{es ? 'Curva programada' : 'Planned curve'}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   {/if}
                 </div>
+              {/if}
+            {/each}
 
-                {#if msg.isPrimarySummary}
-                  <div class="w-full space-y-4 pt-1">
-                    <!-- 1. NOW: URGENCIA ACTUAL (ZeaFocusCard) -->
-                    <ZeaFocusCard
-                      theme="industrial"
-                      badgeText="Despacho en ruta"
-                      etaText="arribo 18 min"
-                      mainMetric="165°C"
-                      metricSuffix=" · Mixer #42"
-                      avatarText="M42"
-                      title="Mixer #42 · Planta Maipú"
-                      subtitle="Asfalto AC-20 · Frente Autopista Central · 28t"
-                      secondaryActionLabel="Ver ficha camión"
-                      primaryActionLabel="Confirmar Vertido"
-                      primaryDoneLabel="✓ Vertido Registrado"
-                      isDone={dischargeDone}
-                      onSecondaryAction={() => openTruckDetails(fleetList[0])}
-                      onPrimaryAction={() => {
-                        dischargeDone = true;
-                        showToast('Vertido de Mixer #42 confirmado');
-                      }}
-                    />
-
-                    <!-- 2. EL DÍA: HOY (ZeaTimeline con hito 07:30 Parte Diario) -->
-                    <ZeaTimeline
-                      theme="industrial"
-                      title="Hoy"
-                      headerActionLabel="Ver seguimiento"
-                      onHeaderAction={() => (activeTab = 'tracking')}
-                      entries={timelineEntries}
-                    />
-
-                    <!-- Despliegue interactivo del Parte Diario activado desde el hito 07:30 de Hoy -->
-                    {#if checklistExpanded}
-                      <div in:fade={{ duration: 150 }} id="parte-diario-task-card">
-                        <ZeaChecklistCard
-                          theme="industrial"
-                          moduleBadge="TAREA ASIGNADA"
-                          title="Parte Diario de Operaciones"
-                          subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
-                          items={parteDiarioItems}
-                          actionLabel="Consolidar y Firmar Turno"
-                          onToggleItem={toggleParteDiarioItem}
-                          onInputSubmit={handleParteDiarioInput}
-                          onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
-                        />
-                      </div>
-                    {/if}
-
-                    <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
-                    <ZeaApprovalCard
-                      theme="industrial"
-                      title="Por aprobar"
-                      avatarText="L114"
-                      entityName="Compensación Lote #114"
-                      entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
-                      citationText="Alerta técnica: Humedad de áridos fuera de rango (+1.4%). Autorizar compensación de -18L para liberar bachada."
-                      isApproved={batchApprovalDone}
-                      isRejected={batchApprovalRejected}
-                      onApprove={() => {
-                        batchApprovalDone = true;
-                        urgentBatchCompleted = true;
-                        parteDiarioItems[2].checked = true;
-                        parteDiarioItems[2].inputValue = '-18 L agua (28t)';
-                        showToast('Compensación del Lote #114 aprobada');
-                      }}
-                      onReject={() => {
-                        batchApprovalRejected = true;
-                        showToast('Compensación rechazada - Mantener fórmula standard');
-                      }}
-                    />
-
-                    <!-- 4. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
-                    <ZeaConcentricRings
-                      theme="industrial"
-                      title="Esta semana"
-                      subtitle=""
-                      items={industrialRings}
-                    />
-
-                    <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
-                    <ZeaMetricTrend
-                      theme="industrial"
-                      title="Producción semanal"
-                      badgeText="+14% vs mes anterior"
-                      metricValue="420 t"
-                      metricUnit="esta semana"
-                      metricSubtitle="3.120 t acumuladas en últimas 8 semanas · Prom. 390 t/sem"
-                      targetValue={400}
-                      targetLabel="Meta 400 t"
-                      bars={productionBars}
-                      barLabels={productionLabels}
-                      distribution={asphaltDistribution}
-                    />
-                  </div>
-                {/if}
-
-                {#if msg.quickCard === 'mixer42'}
-                  <div class="p-3.5 rounded-2xl bg-[#1C1A10] border border-[#FFCD00]/30 w-full flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-full bg-[#FFCD00]/20 border border-[#FFCD00]/40 flex items-center justify-center font-bold text-[#FFCD00] text-xs font-mono">M42</div>
-                      <div>
-                        <p class="text-xs font-semibold text-white">Mixer #42 · Autopista Central</p>
-                        <p class="text-[11px] text-zinc-400">165.2°C · 28 toneladas en ruta</p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onclick={() => openTruckDetails(fleetList[0])}
-                      class="px-2.5 py-1 rounded-xl bg-[#FFCD00] text-black font-semibold text-xs cursor-pointer"
-                    >
-                      Ver ficha
-                    </button>
-                  </div>
-                {:else if msg.quickCard === 'checklist'}
-                  <div class="w-full pt-1">
-                    <ZeaChecklistCard
-                      theme="industrial"
-                      title="Parte Diario"
-                      items={parteDiarioItems}
-                      actionLabel="Consolidar Turno"
-                      onToggleItem={toggleParteDiarioItem}
-                      onInputSubmit={handleParteDiarioInput}
-                      onAction={() => showToast('Parte Diario sincronizado')}
-                    />
-                  </div>
-                {/if}
+            {#if isAgentTyping}
+              <div class="flex items-center gap-1 pl-7 py-1">
+                <span class="w-1 h-1 rounded-full bg-[#6B7280] animate-bounce"></span>
+                <span class="w-1 h-1 rounded-full bg-[#6B7280] animate-bounce [animation-delay:0.15s]"></span>
+                <span class="w-1 h-1 rounded-full bg-[#6B7280] animate-bounce [animation-delay:0.3s]"></span>
               </div>
             {/if}
-          {/each}
-        {:else}
-          <!-- CLASSIC APP MODE FOR CHECKLIST -->
-          <section class="pt-0.5">
-            <h3 class="text-[20px] font-semibold tracking-tight text-white leading-tight">Parte Diario de Planta</h3>
-            <p class="text-[12px] text-zinc-400 mt-0.5">
-              Control diario de producción, horómetros, combustibles y despacho.
-            </p>
-          </section>
+          </div>
 
-          <!-- 1. NOW: URGENCIA ACTUAL (ZeaFocusCard) -->
-          <ZeaFocusCard
-            theme="industrial"
-            badgeText="Despacho en ruta"
-            etaText="arribo 18 min"
-            mainMetric="165°C"
-            metricSuffix=" · Mixer #42"
-            avatarText="M42"
-            title="Mixer #42 · Planta Maipú"
-            subtitle="Asfalto AC-20 · Frente Autopista Central · 28t"
-            secondaryActionLabel="Ver ficha camión"
-            primaryActionLabel="Confirmar Vertido"
-            primaryDoneLabel="✓ Vertido Registrado"
-            isDone={dischargeDone}
-            onSecondaryAction={() => openTruckDetails(fleetList[0])}
-            onPrimaryAction={() => {
-              dischargeDone = true;
-              showToast('Vertido de Mixer #42 confirmado');
-            }}
-          />
-
-          <!-- 2. EL DÍA: HOY (ZeaTimeline con hito 07:30 Parte Diario) -->
-          <ZeaTimeline
-            theme="industrial"
-            title="Hoy"
-            headerActionLabel="Ver seguimiento"
-            onHeaderAction={() => (activeTab = 'tracking')}
-            entries={timelineEntries}
-          />
-
-          <!-- Despliegue interactivo del Parte Diario activado desde el hito 07:30 de Hoy -->
-          {#if checklistExpanded}
-            <div in:fade={{ duration: 150 }} id="parte-diario-task-card">
-              <ZeaChecklistCard
-                theme="industrial"
-                moduleBadge="TAREA ASIGNADA"
-                title="Parte Diario de Operaciones"
-                subtitle="Turno Mañana · Asignado a: Carlos (Jefe de Planta)"
-                items={parteDiarioItems}
-                actionLabel="Consolidar y Firmar Turno"
-                onToggleItem={toggleParteDiarioItem}
-                onInputSubmit={handleParteDiarioInput}
-                onAction={() => showToast('Parte Diario consolidado y firmado con éxito')}
-              />
+          <!-- Prompt Input Bar -->
+          <div class="shrink-0 bg-[#F6F7F8] border-t border-[#DCDFE4] px-3 pt-2 pb-2.5 space-y-2 z-20">
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              {#each (es ? ['¿Qué tenemos para hoy?', 'Estado silos', 'Flota en ruta', 'Lote #114'] : ['What do we have today?', 'Silo status', 'Active fleet', 'Batch #114']) as chip}
+                <button
+                  type="button"
+                  onclick={() => handleSendPrompt(chip)}
+                  class="shrink-0 px-2.5 py-1 rounded-[4px] text-[10.5px] bg-white border border-[#D4D8DF] text-[#2D3139] hover:bg-[#F3F4F6] transition cursor-pointer"
+                >
+                  {chip}
+                </button>
+              {/each}
             </div>
-          {/if}
-
-          <!-- 3. PENDIENTES: POR APROBAR (ZeaApprovalCard) -->
-          <ZeaApprovalCard
-            theme="industrial"
-            title="Por aprobar"
-            avatarText="L114"
-            entityName="Compensación Lote #114"
-            entityDetails="Tolva 3 (+1.4% humedad) · Ajustar -18L agua"
-            citationText="Alerta técnica: Humedad de áridos fuera de rango (+1.4%). Autorizar compensación de -18L para liberar bachada."
-            isApproved={batchApprovalDone}
-            isRejected={batchApprovalRejected}
-            onApprove={() => {
-              batchApprovalDone = true;
-              urgentBatchCompleted = true;
-              parteDiarioItems[2].checked = true;
-              parteDiarioItems[2].inputValue = '-18 L agua (28t)';
-              showToast('Compensación del Lote #114 aprobada');
-            }}
-            onReject={() => {
-              batchApprovalRejected = true;
-              showToast('Compensación rechazada - Mantener fórmula standard');
-            }}
-          />
-
-          <!-- 4. MEDIO PLAZO: ESTA SEMANA (ZeaConcentricRings) -->
-          <ZeaConcentricRings
-            theme="industrial"
-            title="Esta semana"
-            subtitle=""
-            items={industrialRings}
-          />
-
-          <!-- 5. LARGO PLAZO: ÚLTIMAS 8 SEMANAS (ZeaMetricTrend) -->
-          <ZeaMetricTrend
-            theme="industrial"
-            title="Producción semanal"
-            badgeText="+14% vs mes anterior"
-            metricValue="420 t"
-            metricUnit="esta semana"
-            metricSubtitle="3.120 t acumuladas en últimas 8 semanas · Prom. 390 t/sem"
-            targetValue={400}
-            targetLabel="Meta 400 t"
-            bars={productionBars}
-            barLabels={productionLabels}
-            distribution={asphaltDistribution}
-          />
-        {/if}
-      </div>
-
-      {#if viewMode === 'chat'}
-        <ZeaGliaBar
-          theme="industrial"
-          placeholder="Consultar dosificación, silos o parte diario..."
-          chips={['Compensar agua y liberar', 'Estado Parte Diario', 'Ubicación Mixer #42']}
-          bind:inputText={chatInputText}
-          onSendPrompt={handleSendPrompt}
-        />
-      {/if}
-    </div>
-
-  <!-- ========================================================= -->
-  <!-- TAB 2: SEGUIMIENTO (WORKFLOWS, ESTADOS & ANILLOS)         -->
-  <!-- ========================================================= -->
-  {:else if activeTab === 'tracking'}
-    <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-      <div
-        class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 pt-3 pb-4 space-y-4 overscroll-contain touch-pan-y"
-        bind:this={trackingScrollEl}
-        use:dragScroll
-        role="region"
-        aria-label="Sección Seguimiento"
-      >
-        {#if viewMode === 'chat'}
-          {#each trackingChat as msg (msg.id)}
-            {#if msg.sender === 'user'}
-              <div class="flex flex-col items-end gap-1 pl-12">
-                <div class="bg-[#24211A] border border-[#FFCD00]/20 text-white rounded-[20px] rounded-br-xs px-4 py-2.5 shadow-md">
-                  <p class="text-[13.5px]">{msg.text}</p>
-                </div>
-                <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} ✓✓</span>
-              </div>
-            {:else}
-              <div class="flex flex-col items-start gap-1.5 pr-1">
-                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
-                  <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
-                </div>
-
-                {#if msg.isPrimarySummary}
-                  <div class="w-full space-y-4 pt-1">
-                    <ZeaTimeline
-                      theme="industrial"
-                      title="Flujo Operativo End-to-End"
-                      headerActionLabel="Ver Sensores"
-                      onHeaderAction={() => (activeTab = 'sensors')}
-                      entries={timelineEntries}
-                    />
-
-                    <ZeaConcentricRings
-                      theme="industrial"
-                      title="Avance Consolidado del Turno"
-                      subtitle="Planta & Flota en Tiempo Real"
-                      items={industrialRings}
-                    />
-                  </div>
-                {/if}
-              </div>
-            {/if}
-          {/each}
-        {:else}
-          <ZeaTimeline
-            theme="industrial"
-            title="Flujo Operativo End-to-End"
-            headerActionLabel="Ver Sensores"
-            onHeaderAction={() => (activeTab = 'sensors')}
-            entries={timelineEntries}
-          />
-
-          <ZeaConcentricRings
-            theme="industrial"
-            title="Avance Consolidado del Turno"
-            subtitle="Planta & Flota en Tiempo Real"
-            items={industrialRings}
-          />
-        {/if}
-      </div>
-
-      {#if viewMode === 'chat'}
-        <ZeaGliaBar
-          theme="industrial"
-          placeholder="Consultar etapa de workflow, SLA o despacho..."
-          chips={['Estado cola O(1)', 'Avance de flota', 'Plazos de subsanación']}
-          bind:inputText={chatInputText}
-          onSendPrompt={handleSendPrompt}
-        />
-      {/if}
-    </div>
-
-  <!-- ========================================================= -->
-  <!-- TAB 3: SENSORES (CAPTURAS QR/OCR/VISIÓN & TELEMETRÍA IOT) -->
-  <!-- ========================================================= -->
-  {:else if activeTab === 'sensors'}
-    <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-      <div
-        class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 pt-3 pb-4 space-y-4 overscroll-contain touch-pan-y"
-        bind:this={sensorsScrollEl}
-        use:dragScroll
-        role="region"
-        aria-label="Sección Sensores"
-      >
-        {#if viewMode === 'chat'}
-          {#each sensorsChat as msg (msg.id)}
-            {#if msg.sender === 'user'}
-              <div class="flex flex-col items-end gap-1 pl-12">
-                <div class="bg-[#24211A] border border-[#FFCD00]/20 text-white rounded-[20px] rounded-br-xs px-4 py-2.5 shadow-md">
-                  <p class="text-[13.5px]">{msg.text}</p>
-                </div>
-                <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} ✓✓</span>
-              </div>
-            {:else}
-              <div class="flex flex-col items-start gap-1.5 pr-1">
-                <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
-                  <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
-                </div>
-              </div>
-            {/if}
-          {/each}
-        {/if}
-
-        <!-- Capturas de Visión, QR/OCR & Sensores IoT -->
-        <ZeaRetinaCaptureCard
-          theme="industrial"
-          captures={sensorCaptures}
-          onScanAction={() => showToast('QR y lectura óptica capturados con firma SHA-256')}
-          onSelectCapture={(cap) => showToast(`${cap.source}: ${cap.title}`)}
-        />
-
-        <!-- Telemetría de Planta (Silos & Estanques) -->
-        <div class="p-4 rounded-2xl bg-[#141412] border border-[#262418] space-y-2.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <span class="text-[9.5px] font-mono text-[#FFCD00] uppercase">DOMINIO PLANTA</span>
-              <h4 class="font-semibold text-white text-[14px]">Silo de Asfalto #1 (AC-20)</h4>
-              <p class="text-[11px] text-zinc-400">Planta Maipú · Quemador GLP 240 t/h</p>
-            </div>
-            <span class="text-[15px] font-mono font-bold text-[#FFCD00]">170°C</span>
-          </div>
-          <div class="h-2 rounded-full bg-black/60 overflow-hidden">
-            <div class="h-full rounded-full bg-[#FFCD00]" style="width: 72%;"></div>
-          </div>
-          <div class="flex justify-between text-[11px] text-zinc-400">
-            <span>Stock: 145 / 200 t</span>
-            <span class="text-emerald-400">Estanques GLP/Petróleo 84%</span>
-          </div>
-        </div>
-
-        <!-- Telemetría de Flota en Ruta -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-1">
-            <span class="text-[11px] font-mono text-zinc-400 uppercase">Flota Monitoreada</span>
-            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded-md bg-[#FFCD00]/20 text-[#FFCD00] border border-[#FFCD00]/40 font-bold">18 ACTIVOS</span>
-          </div>
-          {#each fleetList as truck}
-            <button
-              type="button"
-              onclick={() => openTruckDetails(truck)}
-              class="w-full p-3 rounded-2xl bg-[#141412] border border-[#262418] hover:border-[#FFCD00]/50 text-left transition flex items-center justify-between cursor-pointer"
+            <form
+              onsubmit={(e) => {
+                e.preventDefault();
+                handleSendPrompt(chatInputText);
+              }}
+              class="flex items-center gap-2 bg-white border border-[#D4D8DF] rounded-[5px] pl-3 pr-1 py-1"
             >
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-[#FFCD00]/15 border border-[#FFCD00]/30 flex items-center justify-center font-bold text-[#FFCD00] text-xs font-mono">
-                  {truck.code}
+              <input
+                type="text"
+                bind:value={chatInputText}
+                placeholder={es ? 'Pregunta a Industrial Agent' : 'Ask Industrial Agent'}
+                class="flex-1 bg-transparent text-[12px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none py-1"
+              />
+              <button type="submit" aria-label="Enviar prompt" class="w-7 h-7 rounded-[4px] bg-[#1E293B] text-white hover:bg-[#334155] flex items-center justify-center cursor-pointer shrink-0">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M8 13V3m0 0L4 7m4-4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </form>
+          </div>
+        {:else}
+          <!-- =========================================================== -->
+          <!-- APP MODE: Revit CAD / BIM Engineering Workspace             -->
+          <!-- =========================================================== -->
+          <div class="flex-1 overflow-y-auto px-3.5 py-3.5 space-y-3 text-left">
+            <!-- MEP Viewport Panel -->
+            <div class="rv-panel overflow-hidden">
+              {@render panelBar('3D - Coordination Mech · Lote #114', '1:50')}
+              {@render mepViewport()}
+              <div class="p-2.5 bg-white flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="text-[11px] font-medium text-[#111827] truncate">{es ? 'Compensación hídrica requerida (-18.0 L)' : 'Water compensation required (-18.0 L)'}</p>
+                  <p class="rv-mono text-[9.5px] text-[#6B7280]">HY-204: 4.8% · MX-42 · 28.0 t</p>
                 </div>
-                <div>
-                  <p class="text-[13px] font-semibold text-white">{truck.code} · {truck.driver}</p>
-                  <p class="text-[11px] text-zinc-400">{truck.mixType} · {truck.destination}</p>
-                </div>
+                <button type="button" onclick={applyAndDispatch} class="rv-btn-primary shrink-0">
+                  {batchDispatched ? (es ? 'Aplicado' : 'Applied') : (es ? 'Aplicar' : 'Apply')}
+                </button>
               </div>
-              <div class="text-right">
-                <span class="text-[13.5px] font-mono font-bold text-[#FFCD00]">{truck.temp}</span>
-                <span class="block text-[10px] text-zinc-500 font-mono">{truck.loadTon}t</span>
+            </div>
+
+            <!-- Properties Panel -->
+            <div class="rv-panel overflow-hidden">
+              {@render panelBar('Properties · Parte diario de planta', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
+              {@render propertiesTable(dailyProperties)}
+            </div>
+
+            <!-- Weekly Production -->
+            <div class="rv-panel overflow-hidden">
+              {@render panelBar(es ? 'Analyze · Producción semanal' : 'Analyze · Weekly production', '420.0 t')}
+              <div class="p-3 space-y-2">
+                {@render weeklyChart()}
               </div>
-            </button>
-          {/each}
+            </div>
+
+            <!-- Project Browser -->
+            <div class="rv-panel overflow-hidden">
+              {@render panelBar('Project Browser · Planta Central', '18 MX')}
+              {@render projectBrowserTree(4)}
+            </div>
+          </div>
+        {/if}
+      </div>
+
+    <!-- =============================================================== -->
+    <!-- TAB 2: SEGUIMIENTO (PROJECT BROWSER & DISPATCH SCHEDULE)        -->
+    <!-- =============================================================== -->
+    {:else if activeTab === 'tracking'}
+      <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
+        <div class="rv-panel overflow-hidden">
+          {@render panelBar(es ? 'Schedule · Balance de masa del turno' : 'Schedule · Shift mass balance', 'Norma NCh')}
+          <div class="grid grid-cols-3 divide-x divide-[#EAECEF] text-center py-2.5">
+            <div>
+              <span class="rv-mono text-[18px] font-semibold text-[#111827] block">420.0 t</span>
+              <span class="text-[9.5px] text-[#6B7280]">{es ? 'Despachado' : 'Dispatched'}</span>
+            </div>
+            <div>
+              <span class="rv-mono text-[18px] font-semibold text-[#111827] block">18</span>
+              <span class="text-[9.5px] text-[#6B7280]">{es ? 'Unidades activas' : 'Active units'}</span>
+            </div>
+            <div>
+              <span class="rv-mono text-[18px] font-semibold text-[#15803D] block">98.6%</span>
+              <span class="text-[9.5px] text-[#6B7280]">{es ? 'En tolerancia' : 'Within spec'}</span>
+            </div>
+          </div>
         </div>
 
-        <ZeaMetricTrend
-          theme="industrial"
-          title="Producción & Capturas (Últimas 8 jornadas)"
-          badgeText="+14% vs semana previa"
-          metricValue="420 t"
-          metricUnit="hoy"
-          metricSubtitle="Registro continuo IoT con tolerancia ±2.5°C y OCR activo"
-          targetValue={400}
-          targetLabel="Meta 400 t"
-          bars={productionBars}
-          barLabels={productionLabels}
-          distribution={asphaltDistribution}
-        />
-      </div>
-
-      {#if viewMode === 'chat'}
-        <ZeaGliaBar
-          theme="industrial"
-          placeholder="Consultar cámara QR, OCR o sensores IoT..."
-          chips={['Escanear QR camión', 'Temperatura Silo 1', 'Ver Mixer #42']}
-          bind:inputText={chatInputText}
-          onSendPrompt={handleSendPrompt}
-        />
-      {/if}
-    </div>
-
-  <!-- ========================================================= -->
-  <!-- TAB 4: PERFIL (JEFE DE PLANTA)                            -->
-  <!-- ========================================================= -->
-  {:else if activeTab === 'profile'}
-    <div class="flex-1 min-h-0 flex flex-col overflow-hidden bg-black">
-      <div class="px-5 pt-2.5 pb-2 bg-black/90 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between border-b border-[#242114]">
-        <h2 class="font-semibold text-[18px] tracking-tight text-white leading-tight">Perfil</h2>
-        <ZeaModeToggle bind:viewMode theme="industrial" />
-      </div>
-
-      <div
-        class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 pt-3 pb-6 space-y-4 overscroll-contain touch-pan-y"
-        bind:this={profileScrollEl}
-        use:dragScroll
-      >
-        {#if viewMode === 'chat'}
-          {#each profileChat as msg (msg.id)}
-            {#if msg.sender === 'user'}
-              <div class="flex flex-col items-end gap-1 pl-12">
-                <div class="bg-[#24211A] border border-[#FFCD00]/20 text-white rounded-[20px] rounded-br-xs px-4 py-2.5 shadow-md">
-                  <p class="text-[13.5px]">{msg.text}</p>
+        <div class="rv-panel overflow-hidden">
+          {@render panelBar(es ? 'Unidades de transporte en ruta' : 'Transport units on route', 'GPS / Telemetría')}
+          <div class="divide-y divide-[#EAECEF]">
+            {#each fleetUnits as unit}
+              <button
+                type="button"
+                onclick={() => openUnitSheet(unit)}
+                class="w-full p-3 text-left flex items-center justify-between gap-3 hover:bg-[#F9FAFB] transition cursor-pointer"
+              >
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full {unit.ok ? 'bg-[#15803D]' : 'bg-[#D97706]'}"></span>
+                    <span class="rv-mono text-[11.5px] font-semibold text-[#111827]">{unit.code}</span>
+                    <span class="text-[11px] text-[#4B5563] truncate">· {unit.operator}</span>
+                  </div>
+                  <p class="text-[10px] text-[#6B7280] mt-0.5 truncate">{unit.mix} · {unit.route}</p>
                 </div>
-                <span class="text-[10px] text-zinc-500 font-mono pr-1">{msg.time} ✓✓</span>
-              </div>
-            {:else}
-              <div class="bg-[#141412] border border-[#262418] text-zinc-200 rounded-[20px] rounded-tl-xs px-4 py-2.5 max-w-[95%]">
-                <p class="text-[13.5px] leading-relaxed">{msg.text}</p>
-              </div>
-            {/if}
-          {/each}
-        {/if}
-
-        <!-- Industrial Profile Card (Jefe de Planta) -->
-        <div class="space-y-3">
-          <div class="p-4 rounded-[24px] bg-[#141412] border border-[#262418]">
-            <div class="flex items-center gap-3.5">
-              <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFCD00] to-[#FFE066] flex items-center justify-center font-bold text-black text-base font-mono">
-                CH
-              </div>
-              <div>
-                <h3 class="font-semibold text-white text-[16px]">Carlos Hinostroza</h3>
-                <p class="text-[11.5px] text-zinc-400">Jefe de Operaciones & Planta · Planta Maipú</p>
-              </div>
-            </div>
-            <div class="mt-3.5 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
-              <span class="text-zinc-400 font-mono">ID: OPR-786 · Certificado ITO</span>
-              <span class="px-2 py-0.5 rounded-full bg-[#FFCD00]/15 text-[#FFCD00] text-[10.5px] font-semibold border border-[#FFCD00]/30">Turno Activo</span>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div class="p-3.5 rounded-2xl bg-[#141412] border border-[#262418]">
-              <span class="text-[11px] text-zinc-400 block">Producción Turno</span>
-              <span class="text-[16px] font-semibold text-white font-mono">420 t</span>
-            </div>
-            <div class="p-3.5 rounded-2xl bg-[#141412] border border-[#262418]">
-              <span class="text-[11px] text-zinc-400 block">Flota en Ruta</span>
-              <span class="text-[16px] font-semibold text-[#FFCD00] font-mono">18 mixers</span>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-[24px] bg-[#141412] border border-[#262418] space-y-2">
-            <h4 class="text-[13.5px] font-semibold text-white">Responsabilidades del Turno</h4>
-            <p class="text-[11.5px] text-zinc-400 leading-relaxed">
-              Supervisión de Parte Diario, validación de tolerancias térmicas en silos, escaneo de guías de despacho y firma de alertas Human-in-the-Loop.
-            </p>
+                <div class="text-right shrink-0">
+                  <span class="rv-mono text-[12px] font-semibold text-[#111827] block">{unit.temp}</span>
+                  <span class="rv-mono text-[9.5px] text-[#6B7280]">{unit.loadTon.toFixed(1)} t · ETA {unit.eta}</span>
+                </div>
+              </button>
+            {/each}
           </div>
         </div>
       </div>
 
-      {#if viewMode === 'chat'}
-        <ZeaGliaBar
-          theme="industrial"
-          placeholder="Consultar métricas de planta o turno..."
-          chips={['Resumen del turno', 'Horómetro de planta', 'Firmas pendientes']}
-          bind:inputText={chatInputText}
-          onSendPrompt={handleSendPrompt}
-        />
-      {/if}
-    </div>
-  {/if}
+    <!-- =============================================================== -->
+    <!-- TAB 3: SENSORES (MEP TELEMETRY & ISOMETRIC MODEL)               -->
+    <!-- =============================================================== -->
+    {:else if activeTab === 'sensors'}
+      <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
+        <div class="rv-panel overflow-hidden">
+          {@render panelBar('3D - Coordination Mech · Telemetría en vivo', 'MEP 1:50')}
+          {@render mepViewport()}
+        </div>
 
-  <!-- ========================================================= -->
-  <!-- NATIVE BOTTOM TAB BAR: RESUMEN, SEGUIMIENTO, SENSORES, PERFIL -->
-  <!-- ========================================================= -->
-  <div id="bottom-tabbar" class="shrink-0 h-14 bg-black/95 backdrop-blur-md border-t border-[#262418] flex items-center justify-around px-1 z-20">
-    <!-- TAB 1: RESUMEN -->
-    <button
-      type="button"
-      onclick={() => (activeTab = 'summary')}
-      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer {activeTab === 'summary' ? 'text-[#FFCD00] font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-    >
-      <div class="relative">
-        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-        </svg>
-        {#if viewMode === 'chat'}
-          <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#FFCD00]"></span>
-        {/if}
+        <div class="rv-panel overflow-hidden">
+          {@render panelBar(es ? 'System Browser · Nodos de instrumentación' : 'System Browser · Instrumentation nodes', '4 canales')}
+          <div class="divide-y divide-[#EAECEF]">
+            {#each sensorNodes as node}
+              <div class="p-3 flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-[1px]" style="background-color: {node.color};"></span>
+                    <span class="rv-mono text-[11px] font-semibold text-[#111827]">{node.id}</span>
+                    <span class="rv-mono text-[9.5px] text-[#6B7280]">({node.system})</span>
+                  </div>
+                  <p class="text-[10.5px] text-[#4B5563] mt-0.5 truncate">{node.location}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="rv-mono text-[12px] font-semibold {node.ok ? 'text-[#111827]' : 'text-[#B45309]'} block">{node.reading}</span>
+                  <span class="rv-mono text-[9px] text-[#8A9099]">{es ? 'Norma' : 'Spec'} {node.tolerance}</span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
       </div>
-      <span class="text-[10px] tracking-tight">Resumen</span>
-    </button>
 
-    <!-- TAB 2: SEGUIMIENTO -->
-    <button
-      type="button"
-      onclick={() => (activeTab = 'tracking')}
-      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer {activeTab === 'tracking' ? 'text-[#FFCD00] font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-    >
-      <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Seguimiento</span>
-    </button>
-
-    <!-- TAB 3: SENSORES -->
-    <button
-      type="button"
-      onclick={() => (activeTab = 'sensors')}
-      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer {activeTab === 'sensors' ? 'text-[#FFCD00] font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-    >
-      <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Sensores</span>
-    </button>
-
-    <!-- TAB 4: PERFIL (JEFE DE PLANTA) -->
-    <button
-      type="button"
-      onclick={() => (activeTab = 'profile')}
-      class="flex flex-col items-center gap-1 transition px-2 cursor-pointer {activeTab === 'profile' ? 'text-[#FFCD00] font-semibold' : 'text-zinc-500 hover:text-zinc-300'}"
-    >
-      <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-      </svg>
-      <span class="text-[10px] tracking-tight">Perfil</span>
-    </button>
+    <!-- =============================================================== -->
+    <!-- TAB 4: PERFIL (IDENTITY DATA SHEET)                             -->
+    <!-- =============================================================== -->
+    {:else if activeTab === 'profile'}
+      <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
+        <div class="rv-panel overflow-hidden">
+          {@render panelBar('Identity Data · Operador responsable', 'ID-OPR-786')}
+          <div class="divide-y divide-[#EAECEF] text-[11px]">
+            <div class="grid grid-cols-[120px_1fr] px-3 py-2">
+              <span class="text-[#6B7280]">{es ? 'Nombre' : 'Name'}</span>
+              <span class="font-medium text-[#111827]">Carlos Hinostroza</span>
+            </div>
+            <div class="grid grid-cols-[120px_1fr] px-3 py-2">
+              <span class="text-[#6B7280]">{es ? 'Cargo' : 'Role'}</span>
+              <span class="text-[#111827]">{es ? 'Jefe de Planta y Operaciones' : 'Plant & Operations Manager'}</span>
+            </div>
+            <div class="grid grid-cols-[120px_1fr] px-3 py-2">
+              <span class="text-[#6B7280]">{es ? 'Instalación' : 'Facility'}</span>
+              <span class="rv-mono text-[#111827]">Planta Central · Sector Sur</span>
+            </div>
+            <div class="grid grid-cols-[120px_1fr] px-3 py-2">
+              <span class="text-[#6B7280]">{es ? 'Certificación' : 'Certification'}</span>
+              <span class="rv-mono text-[#15803D]">ITO Nivel III · Activo</span>
+            </div>
+            <div class="grid grid-cols-[120px_1fr] px-3 py-2">
+              <span class="text-[#6B7280]">{es ? 'Tonelaje turno' : 'Shift tonnage'}</span>
+              <span class="rv-mono text-[#111827]">420.0 t / 500.0 t</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
   </div>
 
-  <!-- Bottom Sheet Modal for Truck IoT Inspection -->
+  <!-- Bottom Tab Bar -->
+  <nav
+    id="bottom-tabbar"
+    class="shrink-0 h-13 bg-[#F6F7F8] border-t border-[#DCDFE4] flex items-center justify-around px-2 z-20"
+  >
+    {#each [
+      { id: 'summary', label: es ? 'Resumen' : 'Summary', d: 'M3 13h4v7H3zM10 8h4v12h-4zM17 4h4v16h-4z' },
+      { id: 'tracking', label: es ? 'Seguimiento' : 'Tracking', d: 'M4 6h16M4 12h16M4 18h10' },
+      { id: 'sensors', label: es ? 'Sensores' : 'Sensors', d: 'M12 3v4m0 10v4M3 12h4m10 0h4m-9-4a4 4 0 100 8 4 4 0 000-8z' },
+      { id: 'profile', label: es ? 'Perfil' : 'Profile', d: 'M12 11a4 4 0 100-8 4 4 0 000 8zM4 20a8 8 0 0116 0' }
+    ] as tab}
+      <button
+        type="button"
+        onclick={() => (activeTab = tab.id as any)}
+        class="flex flex-col items-center gap-[3px] px-2 py-1 transition cursor-pointer {activeTab === tab.id ? 'text-[#111827]' : 'text-[#8A9099] hover:text-[#374151]'}"
+      >
+        <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d={tab.d} />
+        </svg>
+        <span class="text-[9.5px] {activeTab === tab.id ? 'font-medium' : ''}">{tab.label}</span>
+      </button>
+    {/each}
+  </nav>
+
   {#if sheetData}
     <ZeaSheet
       theme="industrial"
+      variant="light"
       isOpen={sheetOpen}
       avatarText={sheetData.code}
-      title="{sheetData.code} · {sheetData.driver}"
-      subtitle="{sheetData.type} · {sheetData.plant}"
-      progressLabel="Carga en tolva ({sheetData.loadTon} de {sheetData.maxTon} t)"
-      progressValueText="{sheetData.temp} en tambor"
+      title="{sheetData.code} · {sheetData.operator}"
+      subtitle="{sheetData.mix} · {sheetData.route}"
+      progressLabel={es ? `Carga (${sheetData.loadTon} de ${sheetData.maxTon} t)` : `Load (${sheetData.loadTon} of ${sheetData.maxTon} t)`}
+      progressValueText={sheetData.temp}
       progressPct={Math.round((sheetData.loadTon / sheetData.maxTon) * 100)}
       stats={[
-        { label: 'Temperatura', value: sheetData.temp },
-        { label: 'Destino', value: sheetData.destination },
-        { label: 'Estado', value: sheetData.status },
-        { label: 'Arribo Estimado', value: sheetData.eta }
+        { label: es ? 'Temperatura' : 'Temperature', value: sheetData.temp },
+        { label: es ? 'Ruta' : 'Route', value: sheetData.route },
+        { label: es ? 'Estado' : 'Status', value: sheetData.status },
+        { label: 'ETA', value: sheetData.eta }
       ]}
-      onClose={closeSheet}
+      onClose={() => (sheetOpen = false)}
     />
   {/if}
-
-  <!-- Toast Notification -->
-  {#if toastMessage}
-    <div
-      class="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-[#221F10] border border-[#FFCD00]/40 text-[#FFCD00] font-semibold text-xs rounded-full shadow-2xl z-50 flex items-center gap-2 pointer-events-none"
-      transition:fade={{ duration: 150 }}
-    >
-      <span class="w-1.5 h-1.5 rounded-full bg-[#FFCD00] animate-ping"></span>
-      <span>{toastMessage}</span>
-    </div>
-  {/if}
 </div>
+
+<style>
+  .rv-sans {
+    font-family: 'Inter', 'Helvetica Neue', Arial, system-ui, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  .rv-mono {
+    font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .rv-panel {
+    background: #ffffff;
+    border: 1px solid #d8dce2;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+  .rv-btn-primary {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: #1e293b;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .rv-btn-primary:hover {
+    background: #334155;
+  }
+  .rv-btn-secondary {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1e293b;
+    border: 1px solid #d4d8df;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .rv-btn-secondary:hover {
+    background: #f3f4f6;
+  }
+</style>

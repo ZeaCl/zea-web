@@ -59,7 +59,7 @@
       <div class="flex items-center gap-3">
         <div
           class="w-11 h-11 rounded-full {isLight ? 'bg-zinc-100 text-zinc-900 border border-zinc-200' : 'bg-[#25252D] text-white'} flex items-center justify-center text-[14px] font-semibold font-mono"
-          style="{theme === 'industrial' ? `background-color: ${cfg.accentMuted}; color: ${cfg.accent}; border: 1px solid ${cfg.accentBorder};` : ''}"
+          style="{theme === 'industrial' && !isLight ? `background-color: ${cfg.accentMuted}; color: ${cfg.accent}; border: 1px solid ${cfg.accentBorder};` : ''}"
         >
           {avatarText}
         </div>
