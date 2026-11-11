@@ -76,10 +76,10 @@
                 class="text-left group cursor-pointer transition"
                 data-testid="pillar-venture"
               >
-                <span class="text-xs font-semibold block transition {activePillar === 'venture' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                <span class="hv-serif text-[16px] sm:text-[17px] font-normal leading-none block transition {activePillar === 'venture' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
                   {t.mobilePlatform.pillars.venture.title}
                 </span>
-                <span class="text-[11px] text-zinc-300 font-medium block mt-0.5 font-sans leading-tight">
+                <span class="text-[11px] text-zinc-300 font-medium block mt-2 font-sans leading-tight">
                   {t.mobilePlatform.pillars.venture.label}
                 </span>
                 <span class="text-[10px] text-zinc-400 block mt-1 font-sans leading-tight whitespace-pre-line">

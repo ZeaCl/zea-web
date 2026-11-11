@@ -11,6 +11,11 @@
     font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
   }
 
+  .hv-serif, .font-editorial {
+    font-family: 'Newsreader', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    font-optical-sizing: auto;
+  }
+
   :root {
     --z-bg: #1c1c22;
     --z-surface: #25252d;
