@@ -32,16 +32,18 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
   - Encabezado móvil: `Cooper` (en tipografía serif grande y limpia) + selector de modo Chat / App.
   - Componente: `src/lib/components/interactive/ZeaFundsScreen.svelte`.
 
-### 2. **Industrial** (Fusión Bitumix + ASPAL)
-* **Industria:** Plantas de asfalto/áridos, faenas viales, cálculo de cubicación y obra en terreno.
+### 2. **Allisbox** (Anteriormente *Industrial* / Fusión Bitumix + ASPAL)
+* **Industria:** Gemelo Digital Industrial, faenas viales, plantas de asfalto/áridos, cálculo de cubicación y obra en terreno.
 * **ADN del producto:**
+  - **Allisbox:** El espacio de trabajo y gemelo digital 3D unificado para industrias pesadas.
   - **Bitumix:** Automatización multi-planta de producción de mezclas asfálticas, fórmulas de ligantes, temperaturas de despacho y bitácora diaria sin transcripciones manuales.
-  - **ASPAL:** Extracción y cubicación automatizada desde planos CAD/BIM (DWG / PDF), control de mermas dinámicas y contraste entre lo presupuestado y lo extendido en obra.
+  - **ASPAL:** Extracción y cubicación automatizada bajo Norma NCh 353 desde planos CAD/BIM (DWG / PDF), control de mermas dinámicas y contraste entre lo presupuestado y lo extendido en obra.
 * **Estética de la pantalla:** Inspirada en **Autodesk Revit**:
   - Paleta CAD/BIM Workstation en gris técnico (`#EFEFEF` / `#F6F7F8`, paneles ortogonales blancos con borde `#DCDFE4`).
   - Modelo axonométrico 3D isométrico en escala de grises sombreada (*Shaded / Hidden Line* con poché negro en cortes, losas y núcleo de silos).
   - Vistas y tablas técnicas: `3D - Coordination Mech`, `Properties` (parte diario), `Schedule` (balance de masa del turno) y árbol de activos.
   - Componente: `src/lib/components/interactive/ZeaEdgeScreen.svelte`.
+  - Repositorio dedicado: `/Users/dev/Documents/zea/allisbox`.
 
 ### 3. **G.U.S.** (Anteriormente *Sport*)
 * **Industria:** Operaciones Deportivas / Alto Rendimiento.
@@ -69,7 +71,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 ### Selector de Productos (Columna izquierda)
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
 1. **Cooper** — *Capital privado*
-2. **Industrial** — *Procesos y faenas*
+2. **Allisbox** — *Gemelo digital y faenas* (anteriormente Industrial)
 3. **G.U.S.** (Good for US) — *Plataforma de gestión deportiva*
 
 Al seleccionar cualquiera de los 3 productos, el simulador móvil de la derecha conmuta instantáneamente a su respectiva pantalla nativa interactiva. Inicia por defecto en **Cooper**.
