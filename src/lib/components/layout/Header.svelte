@@ -125,7 +125,7 @@
         data-testid="get-started-btn"
         class="px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-md bg-white hover:bg-zinc-200 text-black active:scale-[0.98]"
       >
-        Get Started
+        {lang === 'es' ? 'Comenzar' : 'Get Started'}
       </button>
     </div>
   </div>

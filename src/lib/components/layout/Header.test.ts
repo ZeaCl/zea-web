@@ -58,7 +58,7 @@ describe('Header component', () => {
 
     const btn = screen.getByTestId('get-started-btn');
     expect(btn).toBeInTheDocument();
-    expect(btn).toHaveTextContent('Get Started');
+    expect(btn).toHaveTextContent('Comenzar');
     expect(btn).toHaveClass('bg-white');
     expect(btn).toHaveClass('rounded-xl');
 
