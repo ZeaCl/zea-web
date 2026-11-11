@@ -86,7 +86,7 @@
                   <span class="text-[10px] text-zinc-500 font-sans transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  {lang === 'es' ? 'Motor multi-agente' : 'Multi-agent engine'}
+                  {lang === 'es' ? 'Infraestructura de agentes autónomos para operaciones complejas' : 'Autonomous agent infrastructure for complex operations'}
                 </span>
               </button>
             </div>
