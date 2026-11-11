@@ -1,6 +1,7 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import Header from '$lib/components/layout/Header.svelte';
+  import ZeaLogo from '$lib/components/atoms/ZeaLogo.svelte';
   import MobileSimulator from '$lib/components/interactive/MobileSimulator.svelte';
   import ZeaContactDrawer from '$lib/components/interactive/ZeaContactDrawer.svelte';
   import { content, type Language } from '$lib/config/i18n';
@@ -58,15 +59,13 @@
       <!-- Left Column: Contextual Stage (Manifesto + Productos + Verticales) -->
       <div class="w-full lg:col-span-6 flex flex-col justify-center space-y-7">
         <div class="space-y-6 text-left">
-          <!-- ZEA Manifesto Block (Left Dotted Rule + Sans Title + Monospace Body) -->
-          <div class="border-l border-dotted border-white/45 pl-4 sm:pl-5 py-0.5 space-y-1">
-            <p class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug">
-              ZEA
-            </p>
-            <h1 class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug">
+          <!-- ZEA Manifesto Block (Left Dotted Rule + ZEA Logo + Sans Title + Monospace Body) -->
+          <div class="border-l border-dotted border-white/45 pl-4 sm:pl-5 py-0.5 space-y-1.5">
+            <ZeaLogo class="h-3.5 sm:h-4 w-auto text-white" />
+            <h1 class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug pt-0.5">
               Technology Lab &amp; Product Studio.
             </h1>
-            <p class="font-mono text-[13px] sm:text-[14px] text-zinc-300 leading-relaxed pt-1 max-w-xl">
+            <p class="font-mono text-[13px] sm:text-[14px] text-zinc-300 leading-relaxed pt-0.5 max-w-xl">
               We engineer deep technical foundations to power proprietary products across interactive entertainment, specialized operations, and real-world systems.
             </p>
           </div>
