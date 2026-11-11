@@ -105,7 +105,7 @@
                 data-testid="pillar-sport"
               >
                 <span class="text-xs font-semibold block transition {activePillar === 'sport' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  G.U.S. <span class="text-[11px] font-normal text-zinc-400 no-underline">(Good for US)</span>
+                  {t.mobilePlatform.pillars.sport.title}
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                   {t.mobilePlatform.pillars.sport.label}

@@ -45,9 +45,9 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
   - Componente: `src/lib/components/interactive/ZeaEdgeScreen.svelte`.
   - Repositorio dedicado: `/Users/dev/Documents/zea/allisbox`.
 
-### 3. **G.U.S.** (Anteriormente *Sport*)
+### 3. **Gus** (Anteriormente *Sport*)
 * **Industria:** Operaciones Deportivas / Alto Rendimiento.
-* **Significado:** **G.U.S.** es el acrónimo de **"Good for US"** (juego de palabras nativo en inglés para salud, equipo y bienestar colectivo) presentado con personalidad de entrenador/coach senior de confianza.
+* **Tono y Personalidad:** Presentado con la personalidad de un entrenador/coach senior de confianza (Gustavo).
 * **Subtítulo:** *Plataforma de gestión deportiva* / *Sports management platform*.
 * **Componente:** `src/lib/components/interactive/ZeaSportScreen.svelte`.
 
@@ -72,7 +72,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
 1. **Cooper** — *Capital privado*
 2. **Allisbox** — *Gemelo digital y faenas* (anteriormente Industrial)
-3. **G.U.S.** (Good for US) — *Plataforma de gestión deportiva*
+3. **Gus** — *Plataforma de gestión deportiva*
 
 Al seleccionar cualquiera de los 3 productos, el simulador móvil de la derecha conmuta instantáneamente a su respectiva pantalla nativa interactiva. Inicia por defecto en **Cooper**.
 

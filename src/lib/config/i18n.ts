@@ -298,7 +298,7 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Trazabilidad de faenas e inspección 100% offline'
         },
         sport: {
-          title: 'G.U.S.',
+          title: 'Gus',
           label: 'Plataforma de gestión deportiva',
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
@@ -452,7 +452,7 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Field traceability & 100% offline inspections'
         },
         sport: {
-          title: 'G.U.S.',
+          title: 'Gus',
           label: 'Sports management platform',
           desc: 'Coach management, venues & athletes'
         },
