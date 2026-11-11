@@ -70,7 +70,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 
 ### Selector de Productos (Columna izquierda)
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
-1. **Cooper** — *Capital privado*
+1. **Cooper** — *Capital Privado* · Gobernanza de liquidez y llamadas de capital con balance contable auditable en tiempo real
 2. **Allisbox** — *Multiagent System for Architecture, Engineering & Construction* (anteriormente Industrial)
 3. **Gus** — *Plataforma de gestión deportiva*
 

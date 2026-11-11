@@ -304,8 +304,8 @@ export const content: Record<Language, I18nContent> = {
         },
         venture: {
           title: 'Cooper',
-          label: 'Capital privado',
-          desc: 'Gobernanza y gestión de capital privado'
+          label: 'Capital Privado',
+          desc: 'Gobernanza de liquidez y llamadas de capital\ncon balance contable auditable en tiempo real'
         }
       }
     }
@@ -458,8 +458,8 @@ export const content: Record<Language, I18nContent> = {
         },
         venture: {
           title: 'Cooper',
-          label: 'Private capital',
-          desc: 'Private capital & governance'
+          label: 'Private Capital',
+          desc: 'Liquidity governance & capital calls\nwith real-time auditable ledger'
         }
       }
     }
