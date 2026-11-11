@@ -62,8 +62,8 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
   1. Logo vectorial `ZEA`.
   2. Subtítulo: `Estudio de tecnología y productos.` / `Technology & product studio.`
   3. Declaración de principios actual:
-     - **ES:** *"Invertimos en explorar lo desconocido para construir la tecnología que navega operaciones complejas y sistemas del mundo real."*
-     - **ENG:** *"We invest in exploring the unknown to build the technology that navigates complex operations and real-world systems."*
+     - **ES:** *"Invertimos en explorar, para construir la tecnología que navega operaciones complejas y sistemas del mundo real."*
+     - **ENG:** *"We invest in exploring, to build the technology that navigates complex operations and real-world systems."*
   4. Discusión abierta reciente: Evolucionar este texto hacia algo aún más auténtico y no genérico, como: *"Construimos software para industrias donde las cosas pesan, los números importan y el error cuesta caro"* / *"We build software for industries where things are heavy, numbers matter, and mistakes are costly"*.
 
 ### Selector de Productos (Columna izquierda)

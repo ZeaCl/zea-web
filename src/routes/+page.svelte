@@ -59,8 +59,8 @@
             </h1>
             <p class="font-sans text-[13.5px] sm:text-[14px] text-zinc-400 font-normal leading-relaxed max-w-lg pt-0.5">
               {lang === 'es'
-                ? 'Invertimos en explorar lo desconocido para construir la tecnología que navega operaciones complejas y sistemas del mundo real.'
-                : 'We invest in exploring the unknown to build the technology that navigates complex operations and real-world systems.'}
+                ? 'Invertimos en explorar, para construir la tecnología que navega operaciones complejas y sistemas del mundo real.'
+                : 'We invest in exploring, to build the technology that navigates complex operations and real-world systems.'}
             </p>
           </div>
 
