@@ -443,16 +443,16 @@
     class="px-4 pt-2.5 pb-2 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] flex items-center justify-between z-20 shrink-0"
   >
     <div class="flex items-center gap-2">
-      <!-- Harvey Square Monogram -->
+      <!-- Glia Square Monogram (G) -->
       <div
         class="w-7 h-7 rounded bg-[#111111] text-white flex items-center justify-center font-serif font-bold text-xs shadow-xs"
       >
-        H
+        G
       </div>
       <div>
         <div class="flex items-center gap-1.5">
           <h2 class="text-xs font-semibold tracking-tight text-zinc-900 leading-tight">
-            ZEA Funds agent
+            Funds Agent
           </h2>
           <span
             class="inline-flex items-center gap-1 text-[8.5px] font-mono text-zinc-600 bg-zinc-100 border border-zinc-200 px-1.5 py-0.2 rounded"
@@ -517,8 +517,8 @@
                       class="p-3.5 rounded-2xl rounded-tl-xs bg-white border border-[#E5E7EB] text-zinc-800 shadow-[0_1px_3px_rgba(0,0,0,0.03)] leading-relaxed space-y-2"
                     >
                       <div class="flex items-center gap-1.5 text-zinc-900 text-[11px] font-semibold">
-                        <span class="w-4 h-4 rounded bg-[#111111] text-white flex items-center justify-center font-serif text-[9px] font-bold">H</span>
-                        <span>{lang === 'en' ? 'Glia Funds Agent' : 'Glia Agente de Fondos'}</span>
+                        <span class="w-4 h-4 rounded bg-[#111111] text-white flex items-center justify-center font-serif text-[9px] font-bold">G</span>
+                        <span>Funds Agent</span>
                       </div>
                       <p class="text-[12px] text-zinc-700 leading-normal">{msg.text}</p>
                       <span class="text-[9.5px] text-zinc-400 block font-mono">{msg.time}</span>
@@ -615,7 +615,7 @@
               <input
                 type="text"
                 bind:value={chatInputText}
-                placeholder={lang === 'en' ? 'Ask Harvey / Glia about AUM, LPs or Calls...' : 'Pregunta a Glia sobre AUM, LPs o llamadas...'}
+                placeholder={lang === 'en' ? 'Ask Funds Agent about AUM, LPs or Calls...' : 'Pregunta a Funds Agent sobre AUM, LPs o llamadas...'}
                 class="flex-1 bg-[#F8F9FA] border border-[#E2E8F0] rounded-lg px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-400"
               />
               <button
@@ -645,13 +645,13 @@
                 </p>
               </div>
 
-              <!-- Harvey "H Ask Harvey" Style Pill Button -->
+              <!-- Harvey "G Ask Glia" Style Pill Button -->
               <button
                 type="button"
                 onclick={() => (viewMode = 'chat')}
                 class="px-2.5 py-1.5 rounded-full bg-[#111111] hover:bg-zinc-800 text-white text-[11px] font-medium flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer transition"
               >
-                <span class="w-3.5 h-3.5 rounded bg-white/20 text-white flex items-center justify-center font-serif text-[8.5px] font-bold">H</span>
+                <span class="w-3.5 h-3.5 rounded bg-white/20 text-white flex items-center justify-center font-serif text-[8.5px] font-bold">G</span>
                 <span>Ask Glia</span>
               </button>
             </div>
@@ -662,7 +662,7 @@
             >
               <div class="flex items-center gap-2">
                 <span class="w-5 h-5 rounded bg-[#111111] text-white flex items-center justify-center font-serif font-bold text-[10px] shrink-0">
-                  H
+                  G
                 </span>
                 <p class="text-[11px] text-zinc-700 font-sans leading-tight">
                   {lang === 'en'
