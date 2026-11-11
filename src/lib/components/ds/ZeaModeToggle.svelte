@@ -49,7 +49,7 @@
     onclick={() => setMode('chat')}
     aria-label="Modo ZEA Chat AI"
     title="Modo ZEA Chat AI"
-    class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'chat' ? (variant === 'light' ? 'bg-emerald-50 text-emerald-800 border border-emerald-300/80 shadow-xs font-semibold' : 'border shadow-xs font-semibold') : (variant === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300')}"
+    class="px-2 py-1 rounded-full text-xs transition flex items-center gap-1 cursor-pointer {viewMode === 'chat' ? (variant === 'light' ? 'bg-white text-zinc-900 shadow-xs font-semibold' : 'border shadow-xs font-semibold') : (variant === 'light' ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300')}"
     style="{viewMode === 'chat' && variant !== 'light' ? `background-color: ${cfg.accentMuted}; color: ${cfg.accent}; border-color: ${cfg.accentBorder};` : ''}"
     data-testid="mode-chat-btn"
   >
@@ -57,7 +57,7 @@
       <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
       </svg>
-      <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full" style="background-color: {variant === 'light' ? '#059669' : cfg.accent}"></span>
+      <span class="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full" style="background-color: {variant === 'light' ? '#111111' : cfg.accent}"></span>
     </div>
   </button>
 </div>

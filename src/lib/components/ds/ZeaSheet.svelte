@@ -85,12 +85,12 @@
     <div class="mt-3.5 space-y-2">
       <div class="flex items-baseline justify-between text-[12px]">
         <span class="{isLight ? 'text-zinc-500' : 'text-zinc-400'}">{progressLabel}</span>
-        <span class="{isLight ? 'text-zinc-900' : 'text-white'} font-semibold font-mono">{progressValueText}</span>
+        <span class="{isLight ? 'text-zinc-900 [font-family:Newsreader,Georgia,serif] text-[14px]' : 'text-white font-semibold font-mono'}">{progressValueText}</span>
       </div>
       <div class="h-2 rounded-full {isLight ? 'bg-zinc-100' : 'bg-[#25252D]'} overflow-hidden">
         <div
           class="h-full rounded-full transition-all duration-300"
-          style="width: {Math.max(0, Math.min(100, progressPct))}%; background-color: {isLight ? '#065F46' : cfg.accent};"
+          style="width: {Math.max(0, Math.min(100, progressPct))}%; background-color: {isLight ? '#3F4148' : cfg.accent};"
         ></div>
       </div>
 
@@ -100,7 +100,7 @@
           {#each stats as stat}
             <div class="p-2.5 rounded-xl {isLight ? 'bg-[#F8F9FA] border border-[#E5E7EB]' : 'bg-black/40'}">
               <span class="text-[11px] {isLight ? 'text-zinc-500' : 'text-zinc-400'} block">{stat.label}</span>
-              <span class="font-semibold {isLight ? 'text-zinc-900' : 'text-white'} text-[13.5px] truncate block font-mono">
+              <span class="font-semibold {isLight ? 'text-zinc-900 [font-family:Newsreader,Georgia,serif] font-normal text-[15px]' : 'text-white font-mono text-[13.5px]'} truncate block">
                 {stat.value}
               </span>
             </div>
