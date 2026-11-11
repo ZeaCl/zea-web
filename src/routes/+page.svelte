@@ -63,10 +63,14 @@
           <div class="border-l border-dotted border-white/35 pl-4 sm:pl-5 py-0.5 space-y-2">
             <ZeaLogo class="h-3.5 sm:h-4 w-auto text-white" />
             <h1 class="font-sans text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-white leading-snug pt-0.5">
-              Technology lab &amp; product studio.
+              {lang === 'es'
+                ? 'Laboratorio tecnológico y estudio de productos.'
+                : 'Technology lab & product studio.'}
             </h1>
             <p class="font-sans text-[13.5px] sm:text-[14px] text-zinc-400 font-normal leading-relaxed max-w-lg">
-              We engineer deep technical foundations to power proprietary products across interactive entertainment, specialized operations, and real-world systems.
+              {lang === 'es'
+                ? 'Desarrollamos bases técnicas profundas para impulsar productos propios en entretenimiento interactivo, operaciones especializadas y sistemas del mundo real.'
+                : 'We engineer deep technical foundations to power proprietary products across interactive entertainment, specialized operations, and real-world systems.'}
             </p>
           </div>
 
@@ -87,7 +91,7 @@
                   <span class="text-[10px] text-zinc-500 font-sans transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Multi-agent engine
+                  {lang === 'es' ? 'Motor multi-agente' : 'Multi-agent engine'}
                 </span>
               </button>
             </div>

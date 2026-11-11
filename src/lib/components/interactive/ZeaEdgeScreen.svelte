@@ -496,7 +496,7 @@
       </g>
 
       <!-- Bottom Viewport Status Bar Metadata -->
-      <text x="10" y="132" fill="#4B5563" font-size="6.2" font-family="Geist Mono, monospace">VISUAL STYLE: SHADED · HIDDEN LINE</text>
+      <text x="10" y="132" fill="#4B5563" font-size="6.2" font-family="Geist Mono, monospace">{es ? 'ESTILO VISUAL: SOMBREADO · LÍNEA OCULTA' : 'VISUAL STYLE: SHADED · HIDDEN LINE'}</text>
     </svg>
   </div>
 {/snippet}
@@ -705,7 +705,7 @@
                     <div class="space-y-2.5 pl-7">
                       <!-- 1. AHORA: MEP Coordination Viewport + Properties -->
                       <div class="rv-panel overflow-hidden">
-                        {@render panelBar(es ? 'Ahora · 3D - Coordination Mech · Lote #114' : 'Now · 3D - Coordination Mech · Batch #114', '1:50')}
+                        {@render panelBar(es ? 'Ahora · Coordinación 3D · Lote #114' : 'Now · 3D Coordination · Batch #114', '1:50')}
                         {@render mepViewport()}
                         <div class="divide-y divide-[#EAECEF] text-[11px]">
                           <div class="grid grid-cols-[1fr_auto] px-3 py-1.5">
@@ -737,13 +737,13 @@
 
                       <!-- 2. HOY: Properties Table (Parte Diario) -->
                       <div class="rv-panel overflow-hidden">
-                        {@render panelBar(es ? 'Hoy · Properties · Parte diario de planta' : 'Today · Properties · Plant daily log', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
+                        {@render panelBar(es ? 'Hoy · Propiedades · Parte diario de planta' : 'Today · Properties · Plant daily log', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
                         {@render propertiesTable(dailyProperties)}
                       </div>
 
                       <!-- 3. SEMANA: Weekly Production Chart -->
                       <div class="rv-panel overflow-hidden">
-                        {@render panelBar(es ? 'Esta semana · Producción diaria (t)' : 'This week · Daily production (t)', 'Meta 400 t')}
+                        {@render panelBar(es ? 'Esta semana · Producción diaria (t)' : 'This week · Daily production (t)', es ? 'Meta 400 t' : 'Target 400 t')}
                         <div class="p-3 space-y-2">
                           <div class="flex items-baseline justify-between">
                             <div class="flex items-baseline gap-1.5">
@@ -763,7 +763,7 @@
 
                       <!-- 4. MES: Project Browser Tree -->
                       <div class="rv-panel overflow-hidden">
-                        {@render panelBar(es ? 'Este mes · Project Browser · Activos y flota' : 'This month · Project Browser · Assets & fleet', 'MEP / STR')}
+                        {@render panelBar(es ? 'Este mes · Navegador de proyecto · Activos y flota' : 'This month · Project Browser · Assets & fleet', 'MEP / STR')}
                         {@render projectBrowserTree(3)}
                       </div>
 
@@ -843,7 +843,7 @@
           <div class="flex-1 overflow-y-auto px-3.5 py-3.5 space-y-3 text-left">
             <!-- MEP Viewport Panel -->
             <div class="rv-panel overflow-hidden">
-              {@render panelBar('3D - Coordination Mech · Lote #114', '1:50')}
+              {@render panelBar(es ? 'Coordinación 3D · Lote #114' : '3D Coordination · Batch #114', '1:50')}
               {@render mepViewport()}
               <div class="p-2.5 bg-white flex items-center justify-between gap-2">
                 <div class="min-w-0">
@@ -858,13 +858,13 @@
 
             <!-- Properties Panel -->
             <div class="rv-panel overflow-hidden">
-              {@render panelBar('Properties · Parte diario de planta', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
+              {@render panelBar(es ? 'Propiedades · Parte diario de planta' : 'Properties · Plant daily log', `${dailyProperties.filter((r) => r.verified).length}/${dailyProperties.length}`)}
               {@render propertiesTable(dailyProperties)}
             </div>
 
             <!-- Weekly Production -->
             <div class="rv-panel overflow-hidden">
-              {@render panelBar(es ? 'Analyze · Producción semanal' : 'Analyze · Weekly production', '420.0 t')}
+              {@render panelBar(es ? 'Análisis · Producción semanal' : 'Analyze · Weekly production', '420.0 t')}
               <div class="p-3 space-y-2">
                 {@render weeklyChart()}
               </div>
@@ -872,7 +872,7 @@
 
             <!-- Project Browser -->
             <div class="rv-panel overflow-hidden">
-              {@render panelBar('Project Browser · Planta Central', '18 MX')}
+              {@render panelBar(es ? 'Navegador de proyecto · Planta Central' : 'Project Browser · Central Plant', '18 MX')}
               {@render projectBrowserTree(4)}
             </div>
           </div>
@@ -885,7 +885,7 @@
     {:else if activeTab === 'tracking'}
       <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
         <div class="rv-panel overflow-hidden">
-          {@render panelBar(es ? 'Schedule · Balance de masa del turno' : 'Schedule · Shift mass balance', 'Norma NCh')}
+          {@render panelBar(es ? 'Programación · Balance de masa del turno' : 'Schedule · Shift mass balance', es ? 'Norma NCh' : 'Spec NCh')}
           <div class="grid grid-cols-3 divide-x divide-[#EAECEF] text-center py-2.5">
             <div>
               <span class="rv-mono text-[18px] font-semibold text-[#111827] block">420.0 t</span>
@@ -903,7 +903,7 @@
         </div>
 
         <div class="rv-panel overflow-hidden">
-          {@render panelBar(es ? 'Unidades de transporte en ruta' : 'Transport units on route', 'GPS / Telemetría')}
+          {@render panelBar(es ? 'Unidades de transporte en ruta' : 'Transport units on route', es ? 'GPS / Telemetría' : 'GPS / Telemetry')}
           <div class="divide-y divide-[#EAECEF]">
             {#each fleetUnits as unit}
               <button
@@ -935,12 +935,12 @@
     {:else if activeTab === 'sensors'}
       <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
         <div class="rv-panel overflow-hidden">
-          {@render panelBar('3D - Coordination Mech · Telemetría en vivo', 'MEP 1:50')}
+          {@render panelBar(es ? 'Coordinación 3D · Telemetría en vivo' : '3D Coordination · Live telemetry', 'MEP 1:50')}
           {@render mepViewport()}
         </div>
 
         <div class="rv-panel overflow-hidden">
-          {@render panelBar(es ? 'System Browser · Nodos de instrumentación' : 'System Browser · Instrumentation nodes', '4 canales')}
+          {@render panelBar(es ? 'Navegador de sistemas · Nodos de instrumentación' : 'System Browser · Instrumentation nodes', es ? '4 canales' : '4 channels')}
           <div class="divide-y divide-[#EAECEF]">
             {#each sensorNodes as node}
               <div class="p-3 flex items-center justify-between gap-2">
@@ -968,7 +968,7 @@
     {:else if activeTab === 'profile'}
       <div class="h-full overflow-y-auto px-3.5 py-3.5 space-y-3 text-left" in:fade={{ duration: 150 }}>
         <div class="rv-panel overflow-hidden">
-          {@render panelBar('Identity Data · Operador responsable', 'ID-OPR-786')}
+          {@render panelBar(es ? 'Datos de identidad · Operador responsable' : 'Identity Data · Responsible operator', 'ID-OPR-786')}
           <div class="divide-y divide-[#EAECEF] text-[11px]">
             <div class="grid grid-cols-[120px_1fr] px-3 py-2">
               <span class="text-[#6B7280]">{es ? 'Nombre' : 'Name'}</span>
@@ -980,11 +980,11 @@
             </div>
             <div class="grid grid-cols-[120px_1fr] px-3 py-2">
               <span class="text-[#6B7280]">{es ? 'Instalación' : 'Facility'}</span>
-              <span class="rv-mono text-[#111827]">Planta Central · Sector Sur</span>
+              <span class="rv-mono text-[#111827]">{es ? 'Planta Central · Sector Sur' : 'Central Plant · South Sector'}</span>
             </div>
             <div class="grid grid-cols-[120px_1fr] px-3 py-2">
               <span class="text-[#6B7280]">{es ? 'Certificación' : 'Certification'}</span>
-              <span class="rv-mono text-[#15803D]">ITO Nivel III · Activo</span>
+              <span class="rv-mono text-[#15803D]">{es ? 'ITO Nivel III · Activo' : 'ITO Level III · Active'}</span>
             </div>
             <div class="grid grid-cols-[120px_1fr] px-3 py-2">
               <span class="text-[#6B7280]">{es ? 'Tonelaje turno' : 'Shift tonnage'}</span>

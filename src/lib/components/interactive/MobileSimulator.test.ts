@@ -197,12 +197,12 @@ describe('MobileSimulator component', () => {
     expect(screen.getByTestId('zea-edge-screen')).toBeInTheDocument();
     expect(screen.getAllByText('Industrial Agent').length).toBeGreaterThanOrEqual(1);
     expect(document.getElementById('bottom-tabbar')).toBeInTheDocument();
-    expect(screen.getByText(/3D - Coordination Mech/)).toBeInTheDocument();
+    expect(screen.getByText(/Coordinación 3D · Lote #114/)).toBeInTheDocument();
 
     // Cambiar a pestaña Seguimiento
     const seguimientoTab = screen.getByText('Seguimiento');
     await fireEvent.click(seguimientoTab);
-    expect(screen.getByText(/Schedule · Balance de masa del turno/)).toBeInTheDocument();
+    expect(screen.getByText(/Programación · Balance de masa del turno/)).toBeInTheDocument();
     expect(screen.getByText(/Unidades de transporte en ruta/)).toBeInTheDocument();
   });
 });

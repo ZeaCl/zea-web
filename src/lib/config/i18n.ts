@@ -299,12 +299,12 @@ export const content: Record<Language, I18nContent> = {
         },
         sport: {
           title: 'Sport',
-          label: 'Sport operations',
+          label: 'Operaciones deportivas',
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
           title: 'Funds',
-          label: 'Private capital',
+          label: 'Capital privado',
           desc: 'Gobernanza y gestión de capital privado'
         }
       }
