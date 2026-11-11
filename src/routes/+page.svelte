@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { slide } from 'svelte/transition';
   import Header from '$lib/components/layout/Header.svelte';
   import MobileSimulator from '$lib/components/interactive/MobileSimulator.svelte';
   import ZeaContactDrawer from '$lib/components/interactive/ZeaContactDrawer.svelte';
@@ -6,9 +7,10 @@
 
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
-  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('edge');
+  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('venture');
+  let showVerticals = $state(true);
   let isContactDrawerOpen = $state(false);
-  let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'core'>('industrial');
+  let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'core'>('funds');
   const t = $derived(content[lang]);
 
   let skills = $state({
@@ -17,9 +19,15 @@
     security: false
   });
 
-  function openContact(focus: 'industrial' | 'sport' | 'funds' | 'core' = 'industrial') {
+  function openContact(focus: 'industrial' | 'sport' | 'funds' | 'core' = 'funds') {
     selectedContactFocus = focus;
     isContactDrawerOpen = true;
+  }
+
+  function handleGliaClick() {
+    showVerticals = true;
+    activePillar = 'glia';
+    skills.vision = false;
   }
 </script>
 
@@ -47,126 +55,96 @@
 
     <!-- Main Grid: Left Column Contextual View + Right Mobile Simulator -->
     <div class="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center justify-center">
-      <!-- Left Column: Contextual Stage (Verticales + Plataforma Core) -->
-      <div class="w-full lg:col-span-6 flex flex-col justify-center space-y-6">
-        <div class="space-y-4 text-left">
-          <h1 class="text-4xl sm:text-5xl lg:text-5xl font-extrabold leading-[1.08] tracking-[-0.03em] text-white">
-            <span class="text-white">{t.mobilePlatform.titlePrefix}</span><span class="z-gradient-text">{t.mobilePlatform.titleHighlight}</span>
-          </h1>
-
-          <!-- 1. Verticales Operativas (Industrial, Sport, Funds) -->
-          <div class="pt-2">
-            <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
-              {t.mobilePlatform.industriesLabel}
-            </span>
-            <div class="grid grid-cols-3 gap-2.5 border-t border-white/[0.08] pt-3">
-              <button
-                type="button"
-                onclick={() => activePillar = 'edge'}
-                class="text-left group cursor-pointer transition"
-                data-testid="pillar-edge"
-              >
-                <span class="text-xs font-semibold block transition {activePillar === 'edge' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  {t.mobilePlatform.pillars.edge.title}
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
-                  {t.mobilePlatform.pillars.edge.label}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onclick={() => activePillar = 'sport'}
-                class="text-left group cursor-pointer transition"
-                data-testid="pillar-sport"
-              >
-                <span class="text-xs font-semibold block transition {activePillar === 'sport' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  {t.mobilePlatform.pillars.sport.title}
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
-                  {t.mobilePlatform.pillars.sport.label}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onclick={() => activePillar = 'venture'}
-                class="text-left group cursor-pointer transition"
-                data-testid="pillar-venture"
-              >
-                <span class="text-xs font-semibold block transition {activePillar === 'venture' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  {t.mobilePlatform.pillars.venture.title}
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
-                  {t.mobilePlatform.pillars.venture.label}
-                </span>
-              </button>
-            </div>
+      <!-- Left Column: Contextual Stage (Manifesto + Productos + Verticales) -->
+      <div class="w-full lg:col-span-6 flex flex-col justify-center space-y-7">
+        <div class="space-y-6 text-left">
+          <!-- ZEA Manifesto Block (Left Dotted Rule + Sans Title + Monospace Body) -->
+          <div class="border-l border-dotted border-white/45 pl-4 sm:pl-5 py-0.5 space-y-1">
+            <p class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug">
+              ZEA
+            </p>
+            <h1 class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug">
+              Technology Lab &amp; Product Studio.
+            </h1>
+            <p class="font-mono text-[13px] sm:text-[14px] text-zinc-300 leading-relaxed pt-1 max-w-xl">
+              We engineer deep technical foundations to power proprietary products across interactive entertainment, specialized operations, and real-world systems.
+            </p>
           </div>
 
-          <!-- 2. Plataforma Core (Glia, Thalamus, Cerebelum, Occipital) -->
-          <div class="pt-4">
+          <!-- 1. Productos (Glia) -->
+          <div class="pt-1">
             <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
-              {lang === 'es' ? 'Plataforma Core' : 'Platform Core'}
+              {lang === 'es' ? 'Productos' : 'Products'}
             </span>
-            <div class="grid grid-cols-4 gap-2.5 border-t border-white/[0.08] pt-3">
+            <div class="border-t border-white/[0.08] pt-3">
               <button
                 type="button"
-                onclick={() => { activePillar = 'glia'; skills.vision = false; }}
-                class="text-left group cursor-pointer transition"
+                onclick={handleGliaClick}
+                class="text-left group cursor-pointer transition inline-flex flex-col"
                 data-testid="core-glia"
               >
-                <span class="text-xs font-semibold block transition {activePillar === 'glia' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
-                  Glia
+                <span class="text-xs font-semibold flex items-center gap-1.5 transition {activePillar === 'glia' || showVerticals ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
+                  <span>Glia</span>
+                  <span class="text-[10px] text-zinc-500 font-mono transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
                   Multi-Agent Engine
                 </span>
               </button>
-
-              <button
-                type="button"
-                onclick={() => { activePillar = 'glia'; skills.security = !skills.security; skills.vision = false; }}
-                class="text-left group cursor-pointer transition"
-                data-testid="core-thalamus"
-              >
-                <span class="text-xs font-semibold block transition {skills.security ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
-                  Thalamus
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Auth & Enclave
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onclick={() => { activePillar = 'glia'; skills.vision = false; }}
-                class="text-left group cursor-pointer transition"
-                data-testid="core-cerebelum"
-              >
-                <span class="text-xs font-semibold block transition text-zinc-300 group-hover:text-white">
-                  Cerebelum
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Workflows Engine
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onclick={() => { skills.vision = !skills.vision; }}
-                class="text-left group cursor-pointer transition"
-                data-testid="core-occipital"
-              >
-                <span class="text-xs font-semibold block transition {skills.vision ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
-                  Occipital
-                </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Vision & Image AI
-                </span>
-              </button>
             </div>
           </div>
+
+          <!-- 2. Verticales Operativas (Desplegadas al hacer click en Glia) -->
+          {#if showVerticals}
+            <div class="pt-1" transition:slide={{ duration: 180 }}>
+              <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
+                {t.mobilePlatform.industriesLabel}
+              </span>
+              <div class="grid grid-cols-3 gap-2.5 border-t border-white/[0.08] pt-3">
+                <button
+                  type="button"
+                  onclick={() => (activePillar = 'venture')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="pillar-venture"
+                >
+                  <span class="text-xs font-semibold block transition {activePillar === 'venture' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                    {t.mobilePlatform.pillars.venture.title}
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                    {t.mobilePlatform.pillars.venture.label}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activePillar = 'edge')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="pillar-edge"
+                >
+                  <span class="text-xs font-semibold block transition {activePillar === 'edge' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                    {t.mobilePlatform.pillars.edge.title}
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                    {t.mobilePlatform.pillars.edge.label}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick={() => (activePillar = 'sport')}
+                  class="text-left group cursor-pointer transition"
+                  data-testid="pillar-sport"
+                >
+                  <span class="text-xs font-semibold block transition {activePillar === 'sport' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                    {t.mobilePlatform.pillars.sport.title}
+                  </span>
+                  <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans">
+                    {t.mobilePlatform.pillars.sport.label}
+                  </span>
+                </button>
+              </div>
+            </div>
+          {/if}
         </div>
       </div>
 
