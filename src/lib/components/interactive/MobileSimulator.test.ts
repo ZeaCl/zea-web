@@ -150,7 +150,7 @@ describe('MobileSimulator component', () => {
     });
 
     expect(screen.getByTestId('zea-funds-screen')).toBeInTheDocument();
-    expect(screen.getByText('Funds')).toBeInTheDocument();
+    expect(screen.getByText('Cooper')).toBeInTheDocument();
     expect(document.getElementById('funds-bottom-tabbar')).toBeInTheDocument();
     expect(screen.getByText('Resumen')).toBeInTheDocument();
     expect(screen.getByText('Llamados')).toBeInTheDocument();

@@ -303,7 +303,7 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
-          title: 'Funds',
+          title: 'Cooper',
           label: 'Capital privado',
           desc: 'Gobernanza y gestión de capital privado'
         }
@@ -457,7 +457,7 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Coach management, venues & athletes'
         },
         venture: {
-          title: 'Funds',
+          title: 'Cooper',
           label: 'Private capital',
           desc: 'Private capital & governance'
         }

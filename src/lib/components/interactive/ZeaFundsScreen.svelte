@@ -382,9 +382,8 @@
 >
   <!-- Header -->
   <header class="px-4 py-2.5 bg-[#F6F5F2] border-b border-[#E9E7E2] flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-baseline gap-1.5">
-      <ZeaLogo class="h-3 w-auto text-[#111111]" />
-      <h2 class="hv-serif text-[13.5px] font-normal text-[#111111] leading-none tracking-tight">Funds</h2>
+    <div class="flex items-center">
+      <h2 class="hv-serif text-[18px] font-normal text-[#111111] leading-none tracking-[-0.01em]">Cooper</h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="funds" variant="light" />
   </header>
@@ -544,7 +543,7 @@
               <input
                 type="text"
                 bind:value={chatInputText}
-                placeholder={es ? 'Pregunta a Funds Agent' : 'Ask Funds Agent'}
+                placeholder={es ? 'Pregunta a Cooper' : 'Ask Cooper'}
                 class="flex-1 bg-transparent text-[12px] text-[#1A1A1A] placeholder:text-[#A6A6A6] focus:outline-none py-1"
               />
               <button type="submit" aria-label="Enviar prompt" class="w-7 h-7 rounded-md bg-[#111111] text-white hover:bg-[#2A2A2A] flex items-center justify-center cursor-pointer shrink-0">
