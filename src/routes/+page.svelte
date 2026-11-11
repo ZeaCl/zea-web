@@ -59,20 +59,20 @@
       <!-- Left Column: Contextual Stage (Manifesto + Productos + Verticales) -->
       <div class="w-full lg:col-span-6 flex flex-col justify-center space-y-7">
         <div class="space-y-6 text-left">
-          <!-- ZEA Manifesto Block (Left Dotted Rule + ZEA Logo + Sans Title + Monospace Body) -->
-          <div class="border-l border-dotted border-white/45 pl-4 sm:pl-5 py-0.5 space-y-1.5">
+          <!-- ZEA Manifesto Block (Left Dotted Rule + ZEA Logo + Clean Sans Typography matching the site) -->
+          <div class="border-l border-dotted border-white/35 pl-4 sm:pl-5 py-0.5 space-y-2">
             <ZeaLogo class="h-3.5 sm:h-4 w-auto text-white" />
-            <h1 class="text-[15px] sm:text-base font-semibold tracking-tight text-white leading-snug pt-0.5">
-              Technology Lab &amp; Product Studio.
+            <h1 class="font-sans text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-white leading-snug pt-0.5">
+              Technology lab &amp; product studio.
             </h1>
-            <p class="font-mono text-[13px] sm:text-[14px] text-zinc-300 leading-relaxed pt-0.5 max-w-xl">
+            <p class="font-sans text-[13.5px] sm:text-[14px] text-zinc-400 font-normal leading-relaxed max-w-lg">
               We engineer deep technical foundations to power proprietary products across interactive entertainment, specialized operations, and real-world systems.
             </p>
           </div>
 
           <!-- 1. Productos (Glia) -->
           <div class="pt-1">
-            <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
+            <span class="block text-[11.5px] font-sans text-zinc-500 font-medium mb-2.5">
               {lang === 'es' ? 'Productos' : 'Products'}
             </span>
             <div class="border-t border-white/[0.08] pt-3">
@@ -84,10 +84,10 @@
               >
                 <span class="text-xs font-semibold flex items-center gap-1.5 transition {activePillar === 'glia' || showVerticals ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 group-hover:text-white'}">
                   <span>Glia</span>
-                  <span class="text-[10px] text-zinc-500 font-mono transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
+                  <span class="text-[10px] text-zinc-500 font-sans transition-transform duration-200 {showVerticals ? 'rotate-90 text-zinc-300' : ''}">›</span>
                 </span>
                 <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
-                  Multi-Agent Engine
+                  Multi-agent engine
                 </span>
               </button>
             </div>
@@ -96,7 +96,7 @@
           <!-- 2. Verticales Operativas (Desplegadas al hacer click en Glia) -->
           {#if showVerticals}
             <div class="pt-1" transition:slide={{ duration: 180 }}>
-              <span class="block text-[10.5px] font-mono uppercase tracking-widest text-zinc-500 font-semibold mb-2.5">
+              <span class="block text-[11.5px] font-sans text-zinc-500 font-medium mb-2.5">
                 {t.mobilePlatform.industriesLabel}
               </span>
               <div class="grid grid-cols-3 gap-2.5 border-t border-white/[0.08] pt-3">

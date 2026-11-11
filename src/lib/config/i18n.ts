@@ -294,17 +294,17 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Industrial',
-          label: 'Procesos & Faenas',
+          label: 'Procesos y faenas',
           desc: 'Trazabilidad de faenas e inspección 100% offline'
         },
         sport: {
           title: 'Sport',
-          label: 'Sport Operations',
+          label: 'Sport operations',
           desc: 'Gestión de entrenadores, sedes y atletas'
         },
         venture: {
           title: 'Funds',
-          label: 'Private Capital',
+          label: 'Private capital',
           desc: 'Gobernanza y gestión de capital privado'
         }
       }
@@ -448,17 +448,17 @@ export const content: Record<Language, I18nContent> = {
       pillars: {
         edge: {
           title: 'Industrial',
-          label: 'Industrial & Field Ops',
+          label: 'Industrial & field ops',
           desc: 'Field traceability & 100% offline inspections'
         },
         sport: {
           title: 'Sport',
-          label: 'Sport Operations',
+          label: 'Sport operations',
           desc: 'Coach management, venues & athletes'
         },
         venture: {
           title: 'Funds',
-          label: 'Private Capital',
+          label: 'Private capital',
           desc: 'Private capital & governance'
         }
       }
