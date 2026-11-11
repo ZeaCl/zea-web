@@ -28,17 +28,13 @@
 
 <header class="sticky top-0 z-50 w-full border-b border-[#2f2f3b]/80 bg-[#1c1c22]/90 backdrop-blur-md">
   <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-    <!-- Brand: ZEA Logo + Subtítulo sutil reactivo al idioma -->
+    <!-- Brand: Solo letras ZEA tal cual en glia-web -->
     <a
       href="/"
-      class="flex items-center gap-3 transition cursor-pointer group"
+      class="flex items-center gap-2.5 transition cursor-pointer"
       aria-label="ZEA"
     >
       <ZeaLogo class="h-4 w-auto text-white" />
-      <span class="hidden sm:inline-block h-3.5 w-px bg-white/20"></span>
-      <span class="text-[12px] text-zinc-400 font-sans tracking-tight leading-none group-hover:text-zinc-200 transition">
-        {lang === 'es' ? 'Estudio de tecnología y productos' : 'Technology & product studio'}
-      </span>
     </a>
 
     <!-- Right Container: Utility Actions + Get Started CTA Button -->

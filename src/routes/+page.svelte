@@ -51,9 +51,12 @@
       <!-- Left Column: Contextual Stage (Manifesto + Productos + Verticales) -->
       <div class="w-full lg:col-span-6 flex flex-col justify-center space-y-7">
         <div class="space-y-6 text-left">
-          <!-- ZEA Manifesto Block (Left Dotted Rule + ZEA Logo + Body Text) -->
-          <div class="border-l border-dotted border-white/35 pl-4 sm:pl-5 py-0.5 space-y-2">
+          <!-- ZEA Manifesto Block (Left Dotted Rule + ZEA Logo + Subtítulo + Body Text) -->
+          <div class="border-l border-dotted border-white/35 pl-4 sm:pl-5 py-0.5 space-y-1.5">
             <ZeaLogo class="h-4 sm:h-4.5 w-auto text-white" />
+            <h1 class="font-sans text-[15px] sm:text-[16px] font-semibold tracking-[-0.01em] text-white leading-snug pt-0.5">
+              {lang === 'es' ? 'Estudio de tecnología y productos.' : 'Technology & product studio.'}
+            </h1>
             <p class="font-sans text-[13.5px] sm:text-[14px] text-zinc-400 font-normal leading-relaxed max-w-lg pt-0.5">
               {lang === 'es'
                 ? 'Invertimos en explorar lo desconocido para construir la tecnología que navega operaciones complejas y sistemas del mundo real.'
