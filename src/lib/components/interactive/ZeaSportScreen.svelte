@@ -382,8 +382,9 @@
         <!-- Top Navigation Bar (Homologated with Cooper & Allisbox, pure typographic logo) -->
         <header class="px-4 py-2.5 bg-black border-b border-[#1C1C22] flex items-center justify-between z-20 shrink-0">
           <div class="flex items-center">
-            <h2 class="font-bold text-[18px] tracking-tight text-white leading-none select-none">
-              Gus
+            <h2 class="inline-flex items-baseline gap-1.5 -skew-x-6 leading-none select-none">
+              <span class="font-black italic uppercase tracking-tight text-[17px] text-white font-sans">GUS</span>
+              <span class="font-bold uppercase tracking-[0.16em] text-[11px] text-[#FA7343] font-mono">TRAINING</span>
             </h2>
           </div>
 
@@ -532,7 +533,7 @@
         <!-- Glia / Gemini Conversational Bar (Only in Chat Mode) -->
         <ZeaGliaBar
           theme="sport"
-          placeholder={lang === 'en' ? 'Ask Gus or request a change...' : 'Pregunta a Gus o pide un cambio...'}
+          placeholder={lang === 'en' ? 'Ask Gus Training or request a change...' : 'Pregunta a Gus Training o pide un cambio...'}
           chips={['¿Cómo viene Felipe Soto?', 'Aprobar reserva de Matías', '¿Cuántos cupos quedan hoy?']}
           bind:inputText={chatInputText}
           onSendPrompt={handleSendPrompt}
@@ -544,8 +545,9 @@
         <!-- Top Navigation Bar (Homologated with Cooper & Allisbox, pure typographic logo) -->
         <header class="px-4 py-2.5 bg-black border-b border-[#1C1C22] flex items-center justify-between z-20 shrink-0">
           <div class="flex items-center">
-            <h2 class="font-bold text-[18px] tracking-tight text-white leading-none select-none">
-              Gus
+            <h2 class="inline-flex items-baseline gap-1.5 -skew-x-6 leading-none select-none">
+              <span class="font-black italic uppercase tracking-tight text-[17px] text-white font-sans">GUS</span>
+              <span class="font-bold uppercase tracking-[0.16em] text-[11px] text-[#FA7343] font-mono">TRAINING</span>
             </h2>
           </div>
 

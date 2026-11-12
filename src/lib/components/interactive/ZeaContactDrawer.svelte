@@ -483,7 +483,7 @@
                 onclick={() => selectVertical('sport')}
                 class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer {selectedFocus === 'sport' ? 'bg-white text-black font-semibold shadow-xs' : 'bg-[#141418] border border-[#26262E] text-zinc-300 hover:text-white hover:border-[#383844]'}"
               >
-                Gus
+                Gus Training
               </button>
 
               <button

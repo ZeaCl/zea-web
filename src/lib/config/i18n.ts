@@ -298,9 +298,9 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Cálculo técnico, control de faenas y mantención de activos\npara minería, acuicultura y obras civiles complejas'
         },
         sport: {
-          title: 'Gus',
-          label: 'Plataforma de gestión deportiva',
-          desc: 'Gestión de entrenadores, sedes y atletas'
+          title: 'Gus Training',
+          label: 'Deporte & Alto Rendimiento',
+          desc: 'Automatización de agenda, cobros recurrentes\ny seguimiento de rendimiento para atletas y academias'
         },
         venture: {
           title: 'Cooper',
@@ -452,9 +452,9 @@ export const content: Record<Language, I18nContent> = {
           desc: 'Technical calculation, field operations & asset maintenance\nfor mining, aquaculture & complex civil works'
         },
         sport: {
-          title: 'Gus',
-          label: 'Sports management platform',
-          desc: 'Coach management, venues & athletes'
+          title: 'Gus Training',
+          label: 'Sports & High Performance',
+          desc: 'Schedule automation, recurring billing\n& performance tracking for athletes & academies'
         },
         venture: {
           title: 'Cooper',

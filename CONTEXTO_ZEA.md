@@ -45,10 +45,10 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
   - Componente: `src/lib/components/interactive/ZeaEdgeScreen.svelte`.
   - Repositorio dedicado: `/Users/dev/Documents/zea/allisbox`.
 
-### 3. **Gus** (Anteriormente *Sport*)
-* **Industria:** Operaciones Deportivas / Alto Rendimiento.
-* **Tono y Personalidad:** Presentado con la personalidad de un entrenador/coach senior de confianza (Gustavo).
-* **Subtítulo:** *Plataforma de gestión deportiva* / *Sports management platform*.
+### 3. **Gus Training** (Anteriormente *Sport* / *Gus*)
+* **Industria:** Deporte & Alto Rendimiento / Coaching y Academias.
+* **Tono y Personalidad:** Presentado con la personalidad de un entrenador de alto rendimiento con foco en velocidad y resultados (Gustavo).
+* **Subtítulo:** *Deporte & Alto Rendimiento* / *Sports & High Performance*.
 * **Componente:** `src/lib/components/interactive/ZeaSportScreen.svelte`.
 
 ---
@@ -72,7 +72,7 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
 1. **Cooper** — *Capital Privado* · Gobernanza de liquidez y llamadas de capital con balance contable auditable en tiempo real
 2. **Allisbox** — *Infraestructura & Operaciones Industriales* · Cálculo técnico, control de faenas y mantención de activos para minería, acuicultura y obras civiles complejas (anteriormente Industrial)
-3. **Gus** — *Plataforma de gestión deportiva*
+3. **Gus Training** — *Deporte & Alto Rendimiento* · Automatización de agenda, cobros recurrentes y seguimiento de rendimiento para atletas y academias
 
 Al seleccionar cualquiera de los 3 productos, el simulador móvil de la derecha conmuta instantáneamente a su respectiva pantalla nativa interactiva. Inicia por defecto en **Cooper**.
 

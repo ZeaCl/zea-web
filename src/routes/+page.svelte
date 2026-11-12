@@ -110,11 +110,19 @@
                 class="text-left group cursor-pointer transition"
                 data-testid="pillar-sport"
               >
-                <span class="text-xs font-semibold block transition {activePillar === 'sport' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  {t.mobilePlatform.pillars.sport.title}
+                <span class="inline-flex items-baseline gap-1.5 -skew-x-6 leading-none transition {activePillar === 'sport' ? 'underline underline-offset-4 decoration-white/40' : ''}">
+                  <span class="font-black italic uppercase tracking-tight text-[15px] sm:text-[16px] text-white font-sans">
+                    GUS
+                  </span>
+                  <span class="font-bold uppercase tracking-[0.16em] text-[10.5px] text-[#FA7343] font-mono">
+                    TRAINING
+                  </span>
                 </span>
-                <span class="text-[11px] text-zinc-400 block mt-0.5 font-sans leading-tight">
+                <span class="text-[11px] text-zinc-300 font-medium block mt-2 font-sans leading-tight">
                   {t.mobilePlatform.pillars.sport.label}
+                </span>
+                <span class="text-[10px] text-zinc-400 block mt-1 font-sans leading-tight whitespace-pre-line">
+                  {t.mobilePlatform.pillars.sport.desc}
                 </span>
               </button>
             </div>
