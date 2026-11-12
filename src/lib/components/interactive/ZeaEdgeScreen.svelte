@@ -660,7 +660,12 @@
   <!-- Minimalist Header (Homologated with Funds Agent, pure typographic logo) -->
   <header class="px-4 py-2.5 bg-[#F6F7F8] border-b border-[#DCDFE4] flex items-center justify-between z-20 shrink-0">
     <div class="flex items-center">
-      <h2 class="text-[13.5px] font-bold tracking-[0.15em] uppercase text-[#111827] leading-none select-none font-sans">Allisbox</h2>
+      <h2 class="text-[13.5px] font-bold tracking-[0.15em] uppercase text-[#111827] leading-none select-none font-sans" aria-label="ALLISBOX">
+        <span class="sr-only">Allisbox</span>
+        <span aria-hidden="true" class="inline-flex items-baseline">
+          <span>ALLIS</span><span class="box-3d-light ml-[1.5px]">BOX</span>
+        </span>
+      </h2>
     </div>
     <ZeaModeToggle bind:viewMode theme="industrial" variant="light" />
   </header>

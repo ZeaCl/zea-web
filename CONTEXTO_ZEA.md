@@ -70,9 +70,9 @@ Se eliminó la capa intermedia interna (Glia no se muestra al usuario final, es 
 
 ### Selector de Productos (Columna izquierda)
 Organizado en una grilla de 3 columnas limpias bajo el título `PRODUCTOS`:
-1. **Cooper** — *Capital Privado* · Gobernanza de liquidez y llamadas de capital con balance contable auditable en tiempo real
-2. **Allisbox** — *Infraestructura & Operaciones Industriales* · Cálculo técnico, control de faenas y mantención de activos para minería, acuicultura y obras civiles complejas (anteriormente Industrial)
-3. **Gus Training** — *Deporte & Alto Rendimiento* · Automatización de agenda, cobros recurrentes y seguimiento de rendimiento para atletas y academias
+1. **Cooper** — *Capital Privado* · Gobernanza de liquidez y llamadas de capital con balance contable auditable en tiempo real (Tipografía editorial serif *Newsreader*).
+2. **Allisbox** — *Infraestructura & Operaciones Industriales* · Cálculo técnico, control de faenas y mantención de activos para minería, acuicultura y obras civiles complejas (Logotipo híbrido: `ALLIS` plano CAD técnico + `BOX` en extrusión isométrica 3D CAD con capas `text-shadow` multi-nivel).
+3. **Gus Training** — *Deporte & Alto Rendimiento* · Automatización de agenda, cobros recurrentes y seguimiento de rendimiento para atletas y academias (Logotipo de velocidad: `GUS` en heavy italic `-skew-x-6` + `TRAINING` en mono espaciado `#FA7343`).
 
 Al seleccionar cualquiera de los 3 productos, el simulador móvil de la derecha conmuta instantáneamente a su respectiva pantalla nativa interactiva. Inicia por defecto en **Cooper**.
 

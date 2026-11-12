@@ -93,8 +93,11 @@
                 class="text-left group cursor-pointer transition"
                 data-testid="pillar-edge"
               >
-                <span class="text-[13px] font-bold tracking-[0.12em] uppercase leading-none block transition {activePillar === 'edge' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
-                  {t.mobilePlatform.pillars.edge.title}
+                <span class="inline-flex items-baseline leading-none text-[13px] font-bold tracking-[0.12em] uppercase transition {activePillar === 'edge' ? 'text-white underline underline-offset-4 decoration-white/40' : 'text-zinc-300 hover:text-white'}">
+                  <span class="sr-only">{t.mobilePlatform.pillars.edge.title}</span>
+                  <span aria-hidden="true" class="inline-flex items-baseline">
+                    <span>ALLIS</span><span class="box-3d-dark ml-[1.5px]">BOX</span>
+                  </span>
                 </span>
                 <span class="text-[11px] text-zinc-300 font-medium block mt-2 font-sans leading-tight">
                   {t.mobilePlatform.pillars.edge.label}
