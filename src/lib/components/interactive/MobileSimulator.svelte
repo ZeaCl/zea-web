@@ -8,7 +8,6 @@
   import ZeaEdgeScreen from './ZeaEdgeScreen.svelte';
   import ZeaDefaultScreen from './ZeaDefaultScreen.svelte';
   import ZeaFundsScreen from './ZeaFundsScreen.svelte';
-  import ZeaContactScreen from './ZeaContactScreen.svelte';
 
   export interface ActiveSkills {
     audio: boolean;
@@ -26,7 +25,7 @@
     lang?: 'en' | 'es';
     platform?: 'ios' | 'android';
     skills?: ActiveSkills;
-    activePillar?: 'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia' | 'contact';
+    activePillar?: 'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia';
     activeNav?: string;
   } = $props();
 
@@ -1439,15 +1438,6 @@
               </button>
             </div>
           </div>
-        {:else if activePillar === 'contact'}
-          <!-- ZEA Sales Onboarding & Direct Support Screen (Titanium Monochrome) -->
-          <ZeaContactScreen
-            {lang}
-            {platform}
-            onSelectProduct={(p) => {
-              activePillar = p;
-            }}
-          />
         {:else if activePillar === 'edge'}
           <!-- ZEA Edge Industrial Heavy Operations (Caterpillar Theme) -->
           <ZeaEdgeScreen {lang} {platform} />

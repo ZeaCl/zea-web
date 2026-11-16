@@ -7,7 +7,7 @@
 
   let lang = $state<Language>('es');
   let platform = $state<'ios' | 'android'>('ios');
-  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia' | 'contact'>('venture');
+  let activePillar = $state<'none' | 'edge' | 'sport' | 'venture' | 'default' | 'glia'>('venture');
   let isContactDrawerOpen = $state(false);
   let selectedContactFocus = $state<'industrial' | 'sport' | 'funds' | 'core'>('funds');
   const t = $derived(content[lang]);
@@ -21,14 +21,6 @@
   function openContact(focus: 'industrial' | 'sport' | 'funds' | 'core' = 'funds') {
     selectedContactFocus = focus;
     isContactDrawerOpen = true;
-  }
-
-  function handleGetStarted() {
-    activePillar = 'contact';
-    if (typeof document !== 'undefined') {
-      const el = document.getElementById('simulator-stage');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 </script>
 
@@ -46,7 +38,7 @@
   <Header
     bind:lang
     bind:platform
-    onGetStarted={handleGetStarted}
+    onGetStarted={() => openContact(activePillar === 'edge' ? 'industrial' : (activePillar === 'sport' ? 'sport' : (activePillar === 'venture' ? 'funds' : 'core')))}
   />
 
   <!-- Center Experience: Contextual Stage + Mobile Simulator -->
@@ -137,34 +129,12 @@
                 </span>
               </button>
             </div>
-
-            <!-- Get Started / Asesor Comercial Directo -->
-            <div class="pt-3.5 flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.08]">
-              <button
-                type="button"
-                onclick={handleGetStarted}
-                class="inline-flex items-center gap-2 text-xs font-mono transition cursor-pointer {activePillar === 'contact' ? 'text-white font-bold' : 'text-zinc-400 hover:text-white'}"
-                data-testid="pillar-contact"
-              >
-                <span class="w-1.5 h-1.5 rounded-full {activePillar === 'contact' ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}"></span>
-                <span>{lang === 'es' ? 'Comencemos · Hablar con ventas' : 'Get Started · Chat with sales'}</span>
-                <span class="text-zinc-500">→</span>
-              </button>
-
-              <button
-                type="button"
-                onclick={() => openContact(activePillar === 'edge' ? 'industrial' : (activePillar === 'sport' ? 'sport' : (activePillar === 'venture' ? 'funds' : 'core')))}
-                class="text-[11px] text-zinc-500 hover:text-zinc-300 font-mono underline underline-offset-2 transition cursor-pointer"
-              >
-                {lang === 'es' ? 'Formulario extendido' : 'Extended form'}
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Mobile Simulator -->
-      <div id="simulator-stage" class="w-full lg:col-span-6 flex flex-col items-center justify-center">
+      <div class="w-full lg:col-span-6 flex flex-col items-center justify-center">
         <MobileSimulator
           {lang}
           {platform}
